@@ -1,0 +1,34 @@
+/* src/App.css */
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  .column {
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin: 0 0px;
+  }
+  
+  .column:first-child {
+    flex: 0 0 25%; /* 25% width for the first column */
+  }
+  
+  .column:nth-child(2) {
+    flex: 0 0 50%; /* 50% width for the middle column */
+  }
+  
+  .column:last-child {
+    flex: 0 0 25%; /* 25% width for the last column */
+  }
+  
+  .column h2 {
+    text-align: center;
+  }
+  
+  .column p {
+    text-align: justify;
+  }
+  
