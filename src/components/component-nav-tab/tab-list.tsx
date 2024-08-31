@@ -1,0 +1,41 @@
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../../store';
+import { navigationTabActions } from '../../store';
+import { NavTabType } from "../../common";
+import { NavigationTab } from './navigation-tab';
+
+export const TabList: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const activeTab = useSelector((state: RootState) => state.navigationTab.activeTab);
+
+  const handleTabClick = (type: NavTabType) => {
+    dispatch(navigationTabActions.setActiveTab(type));
+  };
+
+  return (
+    <div className="tab-list">
+      <NavigationTab
+        title = 'College Navigation'
+        isActive = {activeTab === NavTabType.CollegeNavigatoin}
+        onClick = {() => handleTabClick(NavTabType.CollegeNavigatoin)}
+      />
+      <NavigationTab
+        title = 'College List'
+        isActive = {activeTab === NavTabType.CollegeList}
+        onClick = {() => handleTabClick(NavTabType.CollegeList)}
+      />
+      <NavigationTab
+        title = 'Mock Interview'
+        isActive = {activeTab === NavTabType.Interview}
+        onClick = {() => handleTabClick(NavTabType.Interview)}
+      />
+      <NavigationTab
+        title = 'Committe Review'
+        isActive = {activeTab === NavTabType.ComitteReview}
+        onClick = {() => handleTabClick(NavTabType.ComitteReview)}
+      />
+    </div>
+  );
+};
+

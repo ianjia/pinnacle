@@ -1,0 +1,22 @@
+.tab {
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: #fff;
+    border-left: 4px solid transparent;
+    color: #333;
+    font-weight: normal;
+    transition: background-color 0.3s, color 0.3s, border-left-color 0.3s;
+  }
+  
+  .tab.active {
+    background-color: #f0f0f0;
+    border-left-color: #0078d4;
+    color: #0078d4;
+    font-weight: bold;
+  }
+  
+  .tab-list {
+    display: flex;
+    flex-direction: column;
+    /* width: 200px; */
+}

@@ -1,8 +1,6 @@
-/* src/App.css */
-
 .container {
     display: flex;
-    justify-content: space-between;
+    width: 100%;
     padding: 10px;
   }
   
@@ -13,15 +11,15 @@
   }
   
   .column:first-child {
-    flex: 0 0 25%; /* 25% width for the first column */
+    flex: 0 0 400px; 
   }
   
   .column:nth-child(2) {
-    flex: 0 0 50%; /* 50% width for the middle column */
+    flex: 1; 
   }
   
   .column:last-child {
-    flex: 0 0 25%; /* 25% width for the last column */
+    flex: 0 0 300px; 
   }
   
   .column h2 {

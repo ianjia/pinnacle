@@ -19,7 +19,7 @@ const customIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-const Map: React.FC = () => {
+export const Map: React.FC = () => {
   const mapRef = useRef<L.Map | null>(null);
 
   useEffect(() => {
@@ -108,5 +108,3 @@ const Map: React.FC = () => {
 
   return <div id="map" style={{ height: '100vh', width: '100%' }} />;
 };
-
-export default Map;
