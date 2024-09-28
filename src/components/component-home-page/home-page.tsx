@@ -3,19 +3,36 @@ import { Canvas } from '../component-canvas';
 import { LeftPane } from '../component-left-pane';
 import axios from 'axios';
 import './home-page.css';
+import { startAsyncTask, handleAcademicReviewTask, TaskParameterType } from '../../proxy';
+import { LoadingModal } from '../component-loading-modal-dialog';
 
 export const HomePage: React.FC = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState<any>(null); // State to hold the fetched data
     const [error, setError] = useState<string | null>(null); // State to handle errors
 
+    const taskParams: TaskParameterType = {}
+
     // Function to send data and fetch the response from the backend
+    // const sendData = async () => {
+    //     try {
+    //         const response = await axios.post('http://localhost:4000/api/data', {
+    //             key: 'value',
+    //         });
+    //         console.log('Data sent successfully:', response.data);
+    //         setData(response.data); // Set the received data in state
+    //         setError(null); // Clear any previous error if the request is successful
+    //     } catch (error) {
+    //         setError('Error sending data.');
+    //         console.error('Error sending data:', error);
+    //     }
+    // };
+
     const sendData = async () => {
         try {
-            const response = await axios.post('http://localhost:4000/api/data', {
-                key: 'value',
-            });
-            console.log('Data sent successfully:', response.data);
-            setData(response.data); // Set the received data in state
+            const response = await startAsyncTask(setIsLoading, handleAcademicReviewTask, taskParams);
+            console.log('Data sent successfully:', response.result);
+            setData(response.result); // Set the received data in state
             setError(null); // Clear any previous error if the request is successful
         } catch (error) {
             setError('Error sending data.');
@@ -46,8 +63,9 @@ export const HomePage: React.FC = () => {
                     <p>No data received yet. Click the button to send data.</p>
                 )}
 
-                <button onClick={sendData}>Send Data</button>
+                <button onClick={sendData}>Academic Evaluation</button>
             </div>
+            <LoadingModal isVisible={isLoading} message='Evaluating ...' />
         </div>
     );
 };
