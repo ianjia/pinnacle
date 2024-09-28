@@ -1,20 +1,7 @@
 import { TaskParameterType, TaskReturnType } from "./asyncTaskTypes";
-import axios from 'axios';
+//import axios from 'axios';
 
-// export async function handleAcademicReviewTask(params: TaskParameterType): Promise<TaskReturnType> {
-//     let result: string | undefined = undefined;
-//     //let error: string | undefined = undefined;
-     
-//     // Simulate a long-running task
-//     return new Promise((resolve) => {
-//       setTimeout(() => {
-//         result = "Academic review done!"
-//         resolve({ result: result });
-//       }, 5000); 
-//     });
-//   }
-
-export async function handleAcademicReviewTask(params: TaskParameterType): Promise<TaskReturnType> {
+export async function handleAcademicReviewTask(_params: TaskParameterType): Promise<TaskReturnType> {
     try {
         // Send request to Server 1 to initiate the task
         const response = await fetch('http://localhost:4000/api/start-task', { method: 'POST' });

@@ -1,0 +1,75 @@
+/* General markdown content styling */
+.markdown-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .markdown-content h3 {
+    font-size: 1.75em;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    border-bottom: 2px solid #2980b9;
+    padding-bottom: 5px;
+  }
+  
+  .markdown-content h4 {
+    font-size: 1.5em;
+    margin-top: 20px;
+    color: #2980b9;
+  }
+  
+  .markdown-content p {
+    margin: 10px 0;
+  }
+  
+  .markdown-content ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+  
+  .markdown-content ul li {
+    margin: 5px 0;
+  }
+  
+  .markdown-content strong {
+    font-weight: bold;
+    color: #2c3e50;
+  }
+  
+  /* Style links, if any */
+  .markdown-content a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  .markdown-content a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Style blockquotes, if you expect them */
+  .markdown-content blockquote {
+    border-left: 4px solid #ccc;
+    padding-left: 10px;
+    color: #555;
+    margin: 20px 0;
+    font-style: italic;
+  }
+  
+  /* Tables (optional) if you want GitHub-flavored Markdown support */
+  .markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .markdown-content table, .markdown-content th, .markdown-content td {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  
+  .markdown-content th {
+    background-color: #f4f4f4;
+    text-align: left;
+  }
+  
