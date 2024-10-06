@@ -17,7 +17,9 @@ export const MarkdownMessageDisplay: React.FC<PrettyLLMMessageProps> = ({ errorM
           <p>{errorMessage}</p>
         </div>
       ) : (
-        <Markdown remarkPlugins={[remarkGfm]}>{resultMessage}</Markdown>
+        <div className="markdown-content">
+          <Markdown remarkPlugins={[remarkGfm]}>{resultMessage}</Markdown>
+        </div>
       )}
     </div>
   );
