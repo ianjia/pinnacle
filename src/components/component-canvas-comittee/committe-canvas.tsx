@@ -15,7 +15,7 @@ export const CommitteCanvas: React.FC = () => {
             {data ? (
                 <MarkdownMessageDisplay resultMessage={data} />
             ) : (
-                <p>No data received yet.</p>
+                <h2>Evaluation:</h2>
             )}
         </div>
     );

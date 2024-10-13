@@ -1,10 +1,10 @@
 import { TaskParameterType, TaskReturnType } from "./asyncTaskTypes";
-//import axios from 'axios';
+import {MIDDLE_SERVER_URL} from '../common';
 
 export async function handleAcademicReviewTask(_params: TaskParameterType): Promise<TaskReturnType> {
     try {
         // Send request to Server 1 to initiate the task
-        const response = await fetch('http://localhost:4000/api/start-task', { method: 'POST' });
+        const response = await fetch(`${MIDDLE_SERVER_URL}/api/start-task`, { method: 'POST' });
         const data = await response.json();
         const taskId = data.taskId;
 
@@ -25,7 +25,7 @@ async function pollTaskStatus(taskId: string): Promise<TaskReturnType>  {
         await sleep(2000); 
 
         try {
-        const statusResponse = await fetch(`http://localhost:4000/api/task-status/${taskId}`, { method: 'GET' });
+        const statusResponse = await fetch(`${MIDDLE_SERVER_URL}/api/task-status/${taskId}`, { method: 'GET' });
         const statusData = await statusResponse.json();
 
         if (statusData.status === 'completed') {

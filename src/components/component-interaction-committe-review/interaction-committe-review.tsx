@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TaskParameterType } from '../../proxy';
 import { LoadingModal } from '../component-loading-modal-dialog';
 import { RootState, AppDispatch, fetchCommitteeReviewData } from '../../store';
+import './interaction-committe-review.css';
 
 export const InteractionCommitteeReview: React.FC = () => {
     // Use AppDispatch to type the dispatch function correctly
@@ -16,8 +17,11 @@ export const InteractionCommitteeReview: React.FC = () => {
     };
 
     return (
-        <div>
-            <button onClick={sendData}>Admission Evaluation</button>
+        <div className="interaction-container">
+            <h2>AI-Powered Admission Committe Review</h2>
+            <div className="interaction-header">
+            <button className = "review-button" onClick={sendData}>Admission Evaluation</button>
+            </div>
             {isLoading && <LoadingModal isVisible={isLoading} message="Evaluating ..." />}
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>

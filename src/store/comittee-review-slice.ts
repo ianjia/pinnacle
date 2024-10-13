@@ -48,4 +48,6 @@ const committeeReviewSlice = createSlice({
     },
 });
 
-export default committeeReviewSlice.reducer;
+
+export const committeeReviewReducers = committeeReviewSlice.reducer;
+export const committeeReviewActions = committeeReviewSlice.actions;

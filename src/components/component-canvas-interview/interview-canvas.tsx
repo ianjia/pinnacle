@@ -1,15 +1,12 @@
 
 import './interview-canvas.css';
-import backgroundImage from '../../assets/images/interview_background.jpg';
-
+import React from 'react';
+import { ConversationDisplay } from '../component-conversation-display';
 
 export const InterviewCanvas: React.FC = () => {
     return (
-       <div
-          className="interview-background"
-          style={{
-             backgroundImage: `url(${backgroundImage})`, 
-          }}
-       />
+        <div className="interview-background">
+            <ConversationDisplay />
+        </div>
     );
- }
+};

@@ -1,12 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { navigationTabReducers } from './nav-tab-slice';
-import committeeReviewReducer from './comittee-review-slice';
-
+import { committeeReviewReducers }  from './comittee-review-slice';
+import { intervieConverstationReducers } from './interview-slice';
 
 export const store = configureStore({
   reducer: {
     navigationTab: navigationTabReducers,
-    committeeReview: committeeReviewReducer,
+    committeeReview: committeeReviewReducers,
+    conversation: intervieConverstationReducers,
   },
 });
 

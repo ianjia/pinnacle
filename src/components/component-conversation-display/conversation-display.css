@@ -1,0 +1,39 @@
+.conversation-container {
+    margin-top: 20px;
+  }
+  
+  .conversation-box {
+    background-color: #f7f7f9;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  
+  .conversation-item {
+    margin-bottom: 15px;
+  }
+  
+  .conversation-item.left {
+    text-align: left;
+  }
+  
+  .conversation-item.right {
+    text-align: right;
+  }
+  
+  .message {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 70%;
+    word-wrap: break-word;
+    color: #212529;
+  }
+  
+  .message.interviewer {
+    background-color: #e9ecef;
+  }
+  
+  .message.you {
+    background-color: #d1ecf1;
+  }
+  
