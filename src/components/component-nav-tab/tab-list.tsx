@@ -16,6 +16,11 @@ export const TabList: React.FC = () => {
   return (
     <div className="tab-list">
       <NavigationTab
+        title = 'Student Profile'
+        isActive = {activeTab === NavTabType.Profile}
+        onClick = {() => handleTabClick(NavTabType.Profile)}
+      />      
+      <NavigationTab
         title = 'College Navigation'
         isActive = {activeTab === NavTabType.CollegeNavigatoin}
         onClick = {() => handleTabClick(NavTabType.CollegeNavigatoin)}

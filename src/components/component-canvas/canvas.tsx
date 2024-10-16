@@ -4,12 +4,14 @@ import { NavTabType } from '../../common';
 import { RootState } from '../../store';
 import { CommitteCanvas } from '../component-canvas-comittee';
 import { InterviewCanvas } from '../component-canvas-interview';
+import { ProfileCanvas } from '../component-canvas-profile/profile-canvas';
 
 export const Canvas: React.FC = () => {
     const activeTab: NavTabType = useSelector((state: RootState) => state.navigationTab.activeTab);
 
     return (
         <div >
+            { activeTab === NavTabType.Profile && (<ProfileCanvas/>)}
             { (activeTab === NavTabType.CollegeNavigatoin ||  activeTab === NavTabType.CollegeList)&& (<Map/>)}
             { activeTab === NavTabType.ComitteReview && (<CommitteCanvas/>)}
             { activeTab === NavTabType.Interview && (<InterviewCanvas/>)}

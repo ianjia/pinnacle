@@ -18,10 +18,6 @@
     flex: 1; 
   }
   
-  .column:last-child {
-    flex: 0 0 300px; 
-  }
-  
   .column h2 {
     text-align: center;
   }

@@ -12,10 +12,6 @@ export const HomePage: React.FC = () => {
             <div className="column">
                 <Canvas />
             </div>
-            <div className="column">
-                <p>Content for the third column.</p>
-                {/* Removed the button and related logic */}
-            </div>
         </div>
     );
 };
