@@ -3,6 +3,7 @@ import { navigationTabReducers } from './nav-tab-slice';
 import { committeeReviewReducers }  from './comittee-review-slice';
 import { intervieConverstationReducers } from './interview-slice';
 import { selectedProfileReducers } from './selected-profile-slice';
+import { essayWorkshopReducers } from './essay-workshop-slice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     selectedProfile: selectedProfileReducers,
     committeeReview: committeeReviewReducers,
     conversation: intervieConverstationReducers,
+    essayWorkshop: essayWorkshopReducers,
   },
 });
 

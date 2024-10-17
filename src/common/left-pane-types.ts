@@ -4,6 +4,7 @@ export enum NavTabType {
     CollegeList,
     Interview,
     ComitteReview,
+    Essay,
 }
 
 export enum ProfileType {
@@ -11,4 +12,10 @@ export enum ProfileType {
     Academic,
     Activity,
     Honor,
+}
+
+export enum EssayWorkshopType {
+    Brainstorming,
+    Draft,
+    Review,
 }

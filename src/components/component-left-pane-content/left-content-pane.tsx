@@ -2,11 +2,12 @@ import './left-content-pane.css';
 import { NavTabType } from '../../common';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { InteractionCollegeNav } from '../component-interaction-college-nav';
-import { InteractionCollegeList } from '../component-interaction-college-list';
-import { InteractionCommitteeReview } from '../component-interaction-committe-review';
+import { InteractionCollegeNav } from '../component-left-pane-college-nav';
+import { InteractionCollegeList } from '../component-left-pane-college-list';
+import { InteractionCommitteeReview } from '../component-left-pane-committe-review';
 import { InteractionInterview } from '../component-interaction-interview';
-import { ProfileNavPane } from '../component-profile';
+import { ProfileNavPane } from '../component-left-pane-profile';
+import { EssayWorkshopPane } from '../component-left-pane-essay';
 
 export const LeftContentPane: React.FC = () => {
     const activeTab: NavTabType = useSelector((state: RootState) => state.navigationTab.activeTab);
@@ -18,6 +19,7 @@ export const LeftContentPane: React.FC = () => {
            { activeTab === NavTabType.CollegeList && (<InteractionCollegeList/>)}
            { activeTab === NavTabType.ComitteReview && (<InteractionCommitteeReview/>)}
            { activeTab === NavTabType.Interview && (<InteractionInterview/>)}
+           { activeTab === NavTabType.Essay && (<EssayWorkshopPane/>)}
         </div>
       );
 }

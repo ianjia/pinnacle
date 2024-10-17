@@ -1,0 +1,60 @@
+/* activity-file-form.css */
+
+.container {
+    margin: 0 auto;
+  }
+  
+  .buttons {
+    margin: 10px 0;
+  }
+  
+  .top-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .bottom-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .activity-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .activity-table th,
+  .activity-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  .activity-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
+  
+  .selected-row {
+    background-color: #e6f7ff;
+  }
+  
+  input[type='text'],
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  button {
+    margin-right: 10px;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  

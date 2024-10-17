@@ -1,5 +1,5 @@
-// StudentProfileForm.tsx
 import React, { useState } from 'react';
+import './student-profile-form.css'; 
 
 enum Race {
   ASIAN = 'Asian',
@@ -41,6 +41,19 @@ export const StudentProfileForm: React.FC = () => {
   const [firstGenerationStudent, setFirstGenerationStudent] = useState<boolean>(false);
   const [needFinancialAid, setNeedFinancialAid] = useState<boolean>(false);
   const [residenceState, setResidenceState] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [previousProfile, setPreviousProfile] = useState({
+    name: '',
+    race: Race.NOTDISCLOSED,
+    school: '',
+    classRank: Ranking.NOTDISCLOSED,
+    gender: Gender.NOTDISCLOSED,
+    birthDate: '',
+    legacy: false,
+    firstGenerationStudent: false,
+    needFinancialAid: false,
+    residenceState: '',
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,96 +74,184 @@ export const StudentProfileForm: React.FC = () => {
     console.log(studentProfile);
 
     // Send the data to the server here
+
+    setIsEditing(false);
+  };
+
+  const handleEdit = () => {
+    setPreviousProfile({
+      name,
+      race,
+      school,
+      classRank,
+      gender,
+      birthDate,
+      legacy,
+      firstGenerationStudent,
+      needFinancialAid,
+      residenceState,
+    });
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setName(previousProfile.name);
+    setRace(previousProfile.race);
+    setSchool(previousProfile.school);
+    setClassRank(previousProfile.classRank);
+    setGender(previousProfile.gender);
+    setBirthDate(previousProfile.birthDate);
+    setLegacy(previousProfile.legacy);
+    setFirstGenerationStudent(previousProfile.firstGenerationStudent);
+    setNeedFinancialAid(previousProfile.needFinancialAid);
+    setResidenceState(previousProfile.residenceState);
+    setIsEditing(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Student Profile</h2>
-      <div>
-        <label>Name:</label>
-        <input type="text" value={name} onChange={e => setName(e.target.value)} />
-      </div>
+    <div className="container">
+      <form onSubmit={handleSubmit}>
+        <h2>Student Profile</h2>
 
-      <div>
-        <label>Race:</label>
-        <select value={race} onChange={e => setRace(e.target.value as Race)}>
-          {Object.values(Race).map(raceOption => (
-            <option key={raceOption} value={raceOption}>
-              {raceOption}
-            </option>
-          ))}
-        </select>
-      </div>
+        <div className="buttons top-buttons">
+          {!isEditing && (
+            <button type="button" onClick={handleEdit}>
+              Edit
+            </button>
+          )}
+          {isEditing && (
+            <>
+              <button type="submit">Submit</button>
+              <button type="button" onClick={handleCancel}>
+                Cancel
+              </button>
+            </>
+          )}
+        </div>
 
-      <div>
-        <label>School:</label>
-        <input type="text" value={school} onChange={e => setSchool(e.target.value)} />
-      </div>
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Name:</label>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              disabled={!isEditing}
+            />
+          </div>
 
-      <div>
-        <label>Class Rank:</label>
-        <select value={classRank} onChange={e => setClassRank(e.target.value as Ranking)}>
-          {Object.values(Ranking).map(rankOption => (
-            <option key={rankOption} value={rankOption}>
-              {rankOption}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="form-group">
+            <label>Race:</label>
+            <select
+              value={race}
+              onChange={e => setRace(e.target.value as Race)}
+              disabled={!isEditing}
+            >
+              {Object.values(Race).map(raceOption => (
+                <option key={raceOption} value={raceOption}>
+                  {raceOption}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div>
-        <label>Gender:</label>
-        <select value={gender} onChange={e => setGender(e.target.value as Gender)}>
-          {Object.values(Gender).map(genderOption => (
-            <option key={genderOption} value={genderOption}>
-              {genderOption}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="form-group">
+            <label>School:</label>
+            <input
+              type="text"
+              value={school}
+              onChange={e => setSchool(e.target.value)}
+              disabled={!isEditing}
+            />
+          </div>
 
-      <div>
-        <label>Birth Date:</label>
-        <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} />
-      </div>
+          <div className="form-group">
+            <label>Class Rank:</label>
+            <select
+              value={classRank}
+              onChange={e => setClassRank(e.target.value as Ranking)}
+              disabled={!isEditing}
+            >
+              {Object.values(Ranking).map(rankOption => (
+                <option key={rankOption} value={rankOption}>
+                  {rankOption}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div>
-        <label>
-          <input type="checkbox" checked={legacy} onChange={e => setLegacy(e.target.checked)} />
-          Legacy
-        </label>
-      </div>
+          <div className="form-group">
+            <label>Gender:</label>
+            <select
+              value={gender}
+              onChange={e => setGender(e.target.value as Gender)}
+              disabled={!isEditing}
+            >
+              {Object.values(Gender).map(genderOption => (
+                <option key={genderOption} value={genderOption}>
+                  {genderOption}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            checked={firstGenerationStudent}
-            onChange={e => setFirstGenerationStudent(e.target.checked)}
-          />
-          First Generation Student
-        </label>
-      </div>
+          <div className="form-group">
+            <label>Birth Date:</label>
+            <input
+              type="date"
+              value={birthDate}
+              onChange={e => setBirthDate(e.target.value)}
+              disabled={!isEditing}
+            />
+          </div>
 
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            checked={needFinancialAid}
-            onChange={e => setNeedFinancialAid(e.target.checked)}
-          />
-          Need Financial Aid
-        </label>
-      </div>
+          <div className="form-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={legacy}
+                onChange={e => setLegacy(e.target.checked)}
+                disabled={!isEditing}
+              />
+              Legacy
+            </label>
+          </div>
 
-      <div>
-        <label>Residence State:</label>
-        <input type="text" value={residenceState} onChange={e => setResidenceState(e.target.value)} />
-      </div>
+          <div className="form-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={firstGenerationStudent}
+                onChange={e => setFirstGenerationStudent(e.target.checked)}
+                disabled={!isEditing}
+              />
+              First Generation Student
+            </label>
+          </div>
 
-      <button type="submit">Submit</button>
-    </form>
+          <div className="form-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                checked={needFinancialAid}
+                onChange={e => setNeedFinancialAid(e.target.checked)}
+                disabled={!isEditing}
+              />
+              Need Financial Aid
+            </label>
+          </div>
+
+          <div className="form-group">
+            <label>Residence State:</label>
+            <input
+              type="text"
+              value={residenceState}
+              onChange={e => setResidenceState(e.target.value)}
+              disabled={!isEditing}
+            />
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
-
-

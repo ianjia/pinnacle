@@ -40,6 +40,11 @@ export const TabList: React.FC = () => {
         isActive = {activeTab === NavTabType.ComitteReview}
         onClick = {() => handleTabClick(NavTabType.ComitteReview)}
       />
+      <NavigationTab
+        title = 'Essay Workshop'
+        isActive = {activeTab === NavTabType.Essay}
+        onClick = {() => handleTabClick(NavTabType.Essay)}
+      />
     </div>
   );
 };
