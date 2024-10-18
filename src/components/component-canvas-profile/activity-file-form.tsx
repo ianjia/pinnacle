@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './activity-file-form.css';  // Import external CSS file
 
 enum ActivityType {
   SPORTS = 'Sports',
@@ -64,7 +65,7 @@ export const ActivityFileForm: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    setIsEditing(false);
+    setIsEditing(false);  // Exit editing mode, cells become non-editable
     setSelectedRowIndex(null);
     console.log(activities);
     // Send the data to the server here
@@ -77,55 +78,31 @@ export const ActivityFileForm: React.FC = () => {
     setSelectedRowIndex(null);
   };
 
-  // Styles
-  const tableStyle = {
-    borderCollapse: 'collapse' as const,
-    width: '100%',
-  };
-
-  const thStyle = {
-    border: '1px solid black',
-    padding: '8px',
-    backgroundColor: '#f2f2f2',
-    textAlign: 'left' as const,
-  };
-
-  const tdStyle = {
-    border: '1px solid black',
-    padding: '8px',
-  };
-
-  const buttonStyle = {
-    marginRight: '8px',
-    padding: '8px 16px',
-    fontSize: '14px',
-  };
-
   return (
     <div>
       <h2>Activities</h2>
       {!isEditing ? (
-        <button style={buttonStyle} onClick={handleEditClick}>
+        <button className="activity-btn" onClick={handleEditClick}>
           Edit
         </button>
       ) : (
         <>
-          <button style={buttonStyle} onClick={handleSubmit}>
+          <button className="activity-btn" onClick={handleSubmit}>
             Submit
           </button>
-          <button style={buttonStyle} onClick={handleCancel}>
+          <button className="activity-btn" onClick={handleCancel}>
             Cancel
           </button>
         </>
       )}
-      <table style={tableStyle}>
+      <table className="activity-table">
         <thead>
           <tr>
-            <th style={thStyle}>Name</th>
-            <th style={thStyle}>Type</th>
-            <th style={thStyle}>Duration</th>
-            <th style={thStyle}>Description</th>
-            <th style={thStyle}>Achievement</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Duration</th>
+            <th>Description</th>
+            <th>Achievement</th>
           </tr>
         </thead>
         <tbody>
@@ -133,31 +110,28 @@ export const ActivityFileForm: React.FC = () => {
             <tr
               key={index}
               onClick={() => isEditing && setSelectedRowIndex(index)}
-              style={{
-                backgroundColor:
-                  selectedRowIndex === index && isEditing ? '#f0f0f0' : 'transparent',
-              }}
+              className={selectedRowIndex === index && isEditing ? 'selected-row' : ''}
             >
-              <td style={tdStyle}>
+              <td>
                 <input
                   type="text"
                   value={activity.name}
                   onChange={(e) =>
                     isEditing && handleActivityChange(index, 'name', e.target.value)
                   }
-                  readOnly={!isEditing}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  readOnly={!isEditing}  // Make the input non-editable when not editing
+                  className="activity-input"
                 />
               </td>
-              <td style={tdStyle}>
+              <td>
                 <select
                   value={activity.type}
                   onChange={(e) =>
                     isEditing &&
                     handleActivityChange(index, 'type', e.target.value as ActivityType)
                   }
-                  disabled={!isEditing}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  disabled={!isEditing}  // Disable the select when not editing
+                  className="activity-select"
                 >
                   {Object.values(ActivityType).map((typeOption) => (
                     <option key={typeOption} value={typeOption}>
@@ -166,37 +140,37 @@ export const ActivityFileForm: React.FC = () => {
                   ))}
                 </select>
               </td>
-              <td style={tdStyle}>
+              <td>
                 <input
                   type="text"
                   value={activity.duration}
                   onChange={(e) =>
                     isEditing && handleActivityChange(index, 'duration', e.target.value)
                   }
-                  readOnly={!isEditing}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  readOnly={!isEditing}  // Make the input non-editable when not editing
+                  className="activity-input"
                 />
               </td>
-              <td style={tdStyle}>
+              <td>
                 <textarea
                   value={activity.description}
                   onChange={(e) =>
                     isEditing && handleActivityChange(index, 'description', e.target.value)
                   }
-                  readOnly={!isEditing}
+                  readOnly={!isEditing}  // Make the textarea non-editable when not editing
                   rows={3}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  className="activity-textarea"
                 />
               </td>
-              <td style={tdStyle}>
+              <td>
                 <textarea
                   value={activity.achievement}
                   onChange={(e) =>
                     isEditing && handleActivityChange(index, 'achievement', e.target.value)
                   }
-                  readOnly={!isEditing}
+                  readOnly={!isEditing}  // Make the textarea non-editable when not editing
                   rows={3}
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  className="activity-textarea"
                 />
               </td>
             </tr>
@@ -204,12 +178,12 @@ export const ActivityFileForm: React.FC = () => {
         </tbody>
       </table>
       {isEditing && (
-        <div style={{ marginTop: '16px' }}>
-          <button style={buttonStyle} type="button" onClick={handleAddActivity}>
+        <div className="button-container">
+          <button className="activity-btn" type="button" onClick={handleAddActivity}>
             Add Activity
           </button>
           <button
-            style={buttonStyle}
+            className="activity-btn"
             type="button"
             onClick={() =>
               selectedRowIndex !== null && handleRemoveActivity(selectedRowIndex)

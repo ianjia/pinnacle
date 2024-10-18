@@ -1,60 +1,59 @@
-/* activity-file-form.css */
+.academic-profile-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
 
-.container {
-    margin: 0 auto;
-  }
-  
-  .buttons {
-    margin: 10px 0;
-  }
-  
-  .top-buttons {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .bottom-buttons {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .activity-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .activity-table th,
-  .activity-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  .activity-table th {
-    background-color: #f2f2f2;
-    text-align: left;
-  }
-  
-  .selected-row {
-    background-color: #e6f7ff;
-  }
-  
-  input[type='text'],
-  select,
-  textarea {
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  textarea {
-    resize: vertical;
-  }
-  
-  button {
-    margin-right: 10px;
-  }
-  
-  button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  
+.form-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-row label {
+  width: 150px;  /* This controls the label width to create space */
+}
+
+.form-row input {
+  flex: 1;
+  padding: 5px;
+}
+
+.activity-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.activity-table th,
+.activity-table td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+
+.activity-table th {
+  background-color: #f2f2f2;
+}
+
+.activity-btn {
+  margin-right: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.activity-input,
+.activity-select,
+.activity-textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.selected-row {
+  background-color: #f0f0f0;
+}
+
+.button-container {
+  margin-top: 16px;
+}

@@ -2,9 +2,9 @@
 import './profile-canvas.css';
 import React from 'react';
 import { StudentProfileForm } from './student-profile-form';
-import { AcademicProfileForm } from './academic-profile-form';
-import { ActivityFileForm } from './activity-profile-form';
-import { HonorFileForm } from './honor-profile-form';
+import { AcademicProfileForm } from './academic-file-form';
+import { ActivityFileForm } from './activity-file-form';
+import { HonorFileForm } from './honor-file-form';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { ProfileType } from '../../common';
