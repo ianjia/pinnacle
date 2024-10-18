@@ -86,7 +86,7 @@ export const EssayPrompt: React.FC<IEssayPromptProps> = ({ onGenerateEssayIdeas 
                 </div>
             </div>
 
-            <button onClick={handleSubmit} className="generate-btn">Generate Essay Ideas</button>
+            <button onClick={handleSubmit} className="generate-btn">Generate/Refine Essay Ideas</button>
         </div>
     );
 };

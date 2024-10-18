@@ -64,7 +64,7 @@ textarea {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    width: 100%; /* Full-width button */
+    width: 300px; /* Full-width button */
     box-sizing: border-box; /* Ensures padding and width calculations work properly */
 }
 
