@@ -1,62 +1,47 @@
-.essay-prompt {
-    padding: 20px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    width: 100%; /* Takes the full width of the container */
-    max-width: none; /* Removes the maximum width restriction */
-    margin: 0 auto; /* Centers the content */
-}
-
-.form-row {
+.essay-prompt .form-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px; /* Adjust spacing between rows */
-    width: 100%; /* Ensures that each form row takes up full width */
+    margin-bottom: 20px;
+    width: 100%;
 }
 
-.form-group {
+.essay-prompt .form-group {
     display: flex;
     flex-direction: column;
     flex: 1;
     margin-right: 20px;
 }
 
-.form-group:last-child {
-    margin-right: 0; /* Remove margin for the last form-group in the row */
+.essay-prompt .form-group:last-child {
+    margin-right: 0;
 }
 
-.form-group label {
+.essay-prompt .form-group label {
     margin-bottom: 8px;
     font-weight: bold;
-    white-space: nowrap; /* Prevents labels from wrapping */
+    white-space: nowrap;
 }
 
-.form-group input,
-.form-group textarea {
+.essay-prompt .form-group input,
+.essay-prompt .form-group textarea {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
     width: 100%;
-    box-sizing: border-box; /* Ensure full width */
+    box-sizing: border-box;
 }
 
-textarea {
-    resize: vertical;
-    height: 70px; /* Larger height for text areas */
-}
-
-.full-width {
+.essay-prompt .full-width {
     width: 100%;
 }
 
-.full-width-textarea {
+.essay-prompt .full-width-textarea {
     width: 100%;
-    height: 100px; /* Extra large for  essay prompt */
+    height: 100px;
 }
 
-.generate-btn {
+.essay-prompt .generate-btn {
     padding: 10px 20px;
     background-color: #0078d4;
     color: white;
@@ -64,10 +49,12 @@ textarea {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    width: 300px; /* Full-width button */
-    box-sizing: border-box; /* Ensures padding and width calculations work properly */
+    width: 300px; /* Fixed width for consistency */
+    margin: 0 auto; /* Center horizontally */
+    box-sizing: border-box;
+    display: block; /* Ensures the button takes up the specified width */
 }
 
-.generate-btn:hover {
+.essay-prompt .generate-btn:hover {
     background-color: #005a9e;
 }

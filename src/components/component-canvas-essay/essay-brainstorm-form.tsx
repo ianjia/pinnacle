@@ -1,7 +1,7 @@
 import './essay-canvas.css';
 import React, { useState } from 'react';
 import { EssayPrompt } from './essay-brainstorm-prompt';
-import { EssayIdeas } from './essay-brianstorm-ideas';
+import { EssayIdeas } from './essay-brainstorm-ideas';
 import { IEssayPrompt } from './essay-model';
 
 export const EssayBrainStormForm: React.FC = () => {
@@ -16,10 +16,19 @@ export const EssayBrainStormForm: React.FC = () => {
         }, 1000);
     };
 
+    const handleRefineEssayIdeas = (feedback: string) => {
+        // Simulating a backend call to refine essay ideas based on feedback
+        // You would replace this with an actual API call
+        setTimeout(() => {
+            const refinedResult = `${essayResult}\nRefined based on your feedback: ${feedback}`;
+            setEssayResult(refinedResult);
+        }, 1000);
+    };
+
     return (
         <div>
             <EssayPrompt onGenerateEssayIdeas={handleGenerateEssayIdeas} />
-            <EssayIdeas essayResult={essayResult} />
+            <EssayIdeas essayResult={essayResult} onRefine={handleRefineEssayIdeas} />
         </div>
     );
 };
