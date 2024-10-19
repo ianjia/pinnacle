@@ -1,25 +1,21 @@
 import './essay-canvas.css';
-import React, { useState } from 'react';
-import { EssayPrompt } from './essay-prompt';
-import { EssayIdeas } from './essay-ideas';
-import { IEssayPrompt } from './essay-model';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { EssayBrainStormForm } from './essay-brainstorm-form';
+import { EssayWorkshopType } from '../../common';
+import { EssayDraftForm } from './essay-draft-form';
+import { EssayReviewForm } from './essay-review-form';
 
 export const EssayCanvas: React.FC = () => {
-    const [essayResult, setEssayResult] = useState<string>('');
-
-    const handleGenerateEssayIdeas = (essayPrompt: IEssayPrompt) => {
-        // Simulating a backend call to generate essay ideas based on the prompt
-        // You would replace this with an actual API call
-        setTimeout(() => {
-            const result = `Here are some ideas for your essay on ${essayPrompt.college} (${essayPrompt.major}): ...`;
-            setEssayResult(result);
-        }, 1000);
-    };
+    const activeEssayWorkShop: EssayWorkshopType = useSelector((state: RootState) => state.essayWorkshop.activeWorkshop);
 
     return (
         <div className="essay-background">
-            <EssayPrompt onGenerateEssayIdeas={handleGenerateEssayIdeas} />
-            <EssayIdeas essayResult={essayResult} />
+            {activeEssayWorkShop === EssayWorkshopType.Brainstorming && <EssayBrainStormForm/>}
+            {activeEssayWorkShop === EssayWorkshopType.Draft && <EssayDraftForm/>}
+            {activeEssayWorkShop === EssayWorkshopType.Review && <EssayReviewForm/>}
         </div>
     );
 };
+

@@ -12,6 +12,7 @@ export enum ProfileType {
     Academic,
     Activity,
     Honor,
+    LifeGoals,
 }
 
 export enum EssayWorkshopType {

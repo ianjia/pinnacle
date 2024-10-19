@@ -1,55 +1,76 @@
-
 .academic-profile-form {
-    display: flex;
-    flex-direction: column;
-    max-width: 300px;
-    margin-top: 20px;
-  }
-  
-  .form-row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .form-row label {
-    width: 150px;  /* This controls the label width to create space */
-  }
-  
-  .form-row input {
-    flex: 1;
-    padding: 5px;
-  }
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin-top: 20px;
+}
+
+.form-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-row label {
+  width: 150px; /* This controls the label width to create space */
+}
+
+.form-row input {
+  flex: 1;
+  padding: 5px;
+}
 
 .academic-table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-  
-  .academic-table th,
-  .academic-table td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .academic-table th {
-    background-color: #f2f2f2;
-  }
-  
-  .academic-btn {
-    margin-right: 8px;
-    padding: 8px 16px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  .selected-row {
-    background-color: #f0f0f0;
-  }
-  
-  .button-container {
-    margin-top: 16px;
-  }
-  
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.academic-table th,
+.academic-table td {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: left;
+}
+
+.academic-table th {
+  background-color: #f2f2f2;
+}
+
+.academic-btn {
+  margin-right: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.selected-row {
+  background-color: #f0f0f0;
+}
+
+.button-container {
+  margin-top: 16px;
+}
+
+.academic-table textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.tip-button {
+  margin-left: 8px;
+  padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.instructions {
+  font-size: 14px;
+  color: #555;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border-left: 3px solid #ccc;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IEssayPrompt } from './essay-model';
-import './essay-prompt.css';
+import './essay-brainstorm-prompt.css';
 
 interface IEssayPromptProps {
     onGenerateEssayIdeas: (essayPrompt: IEssayPrompt) => void;
@@ -11,8 +11,7 @@ export const EssayPrompt: React.FC<IEssayPromptProps> = ({ onGenerateEssayIdeas 
         college: '',
         major: '',
         prompt: '',
-        additionalCollegeAskOnEssay: '',
-        additonalStudentBackground: ''
+        additionalCollegeAskOnEssay: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -52,27 +51,7 @@ export const EssayPrompt: React.FC<IEssayPromptProps> = ({ onGenerateEssayIdeas 
                 </div>
             </div>
 
-            <div className="form-row">
-                <div className="form-group">
-                    <label htmlFor="additionalCollegeAskOnEssay">Additional College Ask:</label>
-                    <textarea
-                        id="additionalCollegeAskOnEssay"
-                        name="additionalCollegeAskOnEssay"
-                        value={formValues.additionalCollegeAskOnEssay}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="additonalStudentBackground">Student Background:</label>
-                    <textarea
-                        id="additonalStudentBackground"
-                        name="additonalStudentBackground"
-                        value={formValues.additonalStudentBackground}
-                        onChange={handleChange}
-                    />
-                </div>
-            </div>
-
+            {/* Essay Prompt moved above Additional College Ask */}
             <div className="form-row full-width">
                 <div className="form-group">
                     <label htmlFor="prompt">Essay Prompt:</label>
@@ -82,6 +61,18 @@ export const EssayPrompt: React.FC<IEssayPromptProps> = ({ onGenerateEssayIdeas 
                         value={formValues.prompt}
                         onChange={handleChange}
                         className="full-width-textarea"
+                    />
+                </div>
+            </div>
+
+            <div className="form-row">
+                <div className="form-group">
+                    <label htmlFor="additionalCollegeAskOnEssay">Additional College Ask:</label>
+                    <textarea
+                        id="additionalCollegeAskOnEssay"
+                        name="additionalCollegeAskOnEssay"
+                        value={formValues.additionalCollegeAskOnEssay}
+                        onChange={handleChange}
                     />
                 </div>
             </div>

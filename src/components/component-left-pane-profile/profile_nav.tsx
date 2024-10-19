@@ -43,6 +43,12 @@ export const ProfileNavPane: React.FC = () => {
                 >
                     Honor
                 </button>
+                <button
+                    className={`review-button ${isActive(ProfileType.LifeGoals) ? 'active' : ''}`}
+                    onClick={() => handleProfileSelection(ProfileType.LifeGoals)}
+                >
+                    Life and Goals
+                </button>
             </div>
         </div>
     );

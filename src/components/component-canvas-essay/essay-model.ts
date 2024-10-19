@@ -3,7 +3,6 @@ export interface IEssayPrompt {
     major?: string;
     prompt: string;
     additionalCollegeAskOnEssay: string;
-    additonalStudentBackground: string;
   }
 
 export interface IEssayIdeas {
