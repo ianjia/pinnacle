@@ -1,34 +1,73 @@
-import './essay-canvas.css';
 import React, { useState } from 'react';
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { EssayPrompt } from './essay-brainstorm-prompt';
 import { EssayIdeas } from './essay-brainstorm-ideas';
 import { IEssayPrompt } from './essay-model';
+import { MIDDLE_SERVER_URL } from '../../common';
+import './essay-brainstorm-form.css';
 
 export const EssayBrainStormForm: React.FC = () => {
     const [essayResult, setEssayResult] = useState<string>('');
+    const [sessionId, setSessionId] = useState<string|undefined>(undefined);
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-    const handleGenerateEssayIdeas = (essayPrompt: IEssayPrompt) => {
-        // Simulating a backend call to generate essay ideas based on the prompt
-        // You would replace this with an actual API call
-        setTimeout(() => {
-            const result = `Here are some ideas for your essay on ${essayPrompt.college} (${essayPrompt.major}): ...`;
-            setEssayResult(result);
-        }, 1000);
+    const handleGenerateEssayIdeas = async (essayPrompt: IEssayPrompt) => {
+        const newSessionId = uuidv4();
+        setSessionId(newSessionId);
+        setIsProcessing(true);
+        try {
+            const response = await axios.post(`${MIDDLE_SERVER_URL}/api/generate-essay-ideas`, {
+                collegeInfo: essayPrompt.major !== undefined ? `College: ${essayPrompt.college}, major: ${essayPrompt.major}` :  `College: ${essayPrompt.college}`,
+                prompt: essayPrompt.prompt,
+                session_id: sessionId,
+                additionalCollegeAsk: essayPrompt.additionalCollegeAskOnEssay !== undefined ? essayPrompt.additionalCollegeAskOnEssay : ""
+              });
+
+            const aiResponse = response.data.essayIdeas;
+            setEssayResult(aiResponse);
+      
+        } catch(error) {
+            console.error('Error communicating with the server:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
-    const handleRefineEssayIdeas = (feedback: string) => {
-        // Simulating a backend call to refine essay ideas based on feedback
-        // You would replace this with an actual API call
-        setTimeout(() => {
-            const refinedResult = `${essayResult}\nRefined based on your feedback: ${feedback}`;
-            setEssayResult(refinedResult);
-        }, 1000);
+    const handleRefineEssayIdeas = async (feedback: string) => {
+        setIsProcessing(true);
+        try {
+            const response = await axios.post(`${MIDDLE_SERVER_URL}/api/generate-essay-ideas`, {
+                feedback: feedback,
+                session_id: sessionId,
+              });
+
+            const aiResponse = response.data.essayIdeas;
+            setEssayResult(aiResponse);
+      
+        } catch(error) {
+            console.error('Error communicating with the server:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     return (
         <div>
-            <EssayPrompt onGenerateEssayIdeas={handleGenerateEssayIdeas} />
-            <EssayIdeas essayResult={essayResult} onRefine={handleRefineEssayIdeas} />
+            <div>
+                <EssayPrompt onGenerateEssayIdeas={handleGenerateEssayIdeas} />
+                <EssayIdeas essayResult={essayResult} onRefine={handleRefineEssayIdeas} />
+            </div>
+            {isProcessing && (
+                <div className="processing-modal">
+                    <div className="processing-dialog">
+                        <h2>Processing...</h2>
+                        <p>Please wait while we process your response.</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

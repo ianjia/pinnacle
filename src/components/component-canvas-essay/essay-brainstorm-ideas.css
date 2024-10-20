@@ -15,7 +15,11 @@
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 20px;
+    min-height: 100px; 
+    max-height: 500px; /* Adjust the value as needed */
+    overflow-y: auto; /* Enables vertical scrolling */
 }
+
 
 .essay-ideas .form-group {
     display: flex;
@@ -27,6 +31,7 @@
 .essay-ideas .form-group label {
     margin-bottom: 8px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .essay-ideas .full-width-textarea {

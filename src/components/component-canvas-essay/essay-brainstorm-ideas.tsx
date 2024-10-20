@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './essay-brainstorm-ideas.css';  // New CSS file for EssayIdeas component
+import { MarkdownMessageDisplay } from '../component-mark-down-display';
 
 interface IEssayIdeasProps {
     essayResult: string;
@@ -23,7 +24,9 @@ export const EssayIdeas: React.FC<IEssayIdeasProps> = ({ essayResult, onRefine }
             
             {/* Essay result with border */}
             <div className="essay-result">
-                <p>{essayResult ? essayResult : 'No ideas yet. Submit a prompt to get started.'}</p>
+                {essayResult && (
+                    <MarkdownMessageDisplay resultMessage={essayResult} />
+                )}
             </div>
 
             {/* Feedback section */}
