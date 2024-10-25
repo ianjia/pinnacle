@@ -5,6 +5,11 @@ import { store } from './store';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { setAuthToken } from './auth/api';
+import { AuthProvider } from './auth';
+
+const token = localStorage.getItem('token');
+setAuthToken(token);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,9 +17,11 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
+    <AuthProvider>
     <Provider store={store}>
       <App />
     </Provider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
