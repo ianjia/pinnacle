@@ -1,0 +1,69 @@
+
+/* General styling for buttons */
+button {
+    font-size: 16px;        /* Increase font size */
+    padding: 10px 20px;     /* Increase padding for a larger button */
+    margin: 10px;           /* Add space between buttons */
+  }
+  
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;   /* Ensure borders do not overlap */
+    table-layout: fixed;         /* Enforce equal column widths */
+  }
+  
+  th, td {
+    border: 1px solid #ddd;      /* Make borders visible */
+    padding: 8px;                /* Add padding for readability */
+    text-align: center;
+    word-wrap: break-word;       /* Enable text wrapping in header */
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 20%; /* Wider column for College Name */
+  }
+  
+  /* Styling specifically for table headers */
+  th {
+    font-weight: bold;
+    white-space: normal;         /* Allow text to wrap */
+    line-height: 1.2;            /* Adjust line height for wrapping */
+  }
+  
+  /* Modal styling */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;               /* Ensure modal appears above other content */
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .modal-content h3 {
+    margin-top: 0;
+  }
+  
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  

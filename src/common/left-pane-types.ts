@@ -20,3 +20,9 @@ export enum EssayWorkshopType {
     Draft,
     Review,
 }
+
+export enum CollegeListWorkshopType {
+    Preferences,
+    List,
+    Navigation,
+}

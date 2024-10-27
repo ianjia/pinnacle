@@ -2,11 +2,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { EssayWorkshopType } from '../common';
 
-interface essayWorkshopState {
+interface EssayWorkshopState {
     activeWorkshop: EssayWorkshopType;
 }
 
-const initialState: essayWorkshopState = {
+const initialState: EssayWorkshopState = {
     activeWorkshop: EssayWorkshopType.Brainstorming,
 };
 

@@ -51,7 +51,6 @@ export const EssayPrompt: React.FC<IEssayPromptProps> = ({ onGenerateEssayIdeas 
                 </div>
             </div>
 
-            {/* Essay Prompt moved above Additional College Ask */}
             <div className="form-row full-width">
                 <div className="form-group">
                     <label htmlFor="prompt">Essay Prompt:</label>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './essay-brainstorm-ideas.css';  // New CSS file for EssayIdeas component
 import { MarkdownMessageDisplay } from '../component-mark-down-display';
+import './essay-brainstorm-ideas.css';
 
 interface IEssayIdeasProps {
     essayResult: string;
