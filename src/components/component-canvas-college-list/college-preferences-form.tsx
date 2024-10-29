@@ -1,40 +1,37 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { collegePreferencesActions, RootState } from '../../store';
-import {
-  CollegePreferencesState,
-  ImportanceLevel,
-} from '../../store';
+import { CollegePreferences, ImportanceLevel } from '../../store';
 import './college-preference-form.css';
 
 const importanceOptions: ImportanceLevel[] = [
-  'Very important',
-  'Somewhat important',
-  'Nice to have',
+  ImportanceLevel.VeryImportant,
+  ImportanceLevel.SomewhatImportant,
+  ImportanceLevel.NiceToHave,
 ];
 
 export const CollegePreferenceForm: React.FC = () => {
   const preferences = useSelector(
-    (state: RootState) => state.collegePreferences
+    (state: RootState) => state.collegePreferences.collegePreferences
   );
   const dispatch = useDispatch();
 
   const handlePreferenceChange = (
-    key: keyof CollegePreferencesState,
+    key: keyof CollegePreferences,
     value: string
   ) => {
     dispatch(collegePreferencesActions.setPreference({ key, value }));
   };
 
   const handleImportanceChange = (
-    key: keyof CollegePreferencesState,
+    key: keyof CollegePreferences,
     importance: ImportanceLevel
   ) => {
     dispatch(collegePreferencesActions.setImportance({ key, importance }));
   };
 
   return (
-    <div className = "college-preference-form">
+    <div className="college-preference-form">
       <h2>College Preferences</h2>
 
       {/* 1. School Size */}

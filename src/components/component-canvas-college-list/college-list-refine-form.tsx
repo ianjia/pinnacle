@@ -1,26 +1,49 @@
 // File: CollegeListRefineForm.tsx
 import React, { useState } from 'react';
+import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
-import { CollegeCategory, CollegeDetails, collegeListWorkshopActions, RootState } from '../../store';
+import { CollegeCategory, CollegeDetails, collegeListWorkshopActions, CollegePreferences, RootState } from '../../store';
 import './college-list-refine-form.css';
+import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
+import { MIDDLE_SERVER_URL } from '../../common';
 
 export const CollegeListRefineForm: React.FC = () => {
+
   const dispatch = useDispatch();
 
-  // Selectors to get data from Redux store
   const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
   const collegeDetails = useSelector((state: RootState) => state.collegeListWorkshop.collegeDetails);
+
+  const preference: string = useCollegePreferenceSummary();
 
   // Local state for managing UI interactions
   const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCollegeName, setNewCollegeName] = useState('');
+  const [sessionId, setSessionId] = useState<string|undefined>(undefined);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   // Handler for "Create Initial List" button
   const handleCreateInitialList = async () => {
-    // Simulate remote call to backend AI service
-    const fetchedCollegeList = await fetchInitialCollegeList();
-    dispatch(collegeListWorkshopActions.setCollegeList(fetchedCollegeList));
+    const newSessionId = uuidv4();
+    setSessionId(newSessionId);
+    setIsProcessing(true);
+
+    try {
+        const response = await axios.post(`${MIDDLE_SERVER_URL}/api/create-college-list`, {
+            college_preferences: preference,
+            session_id: sessionId,
+          });
+
+        const aiResponse = response.data.college_list;
+        dispatch(collegeListWorkshopActions.setCollegeList(aiResponse));
+    } catch(error) {
+        console.error('Error communicating with the server:', error);
+        alert('An error occurred. Please try again.');
+    } finally {
+        setIsProcessing(false);
+    }
   };
 
   // Handler for "Add" button
@@ -76,11 +99,6 @@ export const CollegeListRefineForm: React.FC = () => {
   const handleCommitteeReview = () => {
     // Placeholder function
     console.log('Committee Review triggered');
-  };
-
-  // Helper functions to simulate remote calls
-  const fetchInitialCollegeList = async (): Promise<string[]> => {
-    return ['Harvard University', 'Stanford University', 'MIT'];
   };
 
   const fetchCollegeDetailsForAll = async (colleges: string[]): Promise<Record<string, CollegeDetails>> => {
@@ -188,6 +206,15 @@ export const CollegeListRefineForm: React.FC = () => {
           </div>
         </div>
       )}
+
+      {isProcessing && (
+        <div className="processing-modal">
+            <div className="processing-dialog">
+                <h2>Processing...</h2>
+                <p>Please wait while we process your response.</p>
+            </div>
+        </div>
+     )}
     </div>
   );
 };

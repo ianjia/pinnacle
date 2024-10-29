@@ -1,90 +1,80 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export type ImportanceLevel =
-  | 'Very important'
-  | 'Somewhat important'
-  | 'Nice to have';
+export enum ImportanceLevel {
+    VeryImportant = "Very important",
+    SomewhatImportant = "Somewhat important",
+    NiceToHave = "Nice to have",
+}
 
 export interface PreferenceItem {
   value: string;
   importance: ImportanceLevel;
 }
 
-export interface CollegePreferencesState {
-  // 1. School Size
+export interface CollegePreferences {
   schoolSize: PreferenceItem;
-
-  // 2. Location
   locationRegion: PreferenceItem;
   locationState: PreferenceItem;
   urbanization: PreferenceItem;
-
-  // 3. Prestige
   prestige: PreferenceItem;
-
-  // 4. Academic Focus
   academicGeneral: PreferenceItem;
   academicFields: PreferenceItem;
   specializedProgram: PreferenceItem;
   programReputation: PreferenceItem;
-
-  // 5. Campus Culture
   campusSocialEnvironment: PreferenceItem;
   campusDiversity: PreferenceItem;
   extracurricularScene: PreferenceItem;
-
-  // 6. Cost and Financial Aid
   tuitionRange: PreferenceItem;
   financialSupport: PreferenceItem;
-
-  // 7. Housing and Student Life
   housing: PreferenceItem;
   facilities: PreferenceItem;
-
-  // 8. Climate Preference
   climatePreference: PreferenceItem;
-
-  // 9. Extracurricular Opportunities
   athletics: PreferenceItem;
   artsPrograms: PreferenceItem;
   researchInternships: PreferenceItem;
-
-  // 10. Distance from Home
   distanceFromHome: PreferenceItem;
-
-  // 11. Class Sizes
   averageClassSize: PreferenceItem;
+}
+
+// New CollegePreferencesState with collegePreferences property
+export interface CollegePreferencesState {
+  collegePreferences: CollegePreferences;
 }
 
 const initialPreferenceItem: PreferenceItem = {
   value: 'No Preference',
-  importance: 'Nice to have',
+  importance: ImportanceLevel.NiceToHave,
 };
 
+// Initial state with updated prestige values
 const initialState: CollegePreferencesState = {
-  // Initialize all preferences with default values
-  schoolSize: { ...initialPreferenceItem },
-  locationRegion: { ...initialPreferenceItem },
-  locationState: { ...initialPreferenceItem },
-  urbanization: { ...initialPreferenceItem },
-  prestige: { ...initialPreferenceItem },
-  academicGeneral: { ...initialPreferenceItem },
-  academicFields: { ...initialPreferenceItem },
-  specializedProgram: { ...initialPreferenceItem },
-  programReputation: { ...initialPreferenceItem },
-  campusSocialEnvironment: { ...initialPreferenceItem },
-  campusDiversity: { ...initialPreferenceItem },
-  extracurricularScene: { ...initialPreferenceItem },
-  tuitionRange: { ...initialPreferenceItem },
-  financialSupport: { ...initialPreferenceItem },
-  housing: { ...initialPreferenceItem },
-  facilities: { ...initialPreferenceItem },
-  climatePreference: { ...initialPreferenceItem },
-  athletics: { ...initialPreferenceItem },
-  artsPrograms: { ...initialPreferenceItem },
-  researchInternships: { ...initialPreferenceItem },
-  distanceFromHome: { ...initialPreferenceItem },
-  averageClassSize: { ...initialPreferenceItem },
+  collegePreferences: {
+    schoolSize: { ...initialPreferenceItem },
+    locationRegion: { ...initialPreferenceItem },
+    locationState: { ...initialPreferenceItem },
+    urbanization: { ...initialPreferenceItem },
+    prestige: {
+      value: 'Very Prestigious: Acceptance rate 10–20%',
+      importance: ImportanceLevel.VeryImportant,
+    },
+    academicGeneral: { ...initialPreferenceItem },
+    academicFields: { ...initialPreferenceItem },
+    specializedProgram: { ...initialPreferenceItem },
+    programReputation: { ...initialPreferenceItem },
+    campusSocialEnvironment: { ...initialPreferenceItem },
+    campusDiversity: { ...initialPreferenceItem },
+    extracurricularScene: { ...initialPreferenceItem },
+    tuitionRange: { ...initialPreferenceItem },
+    financialSupport: { ...initialPreferenceItem },
+    housing: { ...initialPreferenceItem },
+    facilities: { ...initialPreferenceItem },
+    climatePreference: { ...initialPreferenceItem },
+    athletics: { ...initialPreferenceItem },
+    artsPrograms: { ...initialPreferenceItem },
+    researchInternships: { ...initialPreferenceItem },
+    distanceFromHome: { ...initialPreferenceItem },
+    averageClassSize: { ...initialPreferenceItem },
+  },
 };
 
 const collegePreferencesSlice = createSlice({
@@ -93,25 +83,25 @@ const collegePreferencesSlice = createSlice({
   reducers: {
     setPreference(
       state,
-      action: PayloadAction<{ key: keyof CollegePreferencesState; value: string }>
+      action: PayloadAction<{ key: keyof CollegePreferences; value: string }>
     ) {
       const { key, value } = action.payload;
-      state[key].value = value;
+      state.collegePreferences[key].value = value;
 
       // Reset importance to 'Nice to have' if value is 'No Preference'
       if (value === 'No Preference') {
-        state[key].importance = 'Nice to have';
+        state.collegePreferences[key].importance = ImportanceLevel.NiceToHave;
       }
     },
     setImportance(
       state,
       action: PayloadAction<{
-        key: keyof CollegePreferencesState;
+        key: keyof CollegePreferences;
         importance: ImportanceLevel;
       }>
     ) {
       const { key, importance } = action.payload;
-      state[key].importance = importance;
+      state.collegePreferences[key].importance = importance;
     },
   },
 });
