@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
-import { CollegeCategory, CollegeDetails, collegeListWorkshopActions, CollegePreferences, RootState } from '../../store';
+import { collegeListWorkshopActions, CollegePreferences, RootState } from '../../store';
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
 import { MIDDLE_SERVER_URL } from '../../common';
@@ -16,6 +16,13 @@ export const CollegeListRefineForm: React.FC = () => {
   const collegeDetails = useSelector((state: RootState) => state.collegeListWorkshop.collegeDetails);
 
   const preference: string = useCollegePreferenceSummary();
+
+  const collegePref: CollegePreferences = useSelector(
+    (state: RootState) => state.collegePreferences.collegePreferences
+  );
+
+  const majorPref: string | undefined = collegePref.specializedProgram.value;
+
 
   // Local state for managing UI interactions
   const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
@@ -81,17 +88,32 @@ export const CollegeListRefineForm: React.FC = () => {
     console.log('Save action triggered');
   };
 
-  // Handler for "Evaluate All" button
-  const handleEvaluateAll = async () => {
-    const fetchedDetails = await fetchCollegeDetailsForAll(collegeList);
-    dispatch(collegeListWorkshopActions.setCollegeCategory(fetchedDetails));
-  };
-
   // Handler for "Evaluate" button
   const handleEvaluate = async () => {
     if (selectedCollege) {
-      const detail = await fetchCollegeDetail(selectedCollege);
-      dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege, detail }));
+      const newSessionId = uuidv4();
+      setSessionId(newSessionId);
+      setIsProcessing(true);
+
+      const majorVal: string = majorPref !== undefined? majorPref : "N/A";
+  
+      try {
+        const response = await axios.post(`${MIDDLE_SERVER_URL}/api/get-college-data-chance`, {
+            college_name: selectedCollege,
+            session_id: sessionId,
+            major: majorVal,
+          });
+
+        const aiResponse = response.data;
+        console.log(aiResponse);
+        // dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege, detail }));
+      } catch(error) {
+          console.error('Error communicating with the server:', error);
+          alert('An error occurred. Please try again.');
+      } finally {
+          setIsProcessing(false);
+      }
+
     }
   };
 
@@ -101,33 +123,6 @@ export const CollegeListRefineForm: React.FC = () => {
     console.log('Committee Review triggered');
   };
 
-  const fetchCollegeDetailsForAll = async (colleges: string[]): Promise<Record<string, CollegeDetails>> => {
-    const details: Record<string, CollegeDetails> = {};
-    colleges.forEach((college) => {
-      details[college] = {
-        myChance: Math.random() * 100,
-        acceptanceRate: Math.random() * 100,
-        undergraduateEnrollment: Math.floor(Math.random() * 20000),
-        annualCost: Math.floor(Math.random() * 70000),
-        ranking: Math.floor(Math.random() * 100),
-        programRanking: Math.floor(Math.random() * 100),
-        category: CollegeCategory.Target,
-      };
-    });
-    return details;
-  };
-
-  const fetchCollegeDetail = async (college: string): Promise<CollegeDetails> => {
-    return {
-      myChance: Math.random() * 100,
-      acceptanceRate: Math.random() * 100,
-      undergraduateEnrollment: Math.floor(Math.random() * 20000),
-      annualCost: Math.floor(Math.random() * 70000),
-      ranking: Math.floor(Math.random() * 100),
-      programRanking: Math.floor(Math.random() * 100),
-      category: CollegeCategory.Reach,
-    };
-  };
 
   return (
     <div>
@@ -147,9 +142,6 @@ export const CollegeListRefineForm: React.FC = () => {
 
       {/* Second row of buttons */}
       <div>
-        <button onClick={handleEvaluateAll} disabled={collegeList.length === 0}>
-          Evaluate All
-        </button>
         <button onClick={handleEvaluate} disabled={!selectedCollege}>
           Evaluate
         </button>
