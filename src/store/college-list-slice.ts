@@ -1,21 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CollegeListWorkshopType } from '../common';
 
-export enum CollegeCategory {
-    Reach = "Reach",
-    Target = "Target",
-    Safe = "Safe",
-}
-
-export type CollegeDetails = {
-    myChance: number; // in percent, the range is between 0 and 100
-    acceptanceRate: number; // in percent, in range 0 to 100
-    undergraduateEnrollment: number;
+export interface CollegeDetails {
+    admitRate: number;
+    undergradEnroll: number;
     annualCost: number;
-    ranking: number;
-    programRanking: number;
-    category: CollegeCategory;
-}
+    nationalRanking: number;
+    programRanking: number | null;
+    chance: number;
+    category: 1 | 2 | 3; // 1 means reach, 2 is target, 3 means safety
+  }
 
 interface CollegeListWorkshopState {
     activeCollegeListWorkshop: CollegeListWorkshopType;

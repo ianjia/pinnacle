@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
-import { collegeListWorkshopActions, CollegePreferences, RootState } from '../../store';
+import { collegeListWorkshopActions, CollegeDetails, CollegePreferences, RootState } from '../../store';
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
 import { MIDDLE_SERVER_URL } from '../../common';
@@ -40,7 +40,7 @@ export const CollegeListRefineForm: React.FC = () => {
     try {
         const response = await axios.post(`${MIDDLE_SERVER_URL}/api/create-college-list`, {
             college_preferences: preference,
-            session_id: sessionId,
+            session_id: newSessionId,
           });
 
         const aiResponse = response.data.college_list;
@@ -100,20 +100,18 @@ export const CollegeListRefineForm: React.FC = () => {
       try {
         const response = await axios.post(`${MIDDLE_SERVER_URL}/api/get-college-data-chance`, {
             college_name: selectedCollege,
-            session_id: sessionId,
+            session_id: newSessionId,
             major: majorVal,
           });
 
-        const aiResponse = response.data;
-        console.log(aiResponse);
-        // dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege, detail }));
+        const aiResponse: CollegeDetails = response.data.college_data_chance;
+        dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege, detail: aiResponse }));
       } catch(error) {
           console.error('Error communicating with the server:', error);
           alert('An error occurred. Please try again.');
       } finally {
           setIsProcessing(false);
       }
-
     }
   };
 
@@ -170,11 +168,11 @@ export const CollegeListRefineForm: React.FC = () => {
               style={{ backgroundColor: selectedCollege === college ? '#f0f0f0' : 'white' }}
             >
               <td>{college}</td>
-              <td>{collegeDetails[college]?.myChance ?? ''}</td>
-              <td>{collegeDetails[college]?.acceptanceRate ?? ''}</td>
-              <td>{collegeDetails[college]?.undergraduateEnrollment ?? ''}</td>
+              <td>{collegeDetails[college]?.chance ?? ''}</td>
+              <td>{collegeDetails[college]?.admitRate ?? ''}</td>
+              <td>{collegeDetails[college]?.undergradEnroll ?? ''}</td>
               <td>{collegeDetails[college]?.annualCost ?? ''}</td>
-              <td>{collegeDetails[college]?.ranking ?? ''}</td>
+              <td>{collegeDetails[college]?.nationalRanking ?? ''}</td>
               <td>{collegeDetails[college]?.programRanking ?? ''}</td>
               <td>{collegeDetails[college]?.category ?? ''}</td>
             </tr>
