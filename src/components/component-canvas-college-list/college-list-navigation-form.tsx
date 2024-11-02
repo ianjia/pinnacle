@@ -15,7 +15,7 @@ export const CollegeListNavigationForm: React.FC = () => {
         const details = collegeDetails[collegeName];
         return {
             collegeName,
-            category: details ? details.category : 1, // Default category if details are missing
+            category: details ? details.category : undefined
         };
     });
 

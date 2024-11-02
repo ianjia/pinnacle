@@ -14,15 +14,12 @@ export const CollegeListRefineForm: React.FC = () => {
 
   const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
   const collegeDetails = useSelector((state: RootState) => state.collegeListWorkshop.collegeDetails);
-
   const preference: string = useCollegePreferenceSummary();
-
   const collegePref: CollegePreferences = useSelector(
     (state: RootState) => state.collegePreferences.collegePreferences
   );
 
   const majorPref: string | undefined = collegePref.specializedProgram.value;
-
 
   // Local state for managing UI interactions
   const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
