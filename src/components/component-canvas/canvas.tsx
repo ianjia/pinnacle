@@ -14,7 +14,7 @@ export const Canvas: React.FC = () => {
     return (
         <div >
             { activeTab === NavTabType.Profile && (<ProfileCanvas/>)}
-            { activeTab === NavTabType.CollegeNavigatoin && (<Map/>)}
+            { activeTab === NavTabType.CollegeNavigatoin && (<Map collegeNameList={[]} />)}
             { activeTab === NavTabType.CollegeList && (<CollegeListCanvas/>)}
             { activeTab === NavTabType.ComitteReview && (<CommitteCanvas/>)}
             { activeTab === NavTabType.Interview && (<InterviewCanvas/>)}

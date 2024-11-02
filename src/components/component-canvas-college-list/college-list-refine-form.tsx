@@ -161,23 +161,31 @@ export const CollegeListRefineForm: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {collegeList.map((college) => (
-            <tr
-              key={college}
-              onClick={() => setSelectedCollege(college)}
-              style={{ backgroundColor: selectedCollege === college ? '#f0f0f0' : 'white' }}
-            >
-              <td>{college}</td>
-              <td>{collegeDetails[college]?.chance ?? ''}</td>
-              <td>{collegeDetails[college]?.admitRate ?? ''}</td>
-              <td>{collegeDetails[college]?.undergradEnroll ?? ''}</td>
-              <td>{collegeDetails[college]?.annualCost ?? ''}</td>
-              <td>{collegeDetails[college]?.nationalRanking ?? ''}</td>
-              <td>{collegeDetails[college]?.programRanking ?? ''}</td>
-              <td>{collegeDetails[college]?.category ?? ''}</td>
-            </tr>
-          ))}
-        </tbody>
+        {collegeList.map((college) => (
+          <tr
+            key={college}
+            onClick={() => setSelectedCollege(college)}
+            style={{ backgroundColor: selectedCollege === college ? '#f0f0f0' : 'white' }}
+          >
+            <td>{college}</td>
+            <td>{collegeDetails[college]?.chance != null ? `${collegeDetails[college].chance}%` : ''}</td>
+            <td>{collegeDetails[college]?.admitRate != null ? `${collegeDetails[college].admitRate}%` : ''}</td>
+            <td>{collegeDetails[college]?.undergradEnroll ?? ''}</td>
+            <td>{collegeDetails[college]?.annualCost ?? ''}</td>
+            <td>{collegeDetails[college]?.nationalRanking ?? ''}</td>
+            <td>{collegeDetails[college]?.programRanking ?? ''}</td>
+            <td>
+              {collegeDetails[college]?.category === 1
+                ? 'Reach'
+                : collegeDetails[college]?.category === 2
+                ? 'Target'
+                : collegeDetails[college]?.category === 3
+                ? 'Safe'
+                : ''}
+            </td>
+          </tr>
+        ))}
+      </tbody>
       </table>
 
       {/* Add College Modal */}
