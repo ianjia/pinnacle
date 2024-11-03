@@ -1,9 +1,14 @@
-import { TaskParameterType, TaskReturnType } from "./asyncTaskTypes";
+
+// Todo - this general function is not get used yet, for now directly called handle-committe-review-task, call, 
+// To be refactored and use this one. 
+
+import { ITaskParameter } from "./task-parameter-types";
+import { TaskReturnType } from "./task-result-types";
 
 export const startAsyncTask = async (
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  handleAsyncTask: (params: TaskParameterType) => Promise<TaskReturnType>,
-  params: TaskParameterType
+  handleAsyncTask: (params: ITaskParameter) => Promise<TaskReturnType>,
+  params: ITaskParameter
 ): Promise<TaskReturnType> => {
   setIsLoading(true); // Show the modal
 

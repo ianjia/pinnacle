@@ -1,0 +1,14 @@
+.specialized-program-row {
+    display: flex;
+    align-items: center;
+  }
+  
+  .specialized-program-row label {
+    margin: 0; /* Remove any default margin */
+    white-space: nowrap; /* Prevent label from wrapping */
+  }
+  
+  .specialized-program-select {
+    flex-grow: 1; /* Make select take remaining space if needed */
+  }
+  

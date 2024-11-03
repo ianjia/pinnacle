@@ -3,6 +3,12 @@
     margin-left: 50px;
   }  
 
+.preference-row {
+  display: flex;
+  align-items: bottom;
+  gap: 8px; /* Adjust spacing as needed */
+}
+
 div {
     margin-bottom: 20px;
   }

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { collegePreferencesActions, RootState } from '../../store';
 import { CollegePreferences, ImportanceLevel } from '../../store';
+import { SpecializedProgram } from '../component-specalized-program';
 import './college-preference-form.css';
 
 const importanceOptions: ImportanceLevel[] = [
@@ -240,45 +241,14 @@ export const CollegePreferenceForm: React.FC = () => {
         </div>
 
         {/* Specialized Programs */}
-        <div>
-            <label>Specialized Program:</label>
-            <select
-                value={preferences.specializedProgram.value}
-                onChange={(e) =>
-                handlePreferenceChange('specializedProgram', e.target.value)
-                }
-            >
-                <option>No Preference</option>
-                <option>Computer Science</option>
-                <option>Biology</option>
-                <option>Psychology</option>
-                <option>Business Administration</option>
-                <option>Economics</option>
-                <option>Mechanical Engineering</option>
-                <option>Electrical Engineering</option>
-                <option>Chemistry</option>
-                <option>Political Science</option>
-                <option>Mathematics</option>
-                <option>Physics</option>
-                <option>Sociology</option>
-                <option>Environmental Science</option>
-                <option>Nursing</option>
-                <option>History</option>
-                <option>Art & Design</option>
-                <option>Philosophy</option>
-                <option>Education</option>
-                <option>Communications</option>
-                <option>Public Health</option>
-                <option>Aerospace Engineering</option>
-                <option>Anthropology</option>
-                <option>Music</option>
-                <option>Journalism</option>
-                <option>Marketing</option>
-                <option>Finance</option>
-                <option>Foreign Languages & Linguistics</option>
-                <option>Architecture</option>
-            </select>
-
+        <div className="preference-row">
+        <label>Specialized Program/Major:</label>
+        <SpecializedProgram
+              value={preferences.specializedProgram.value}
+              onPreferenceChange={(value) =>
+                handlePreferenceChange('specializedProgram', value)
+              }
+            />
             <select
                 value={preferences.specializedProgram.importance}
                 onChange={(e) =>
@@ -294,7 +264,7 @@ export const CollegePreferenceForm: React.FC = () => {
 
         {/* Program Reputation */}
         <div>
-        <label>Specialized Program Reputation:</label>
+        <label>Major Reputation:</label>
         <select
             value={preferences.programReputation.value}
             onChange={(e) => handlePreferenceChange('programReputation', e.target.value)}

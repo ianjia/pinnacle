@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
-import { collegeListWorkshopActions, CollegeDetails, CollegePreferences, RootState } from '../../store';
+import { collegeListWorkshopActions, CollegeDetails, CollegePreferences, committeeReviewActions, RootState } from '../../store';
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
 import { MIDDLE_SERVER_URL } from '../../common';
+import { getCollegeNameKey } from '../component-map';
 
 export const CollegeListRefineForm: React.FC = () => {
-
   const dispatch = useDispatch();
 
   const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
@@ -18,14 +18,13 @@ export const CollegeListRefineForm: React.FC = () => {
   const collegePref: CollegePreferences = useSelector(
     (state: RootState) => state.collegePreferences.collegePreferences
   );
-
-  const majorPref: string | undefined = collegePref.specializedProgram.value;
+  const majorPref: string = collegePref.specializedProgram.value;
 
   // Local state for managing UI interactions
   const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCollegeName, setNewCollegeName] = useState('');
-  const [sessionId, setSessionId] = useState<string|undefined>(undefined);
+  const [sessionId, setSessionId] = useState<string|undefined>(undefined); // @Todo, sessionId here not actually used, to revisit 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   // Handler for "Create Initial List" button
@@ -57,12 +56,19 @@ export const CollegeListRefineForm: React.FC = () => {
 
   // Handler for "Done" button in the modal dialog
   const handleAddCollegeDone = () => {
-    if (newCollegeName.trim()) {
-      dispatch(collegeListWorkshopActions.addCollege(newCollegeName.trim()));
+    const matchedCollegeName = getCollegeNameKey(newCollegeName.trim());
+
+    if (matchedCollegeName) {
+      // Update newCollegeName to matched name, add to college list, and close modal
+      setNewCollegeName(matchedCollegeName);
+      dispatch(collegeListWorkshopActions.addCollege(matchedCollegeName));
+      setIsAddModalOpen(false);
+      setNewCollegeName(''); // Clear the input
+    } else {
+      // Alert user if no match is found
+      alert("The college name you entered is not valid. Please re-enter.");
     }
-    setIsAddModalOpen(false);
-    setNewCollegeName('');
-  };
+  }
 
   // Handler for "Cancel" button in the modal dialog
   const handleAddCollegeCancel = () => {
@@ -84,6 +90,12 @@ export const CollegeListRefineForm: React.FC = () => {
     // Placeholder for save functionality
     console.log('Save action triggered');
   };
+
+  const handleSelectCollege = (college: string) => {
+    setSelectedCollege(college);
+    dispatch(committeeReviewActions.setCollegeToEvaluate(college));
+    dispatch(committeeReviewActions.setMajorToEvaluate(majorPref));
+  }
 
   // Handler for "Evaluate" button
   const handleEvaluate = async () => {
@@ -153,7 +165,7 @@ export const CollegeListRefineForm: React.FC = () => {
             <th>Undergrad.<br/>Enrollment</th>
             <th>Annual<br/>Cost ($)</th>
             <th>National<br/>Ranking</th>
-            <th>Program<br/>Ranking</th>
+            <th>Major<br/>Ranking</th>
             <th>Category</th>
           </tr>
         </thead>
@@ -161,8 +173,8 @@ export const CollegeListRefineForm: React.FC = () => {
         {collegeList.map((college) => (
           <tr
             key={college}
-            onClick={() => setSelectedCollege(college)}
-            style={{ backgroundColor: selectedCollege === college ? '#f0f0f0' : 'white' }}
+            onClick={() => handleSelectCollege(college)}
+            style={{ backgroundColor: selectedCollege === college ? '#80d4ff' : 'white' }}
           >
             <td>{college}</td>
             <td>{collegeDetails[college]?.chance != null ? `${collegeDetails[college].chance}%` : ''}</td>

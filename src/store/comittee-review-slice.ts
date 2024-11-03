@@ -1,21 +1,25 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { handleAcademicReviewTask, TaskParameterType } from '../proxy';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { handleAcademicReviewTask, ITaskParameterWithCollegeAndMajor } from '../proxy';
 
 interface CommitteeReviewState {
     data: string | undefined;
     isLoading: boolean;
     error: string | undefined;
+    college_to_evaluate: string | undefined;
+    major_to_evalute: string; 
 }
 
 const initialState: CommitteeReviewState = {
     data: undefined,
     isLoading: false,
     error: undefined,
+    college_to_evaluate: undefined,
+    major_to_evalute: "No Preference",
 };
 
 export const fetchCommitteeReviewData = createAsyncThunk(
     'committeeReview/fetchData',
-    async (taskParams: TaskParameterType, { rejectWithValue }) => {
+    async (taskParams: ITaskParameterWithCollegeAndMajor, { rejectWithValue }) => {
         try {
             const response = await handleAcademicReviewTask(taskParams);
             return response.result;
@@ -29,7 +33,12 @@ const committeeReviewSlice = createSlice({
     name: 'committeeReview',
     initialState,
     reducers: {
-        // Add any synchronous reducers if needed
+        setCollegeToEvaluate: (state, action: PayloadAction<string | undefined>) => {
+            state.college_to_evaluate = action.payload;
+        },
+        setMajorToEvaluate: (state, action: PayloadAction<string>) => {
+            state.major_to_evalute = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -48,6 +57,10 @@ const committeeReviewSlice = createSlice({
     },
 });
 
+export const {
+    setCollegeToEvaluate,
+    setMajorToEvaluate,
+} = committeeReviewSlice.actions;
 
 export const committeeReviewReducers = committeeReviewSlice.reducer;
 export const committeeReviewActions = committeeReviewSlice.actions;

@@ -1,7 +1,8 @@
-import { TaskParameterType, TaskReturnType } from "./asyncTaskTypes";
+import {TaskReturnType } from "./task-result-types";
 import {MIDDLE_SERVER_URL} from '../common';
+import { ITaskParameterWithCollegeAndMajor } from "./task-parameter-types";
 
-export async function handleAcademicReviewTask(_params: TaskParameterType): Promise<TaskReturnType> {
+export async function handleAcademicReviewTask(_params: ITaskParameterWithCollegeAndMajor): Promise<TaskReturnType> {
     try {
         // Send request to Server 1 to initiate the task
         const response = await fetch(`${MIDDLE_SERVER_URL}/api/start-task`, { method: 'POST' });
