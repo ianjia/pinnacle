@@ -1,13 +1,12 @@
 // File: CollegeListRefineForm.tsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { useSelector, useDispatch } from 'react-redux';
 import { collegeListWorkshopActions, CollegeDetails, CollegePreferences, committeeReviewActions, RootState } from '../../store';
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
-import { MIDDLE_SERVER_URL } from '../../common';
 import { getCollegeNameKey } from '../component-map';
+import { CollegeListBuildRequest, ResultType_CollegeList, SERVER_URL, TaskResultType, TaskType, useTaskRunner } from '../component-service-proxy';
 
 export const CollegeListRefineForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,30 +23,17 @@ export const CollegeListRefineForm: React.FC = () => {
   const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCollegeName, setNewCollegeName] = useState('');
-  const [sessionId, setSessionId] = useState<string|undefined>(undefined); // @Todo, sessionId here not actually used, to revisit 
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  // Handler for "Create Initial List" button
-  const handleCreateInitialList = async () => {
-    const newSessionId = uuidv4();
-    setSessionId(newSessionId);
-    setIsProcessing(true);
-
-    try {
-        const response = await axios.post(`${MIDDLE_SERVER_URL}/api/create-college-list`, {
-            college_preferences: preference,
-            session_id: newSessionId,
-          });
-
-        const aiResponse = response.data.college_list;
-        dispatch(collegeListWorkshopActions.setCollegeList(aiResponse));
-    } catch(error) {
-        console.error('Error communicating with the server:', error);
-        alert('An error occurred. Please try again.');
-    } finally {
-        setIsProcessing(false);
+  const {startTask: startCollegeListTask, showModal: showCollegeListModal, progressMessage: progressCollegeListMessage } = useTaskRunner({
+    taskType: TaskType.BuildCollegeList,
+    requestData: {college_preferences: preference} as CollegeListBuildRequest, 
+    onResult: (data: TaskResultType) => {
+      dispatch(collegeListWorkshopActions.setCollegeList(data as ResultType_CollegeList));
+      }
     }
-  };
+  )
+
 
   // Handler for "Add" button
   const handleAddCollege = () => {
@@ -100,16 +86,13 @@ export const CollegeListRefineForm: React.FC = () => {
   // Handler for "Evaluate" button
   const handleEvaluate = async () => {
     if (selectedCollege) {
-      const newSessionId = uuidv4();
-      setSessionId(newSessionId);
       setIsProcessing(true);
 
       const majorVal: string = majorPref !== undefined? majorPref : "N/A";
   
       try {
-        const response = await axios.post(`${MIDDLE_SERVER_URL}/api/get-college-data-chance`, {
+        const response = await axios.post(`${SERVER_URL}/api/get-college-data-chance`, {
             college_name: selectedCollege,
-            session_id: newSessionId,
             major: majorVal,
           });
 
@@ -137,7 +120,7 @@ export const CollegeListRefineForm: React.FC = () => {
 
       {/* First row of buttons */}
       <div>
-        <button onClick={handleCreateInitialList}>Create Initial List</button>
+        <button onClick={startCollegeListTask}>Create Initial List</button>
         <button onClick={handleAddCollege}>Add</button>
         <button onClick={handleDeleteCollege} disabled={!selectedCollege}>
           Delete

@@ -1,11 +1,11 @@
 import {TaskReturnType } from "./task-result-types";
-import {MIDDLE_SERVER_URL} from '../common';
 import { ITaskParameterWithCollegeAndMajor } from "./task-parameter-types";
+import { SERVER_URL } from "../components/component-service-proxy";
 
 export async function handleAcademicReviewTask(_params: ITaskParameterWithCollegeAndMajor): Promise<TaskReturnType> {
     try {
         // Send request to Server 1 to initiate the task
-        const response = await fetch(`${MIDDLE_SERVER_URL}/api/start-task`, { method: 'POST' });
+        const response = await fetch(`${SERVER_URL}/api/start-task`, { method: 'POST' });
         const data = await response.json();
         const taskId = data.taskId;
 
@@ -26,7 +26,7 @@ async function pollTaskStatus(taskId: string): Promise<TaskReturnType>  {
         await sleep(2000); 
 
         try {
-        const statusResponse = await fetch(`${MIDDLE_SERVER_URL}/api/task-status/${taskId}`, { method: 'GET' });
+        const statusResponse = await fetch(`${SERVER_URL}/api/task-status/${taskId}`, { method: 'GET' });
         const statusData = await statusResponse.json();
 
         if (statusData.status === 'completed') {

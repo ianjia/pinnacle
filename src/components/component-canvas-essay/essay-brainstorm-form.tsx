@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { EssayPrompt } from './essay-brainstorm-prompt';
 import { EssayIdeas } from './essay-brainstorm-ideas';
 import { IEssayPrompt } from './essay-model';
-import { MIDDLE_SERVER_URL } from '../../common';
 import './essay-brainstorm-form.css';
+import { SERVER_URL } from '../component-service-proxy';
 
 export const EssayBrainStormForm: React.FC = () => {
     const [essayResult, setEssayResult] = useState<string>('');
@@ -17,7 +17,7 @@ export const EssayBrainStormForm: React.FC = () => {
         setSessionId(newSessionId);
         setIsProcessing(true);
         try {
-            const response = await axios.post(`${MIDDLE_SERVER_URL}/api/generate-essay-ideas`, {
+            const response = await axios.post(`${SERVER_URL}/api/generate-essay-ideas`, {
                 collegeInfo: essayPrompt.major !== undefined ? `College: ${essayPrompt.college}, major: ${essayPrompt.major}` :  `College: ${essayPrompt.college}`,
                 prompt: essayPrompt.prompt,
                 session_id: sessionId,
@@ -38,7 +38,7 @@ export const EssayBrainStormForm: React.FC = () => {
     const handleRefineEssayIdeas = async (feedback: string) => {
         setIsProcessing(true);
         try {
-            const response = await axios.post(`${MIDDLE_SERVER_URL}/api/generate-essay-ideas`, {
+            const response = await axios.post(`${SERVER_URL}/api/generate-essay-ideas`, {
                 feedback: feedback,
                 session_id: sessionId,
               });

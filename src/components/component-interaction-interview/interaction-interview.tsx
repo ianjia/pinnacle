@@ -3,8 +3,8 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch } from 'react-redux';
 import { interviewConversationActions } from '../../store';
-import { MIDDLE_SERVER_URL } from '../../common';
 import './interaction-interview.css';
+import { SERVER_URL } from '../component-service-proxy';
 
 export const InteractionInterview: React.FC = () => {
   const [interviewActive, setInterviewActive] = useState<boolean>(false);
@@ -40,7 +40,7 @@ export const InteractionInterview: React.FC = () => {
   
       // Send transcript to backend
       try {
-        const response = await axios.post(`${MIDDLE_SERVER_URL}/api/interview-answer`, {
+        const response = await axios.post(`${SERVER_URL}/api/interview-answer`, {
           message: transcript,
           session_id: sessionId,
         });
@@ -102,7 +102,7 @@ export const InteractionInterview: React.FC = () => {
       setSessionId(newSessionId);
 
       try {
-        const response = await axios.post(`${MIDDLE_SERVER_URL}/api/interview-start`, {
+        const response = await axios.post(`${SERVER_URL}/api/interview-start`, {
           session_id: newSessionId,
         });
 

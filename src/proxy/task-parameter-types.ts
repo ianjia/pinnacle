@@ -1,4 +1,4 @@
-import { AcademicProfile, ExtraCurriculumActivity, PersonalProfile } from "../common"
+import { AcademicProfile, ActivityProfile, PersonalProfile } from "../common"
 
 export enum TaskType {
     ComitteeReview = 1
@@ -11,7 +11,7 @@ export interface ITaskParameter {
 export interface ITaskParameterWithFullRecords extends ITaskParameter {
     personalProfile?: PersonalProfile;
     academicProfile?: AcademicProfile;
-    activity?: ExtraCurriculumActivity;
+    activity?: ActivityProfile;
 }
 
 export interface ITaskParameterWithCollegeAndMajor extends ITaskParameterWithFullRecords{
