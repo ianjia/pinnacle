@@ -1,12 +1,10 @@
-// File: CollegeListRefineForm.tsx
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { collegeListWorkshopActions, CollegeDetails, CollegePreferences, committeeReviewActions, RootState } from '../../store';
+import { collegeListWorkshopActions, CollegePreferences, committeeReviewActions, RootState } from '../../store';
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
 import { getCollegeNameKey } from '../component-map';
-import { CollegeListBuildRequest, ResultType_CollegeList, SERVER_URL, TaskResultType, TaskType, useTaskRunner } from '../component-service-proxy';
+import { CollegeDataAndChanceRequest, CollegeListBuildRequest, ProgressModal, ResultType_CollegeDataChance, ResultType_CollegeList, SERVER_URL, TaskResultType, TaskType, useTaskRunner } from '../component-service-proxy';
 
 export const CollegeListRefineForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,17 +21,38 @@ export const CollegeListRefineForm: React.FC = () => {
   const [selectedCollege, setSelectedCollege] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newCollegeName, setNewCollegeName] = useState('');
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  // State to track the active task
+  const [activeTask, setActiveTask] = useState<"collegeList" | "evaluation" | null>(null);
 
   const {startTask: startCollegeListTask, showModal: showCollegeListModal, progressMessage: progressCollegeListMessage } = useTaskRunner({
     taskType: TaskType.BuildCollegeList,
     requestData: {college_preferences: preference} as CollegeListBuildRequest, 
     onResult: (data: TaskResultType) => {
       dispatch(collegeListWorkshopActions.setCollegeList(data as ResultType_CollegeList));
+      setActiveTask(null);  // Reset active task on completion
       }
     }
   )
+  const {startTask: startEvaluationTask, showModal: showEvaluationModal, progressMessage: progressEvaluationMessage } = useTaskRunner({
+    taskType: TaskType.GetCollegeDataChance,
+    requestData: {college_name: selectedCollege, major: majorPref} as CollegeDataAndChanceRequest, 
+    onResult: (data: TaskResultType) => {
+      dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege as string, detail: data as ResultType_CollegeDataChance }));
+      setActiveTask(null);  // Reset active task on completion
+      }
+    }
+  )  
 
+  const handleStartCollegeListTask = () => {
+    setActiveTask("collegeList");
+    startCollegeListTask();
+  };
+
+  const handleStartEvaluationTask = () => {
+    setActiveTask("evaluation");
+    startEvaluationTask();
+  };
 
   // Handler for "Add" button
   const handleAddCollege = () => {
@@ -83,30 +102,6 @@ export const CollegeListRefineForm: React.FC = () => {
     dispatch(committeeReviewActions.setMajorToEvaluate(majorPref));
   }
 
-  // Handler for "Evaluate" button
-  const handleEvaluate = async () => {
-    if (selectedCollege) {
-      setIsProcessing(true);
-
-      const majorVal: string = majorPref !== undefined? majorPref : "N/A";
-  
-      try {
-        const response = await axios.post(`${SERVER_URL}/api/get-college-data-chance`, {
-            college_name: selectedCollege,
-            major: majorVal,
-          });
-
-        const aiResponse: CollegeDetails = response.data.college_data_chance;
-        dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege, detail: aiResponse }));
-      } catch(error) {
-          console.error('Error communicating with the server:', error);
-          alert('An error occurred. Please try again.');
-      } finally {
-          setIsProcessing(false);
-      }
-    }
-  };
-
   // Handler for "Committee Review" button
   const handleCommitteeReview = () => {
     // Placeholder function
@@ -118,9 +113,20 @@ export const CollegeListRefineForm: React.FC = () => {
     <div>
       <h2>Build and Craft Your College List</h2>
 
+      <ProgressModal
+        show={activeTask !== null && (showCollegeListModal || showEvaluationModal)}
+        message={
+          activeTask === "collegeList"
+            ? progressCollegeListMessage
+            : activeTask === "evaluation"
+            ? progressEvaluationMessage
+            : ""
+        }
+      />
+
       {/* First row of buttons */}
       <div>
-        <button onClick={startCollegeListTask}>Create Initial List</button>
+        <button onClick={handleStartCollegeListTask}>Create Initial List</button>
         <button onClick={handleAddCollege}>Add</button>
         <button onClick={handleDeleteCollege} disabled={!selectedCollege}>
           Delete
@@ -132,7 +138,7 @@ export const CollegeListRefineForm: React.FC = () => {
 
       {/* Second row of buttons */}
       <div>
-        <button onClick={handleEvaluate} disabled={!selectedCollege}>
+        <button onClick={handleStartEvaluationTask} disabled={!selectedCollege}>
           Evaluate
         </button>
         <button onClick={handleCommitteeReview}>Committee Review</button>
@@ -197,14 +203,6 @@ export const CollegeListRefineForm: React.FC = () => {
         </div>
       )}
 
-      {isProcessing && (
-        <div className="processing-modal">
-            <div className="processing-dialog">
-                <h2>Processing...</h2>
-                <p>Please wait while we process your response.</p>
-            </div>
-        </div>
-     )}
     </div>
   );
 };
