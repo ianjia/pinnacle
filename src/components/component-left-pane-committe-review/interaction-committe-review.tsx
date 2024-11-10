@@ -1,35 +1,44 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ITaskParameterWithCollegeAndMajor, TaskType } from '../../proxy';
-import { LoadingModal } from '../component-loading-modal-dialog';
-import { RootState, AppDispatch, fetchCommitteeReviewData, setCollegeToEvaluate, setMajorToEvaluate } from '../../store';
+import { RootState, AppDispatch, committeeReviewActions} from '../../store';
 import { SpecializedProgram } from '../component-specalized-program';
 import './interaction-committe-review.css';
 import { getCollegeNameKey } from '../component-map';
+import { CommitteeReviewRequest, ProgressModal, ResultType_CommitteeReview, TaskResultType, TaskType, useTaskRunner } from '../component-service-proxy';
 
 export const InteractionCommitteeReview: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    const { isLoading, error, college_to_evaluate, major_to_evalute } = useSelector((state: RootState) => state.committeeReview);
-
-    const [collegeInput, setCollegeInput] = useState(college_to_evaluate || '');
+    const [collegeInput, setCollegeInput] = useState('');
     const collegeInputRef = useRef<HTMLInputElement>(null); // Reference for the input field
 
-    const sendData = () => {
-        if (college_to_evaluate === undefined) {
-            alert("College Name is empty, please fill in");
+    const college_to_evaluate: string = useSelector((state: RootState) => state.committeeReview.college_to_evaluate);
+    const major_to_evaluate: string = useSelector((state: RootState) => state.committeeReview.major_to_evalute);
+
+    const {startTask: startReviewTask, showModal, progressMessage } = useTaskRunner({
+        taskType: TaskType.CommitteReview,
+        requestData: {college_name: college_to_evaluate, major: major_to_evaluate} as CommitteeReviewRequest, 
+        onResult: (data: TaskResultType) => {
+          dispatch(committeeReviewActions.setReviewResult(data as ResultType_CommitteeReview));
+          }
         }
-        const taskParams: ITaskParameterWithCollegeAndMajor 
-            = {college_name: college_to_evaluate as string, major: major_to_evalute, taskType: TaskType.ComitteeReview};
-        dispatch(fetchCommitteeReviewData(taskParams));
+      )
+
+    const handleStartReviewTask = () => {
+        if (college_to_evaluate === "") {
+            alert("College Name is empty, please fill in");
+            return;
+        }
+
+        startReviewTask();
     };
 
     const handleCollegeBlur = () => {
-        const matchedCollegeName = getCollegeNameKey(collegeInput);
+        const matchedCollegeName = getCollegeNameKey(collegeInput); // Fuzzy search/match
         
         if (matchedCollegeName) {
             // Update collegeInput with the matched college name
             setCollegeInput(matchedCollegeName);
-            dispatch(setCollegeToEvaluate(matchedCollegeName));
+            dispatch(committeeReviewActions.setCollegeToEvaluate(matchedCollegeName));
         } else {
             // Alert user if no match is found
             alert("The college name you entered is not valid. Please re-enter.");
@@ -46,8 +55,11 @@ export const InteractionCommitteeReview: React.FC = () => {
     return (
         <div className="interaction-container">
             <h2>AI-Powered Admission Committee Review</h2>
+
+            <ProgressModal show = {showModal} message = {progressMessage}/>
+
             <div className="interaction-header">
-                <button className="review-button" onClick={sendData}>Admission Evaluation</button>
+                <button className="review-button" onClick={handleStartReviewTask}>Admission Evaluation</button>
             </div>
 
             <div className="interaction-input">
@@ -66,13 +78,10 @@ export const InteractionCommitteeReview: React.FC = () => {
             <div className="interaction-input">
                 <label>Major:</label>
                 <SpecializedProgram
-                    value={major_to_evalute}
-                    onPreferenceChange={(newMajor) => dispatch(setMajorToEvaluate(newMajor))}
+                    value={major_to_evaluate}
+                    onPreferenceChange={(newMajor) => dispatch(committeeReviewActions.setMajorToEvaluate(newMajor))}
                 />
             </div>
-
-            {isLoading && <LoadingModal isVisible={isLoading} message="Evaluating ..." />}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 };

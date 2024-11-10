@@ -9,26 +9,30 @@ export interface ITaskRequest {
     personalProfile?: PersonalProfile;
 }
 
-export interface CollegeListBuildRequest extends ITaskRequest{
+export interface CollegeListBuildRequest extends ITaskRequest {
     college_preferences: string
 }
 
-export interface InterviewRequest extends ITaskRequest{
+export interface InterviewRequest extends ITaskRequest {
     message?: string; 
 }
 
-export interface DesignIdeaGenerationRequest extends ITaskRequest{
+export interface DesignIdeaGenerationRequest extends ITaskRequest {
     college_info: string;
     prompt: string;
     additionalCollegeAsk?: string; 
 }
 
-export interface DesignIdeaRefinementRequest extends ITaskRequest{
+export interface DesignIdeaRefinementRequest extends ITaskRequest {
     feedback: string
 }
 
-export interface CollegeDataAndChanceRequest extends ITaskRequest{
+export interface CollegeDataAndChanceRequest extends ITaskRequest {
     college_name: string; 
-    major?: string; 
+    major: string;  // To make it easy, if not chosen major, put it as "No Preference" instead of making it optional
 }
 
+export interface CommitteeReviewRequest extends ITaskRequest{ // For now, CommitteeReviewRequest definition is the same with CollegeDataAndChanceRequest
+    college_name: string; 
+    major: string;  
+}
