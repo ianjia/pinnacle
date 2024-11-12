@@ -1,12 +1,46 @@
 // See result_types.py on AI python server side
 
-import { CollegeDetails } from "../../store";
+import { CombinedCollegeData, MyChanceOnCollege } from "../../store";
+import { TaskType } from "./basic-types";
 
-export type ResultType_CollegeList = string[];
-export type ResultType_CommitteeReview = string;
-export type ResultType_StartInterview = string;
-export type ResultType_EssayIdeas = string;
-export type ResultType_CollegeDataChance = CollegeDetails;
+// Define a base interface for TaskResult
+export interface TaskResult {
+    type: TaskType;
+}
 
-export type TaskResultType = string | ResultType_CollegeList | ResultType_CollegeDataChance;
+// Specific TaskResult interfaces for each type
+export interface CommitteeReviewTaskResult extends TaskResult {
+    type: TaskType.CommitteReview;
+    review: string;
+}
+
+export interface StartInterviewTaskResult extends TaskResult {
+    type: TaskType.StartInterview;
+    initial_message: string;
+}
+
+export interface GenerateEssayIdeasTaskResult extends TaskResult {
+    type: TaskType.GenerateEssayIdeas;
+    ideas: string[];
+}
+
+export interface RefineEssayIdeaTaskResult extends TaskResult {
+    type: TaskType.RefineEssayIdea;
+    idea: string[];
+}
+
+export interface BuildCollegeListTaskResult extends TaskResult {
+    type: TaskType.BuildCollegeList;
+    college_list: string[];
+}
+
+export interface GetCollegeDataChanceTaskResult extends TaskResult {
+    type: TaskType.GetCollegeDataChance;
+    data_chance: CombinedCollegeData;
+}
+
+export interface MyChanceTaskResult extends TaskResult {
+    type: TaskType.MyChance;
+    myChance: MyChanceOnCollege;
+}
 

@@ -4,7 +4,7 @@ import { collegeListWorkshopActions, CollegePreferences, committeeReviewActions,
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
 import { getCollegeNameKey } from '../component-map';
-import { CollegeDataAndChanceRequest, CollegeListBuildRequest, ProgressModal, ResultType_CollegeDataChance, ResultType_CollegeList, SERVER_URL, TaskResultType, TaskType, useTaskRunner } from '../component-service-proxy';
+import { CollegeDataAndChanceRequest, CollegeListBuildRequest, ProgressModal, GetCollegeDataChanceTaskResult, BuildCollegeListTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
 
 export const CollegeListRefineForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -28,8 +28,8 @@ export const CollegeListRefineForm: React.FC = () => {
   const {startTask: startCollegeListTask, showModal: showCollegeListModal, progressMessage: progressCollegeListMessage } = useTaskRunner({
     taskType: TaskType.BuildCollegeList,
     requestData: {college_preferences: preference} as CollegeListBuildRequest, 
-    onResult: (data: TaskResultType) => {
-      dispatch(collegeListWorkshopActions.setCollegeList(data as ResultType_CollegeList));
+    onResult: (data: TaskResult) => {
+      dispatch(collegeListWorkshopActions.setCollegeList((data as BuildCollegeListTaskResult).college_list));
       setActiveTask(null);  // Reset active task on completion
       }
     }
@@ -37,8 +37,8 @@ export const CollegeListRefineForm: React.FC = () => {
   const {startTask: startEvaluationTask, showModal: showEvaluationModal, progressMessage: progressEvaluationMessage } = useTaskRunner({
     taskType: TaskType.GetCollegeDataChance,
     requestData: {college_name: selectedCollege, major: majorPref} as CollegeDataAndChanceRequest, 
-    onResult: (data: TaskResultType) => {
-      dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege as string, detail: data as ResultType_CollegeDataChance }));
+    onResult: (data: TaskResult) => {
+      dispatch(collegeListWorkshopActions.addCollegeDetail({ name: selectedCollege as string, detail: (data as GetCollegeDataChanceTaskResult).data_chance }));
       setActiveTask(null);  // Reset active task on completion
       }
     }

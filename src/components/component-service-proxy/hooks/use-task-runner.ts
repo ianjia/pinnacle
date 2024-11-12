@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 import { SERVER_URL } from "../port-url-config";
 import { ITaskRequest } from "../request-types";
-import { TaskResultType } from "../result-types";
+import { TaskResult } from "../result-types";
 
 interface UseTaskRunnerParams {
   taskType: string;
   requestData: ITaskRequest;
-  onResult: (resultData: TaskResultType) => void;
+  onResult: (resultData: TaskResult) => void;
 }
 
 interface UseTaskRunnerReturn {

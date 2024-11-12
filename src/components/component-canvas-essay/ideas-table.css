@@ -1,0 +1,56 @@
+/* IdeasTable.css */
+
+.ideas-table-container {
+  border: 1px solid #ccc;
+  padding: 16px; /* Increase padding to add more space */
+  margin: 0px;
+  border-radius: 8px;
+}
+
+.buttons-container {
+  margin-bottom: 8px;
+}
+
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px;
+  padding-right: 16px; /* Add padding to the right for more space */
+}
+
+.table-container th, .table-container td {
+  border: 1px solid #ddd;
+  padding: 8px 16px; /* Increase padding on left and right */
+}
+
+.table-container th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.table-container tr:hover {
+  background-color: #f9f9f9;
+}
+
+.label-container {
+  font-weight: bold;
+  margin-top: 8px;
+  padding-left: 8px; /* Add padding to left side for spacing */
+  padding-right: 8px; /* Add padding to right side for spacing */
+}
+
+.textarea-container {
+  margin-top: 28px;
+}
+
+.textarea-container textarea {
+  width: calc(100% - 16px); /* Adjust width for left and right padding */
+  height: 100px;
+  padding: 10px; /* Increase padding for spacing */
+  resize: vertical;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  margin-left: 8px; /* Add margin to left for spacing */
+  margin-right: 8px; /* Add margin to right for spacing */
+}

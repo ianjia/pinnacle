@@ -23,19 +23,13 @@ export const EssayWorkshopPane: React.FC = () => {
                     className={`review-button ${isActive(EssayWorkshopType.Brainstorming) ? 'active' : ''}`}
                     onClick={() => handleProfileSelection(EssayWorkshopType.Brainstorming)}
                 >
-                    Brain Storming
+                    Ideas Brain Storming
                 </button>
                 <button
                     className={`review-button ${isActive(EssayWorkshopType.Draft) ? 'active' : ''}`}
                     onClick={() => handleProfileSelection(EssayWorkshopType.Draft)}
                 >
-                    Drafting
-                </button>
-                <button
-                    className={`review-button ${isActive(EssayWorkshopType.Review) ? 'active' : ''}`}
-                    onClick={() => handleProfileSelection(EssayWorkshopType.Review)}
-                >
-                    Review
+                    Drafting & Review
                 </button>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { RootState, AppDispatch, committeeReviewActions} from '../../store';
 import { SpecializedProgram } from '../component-specalized-program';
 import './interaction-committe-review.css';
 import { getCollegeNameKey } from '../component-map';
-import { CommitteeReviewRequest, ProgressModal, ResultType_CommitteeReview, TaskResultType, TaskType, useTaskRunner } from '../component-service-proxy';
+import { CommitteeReviewRequest, ProgressModal, CommitteeReviewTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
 
 export const InteractionCommitteeReview: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -17,8 +17,8 @@ export const InteractionCommitteeReview: React.FC = () => {
     const {startTask: startReviewTask, showModal, progressMessage } = useTaskRunner({
         taskType: TaskType.CommitteReview,
         requestData: {college_name: college_to_evaluate, major: major_to_evaluate} as CommitteeReviewRequest, 
-        onResult: (data: TaskResultType) => {
-          dispatch(committeeReviewActions.setReviewResult(data as ResultType_CommitteeReview));
+        onResult: (data: TaskResult) => {
+          dispatch(committeeReviewActions.setReviewResult((data as CommitteeReviewTaskResult).review));
           }
         }
       )

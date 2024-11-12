@@ -17,13 +17,14 @@ export interface InterviewRequest extends ITaskRequest {
     message?: string; 
 }
 
-export interface DesignIdeaGenerationRequest extends ITaskRequest {
-    college_info: string;
+export interface EssayIdeasGenerationRequest extends ITaskRequest {
+    college: string;
+    major: string;
     prompt: string;
     additionalCollegeAsk?: string; 
 }
 
-export interface DesignIdeaRefinementRequest extends ITaskRequest {
+export interface EssayIdeaRefinementRequest extends ITaskRequest {
     feedback: string
 }
 

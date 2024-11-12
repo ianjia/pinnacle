@@ -1,20 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CollegeListWorkshopType } from '../common';
 
-export interface CollegeDetails {
+// Define the structure for CollegeBasicData and other data types
+interface CollegeBasicData {
     admitRate: number;
     undergradEnroll: number;
     annualCost: number;
     nationalRanking: number;
-    programRanking: number | null;
+    programRanking?: number;
+}
+
+// Define the CollegeCategory type to match the Python Literal
+type CollegeCategory = 1 | 2 | 3;  // 1 means reach, 2 is target, 3 means safety
+
+export interface MyChanceOnCollege {
     chance: number;
-    category: 1 | 2 | 3; // 1 means reach, 2 is target, 3 means safety
-  }
+    category: CollegeCategory;
+}
+
+export interface CombinedCollegeData extends CollegeBasicData, MyChanceOnCollege {}
 
 interface CollegeListWorkshopState {
     activeCollegeListWorkshop: CollegeListWorkshopType;
     collegeList: string[];
-    collegeDetails: Record<string, CollegeDetails>;
+    collegeDetails: Record<string, CombinedCollegeData>;
 }
 
 const initialState: CollegeListWorkshopState = {
@@ -45,11 +54,11 @@ const collegeListWorkshopSlice = createSlice({
             }
         },
         // (4) Reducer that sets the whole category
-        setCollegeCategory(state, action: PayloadAction<Record<string, CollegeDetails>>) {
+        setCollegeCategory(state, action: PayloadAction<Record<string, CombinedCollegeData>>) {
             state.collegeDetails = action.payload;
         },
         // (5) Reducer that adds an element in the category
-        addCollegeDetail(state, action: PayloadAction<{ name: string; detail: CollegeDetails }>) {
+        addCollegeDetail(state, action: PayloadAction<{ name: string; detail: CombinedCollegeData }>) {
             const { name, detail } = action.payload;
             state.collegeDetails[name] = detail;
         },
@@ -58,7 +67,7 @@ const collegeListWorkshopSlice = createSlice({
             delete state.collegeDetails[action.payload];
         },
         // (7) Reducer that sets the value for an element in the category
-        updateCollegeDetail(state, action: PayloadAction<{ name: string; detail: Partial<CollegeDetails> }>) {
+        updateCollegeDetail(state, action: PayloadAction<{ name: string; detail: Partial<CombinedCollegeData> }>) {
             const { name, detail } = action.payload;
             if (state.collegeDetails[name]) {
                 state.collegeDetails[name] = { ...state.collegeDetails[name], ...detail };
