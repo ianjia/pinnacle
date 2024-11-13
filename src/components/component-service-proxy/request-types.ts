@@ -24,7 +24,8 @@ export interface EssayIdeasGenerationRequest extends ITaskRequest {
     additionalCollegeAsk?: string; 
 }
 
-export interface EssayIdeaRefinementRequest extends ITaskRequest {
+export interface EssayIdeaRefinementRequest extends EssayIdeasGenerationRequest {
+    idea: string;
     feedback: string
 }
 

@@ -26,7 +26,7 @@ export interface GenerateEssayIdeasTaskResult extends TaskResult {
 
 export interface RefineEssayIdeaTaskResult extends TaskResult {
     type: TaskType.RefineEssayIdea;
-    idea: string[];
+    idea: string;
 }
 
 export interface BuildCollegeListTaskResult extends TaskResult {

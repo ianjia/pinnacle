@@ -15,7 +15,7 @@ interface UseTaskRunnerReturn {
   progressMessage: string;
 }
 
-const TIMEOUT_DURATION = 3*60*1000; // 3 minutes
+const TIMEOUT_DURATION = 60*1000; // 1 minute
 const FETCH_TIMEOUT_DURATION = 30 * 1000; // 30 seconds for fetch timeout (start the task and get the task id)
 
 export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunnerParams): UseTaskRunnerReturn => {

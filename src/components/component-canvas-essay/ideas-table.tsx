@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { essayWorkshopActions, RootState, AppDispatch } from '../../store';
 import { v4 as uuidv4 } from 'uuid';
 import './ideas-table.css';
-
+import { EssayIdeaRefinementRequest, ProgressModal, RefineEssayIdeaTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
 
 interface IdeasTableProps {
     editable: boolean;
@@ -17,8 +17,23 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({ editable }) => {
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
     const [newIdeaText, setNewIdeaText] = useState<string>('');
     const [textAreaValue, setTextAreaValue] = useState<string>('');
+
+    const college: string = useSelector((state: RootState) => state.essayWorkshop.college);
+    const major: string = useSelector((state: RootState) => state.essayWorkshop.major);
+    const essay_prompt: string = useSelector((state: RootState) => state.essayWorkshop.essayPrompt);
+    const additional_ask: string = useSelector((state: RootState) => state.essayWorkshop.additionalAsk);
   
     const ideaEntries = Object.entries(ideas);
+
+    const {startTask: startRefineEssayIdeaTask, showModal, progressMessage } = useTaskRunner({
+      taskType: TaskType.RefineEssayIdea,
+      requestData: {college: college, major: major, prompt: essay_prompt, additionalCollegeAsk: additional_ask, 
+                    idea: ideas[selectedIdeaKey as string], feedback: textAreaValue} as EssayIdeaRefinementRequest, 
+      onResult: (data: TaskResult) => {
+        const result = (data as RefineEssayIdeaTaskResult).idea;
+          dispatch(essayWorkshopActions.addIdea({key:selectedIdeaKey as string, value: result})); 
+      }
+  })    
   
     const handleAdd = () => {
       setShowAddModal(true);
@@ -46,8 +61,11 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({ editable }) => {
     };
   
     const handleRefine = () => {
-      // Placeholder function handler
-      console.log('Refine button clicked');
+      if (selectedIdeaKey) {
+        startRefineEssayIdeaTask();
+      } else {
+        alert("Please select an idea");
+      }
     };
   
     const handleRowClick = (key: string) => {
@@ -56,6 +74,7 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({ editable }) => {
   
     return (
       <div className="ideas-table-container">
+            <ProgressModal show = {showModal} message = {progressMessage}/>
         <h2>Essay Ideas</h2>
         {editable && (
           <div className="buttons-container">
