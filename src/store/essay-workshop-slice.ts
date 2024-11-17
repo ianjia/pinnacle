@@ -7,10 +7,13 @@ interface EssayWorkshopState {
     major: string;
     essayPrompt: string;
     additionalAsk: string;
+    selectedIdeaKey: string | undefined;  // Be noticed that it is the key, rather than the idea value itself is stored in this field
     ideaRefinementFeedback: string;
     essayRefinmentFeedback: string;
-    ideas: Record<string, string>;
-    draft: Record<string, string>;
+    // Here we make the key in ideas and essay the same, so that we could hook up an idea with essay, namely when using an idea to 
+    // draft an essay, the key of the essay in the essay record with be the same key of that idea in ideas record
+    ideas: Record<string, string>;   
+    essay: Record<string, string>;
 }
 
 const initialState: EssayWorkshopState = {
@@ -19,10 +22,11 @@ const initialState: EssayWorkshopState = {
     major: "No Preference",
     essayPrompt: "",
     additionalAsk: "",
+    selectedIdeaKey: undefined,
     ideaRefinementFeedback: "",
     essayRefinmentFeedback: "",
     ideas: {},
-    draft: {},
+    essay: {},
 };
 
 const essayWorkshopSlice = createSlice({
@@ -49,6 +53,10 @@ const essayWorkshopSlice = createSlice({
             state.additionalAsk = action.payload;
         },     
 
+        setSelectedIdeaKey(state, action: PayloadAction<string>) {
+            state.selectedIdeaKey = action.payload;
+        },
+
         setIdeaRefinementFeedback(state, action: PayloadAction<string>) {
             state.ideaRefinementFeedback = action.payload;
         },
@@ -66,13 +74,13 @@ const essayWorkshopSlice = createSlice({
             delete state.ideas[action.payload];
         },
 
-        addDraft(state, action: PayloadAction<{ key: string, value: string }>) {
+        addEssay(state, action: PayloadAction<{ key: string, value: string }>) {
             const { key, value } = action.payload;
-            state.draft[key] = value;
+            state.essay[key] = value;
         },
 
-        deleteDraft(state, action: PayloadAction<string>) {
-            delete state.draft[action.payload];
+        deleteEssay(state, action: PayloadAction<string>) {
+            delete state.essay[action.payload];
         }
     }
 });

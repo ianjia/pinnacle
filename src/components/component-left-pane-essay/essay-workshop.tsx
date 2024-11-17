@@ -29,7 +29,7 @@ export const EssayWorkshopPane: React.FC = () => {
                     className={`review-button ${isActive(EssayWorkshopType.Draft) ? 'active' : ''}`}
                     onClick={() => handleProfileSelection(EssayWorkshopType.Draft)}
                 >
-                    Drafting & Review
+                    Drafting & Refine
                 </button>
             </div>
         </div>

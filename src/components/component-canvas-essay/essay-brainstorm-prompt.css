@@ -1,14 +1,14 @@
 .essay-prompt {
     border: 1px solid #ccc;
-    padding: 16px;
-    margin: 16px 0;
+    padding: 8px;
+    margin: 8px;
     border-radius: 8px;
   }
 
 .essay-prompt .form-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
     width: 100%;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .essay-prompt .form-group label {
-    margin-bottom: 8px;
+    margin-bottom: px;
     font-weight: bold;
     white-space: nowrap;
 }
@@ -45,7 +45,7 @@
 
 .essay-prompt .full-width-textarea {
     width: 100%;
-    height: 80px;
+    height: 70px;
 }
 
 .essay-prompt .generate-btn {

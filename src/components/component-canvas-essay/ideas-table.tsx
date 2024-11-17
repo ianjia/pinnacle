@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { essayWorkshopActions, RootState, AppDispatch } from '../../store';
+import { essayWorkshopActions, RootState} from '../../store';
 import { v4 as uuidv4 } from 'uuid';
 import './ideas-table.css';
 import { EssayIdeaRefinementRequest, ProgressModal, RefineEssayIdeaTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
 
 interface IdeasTableProps {
-    editable: boolean;
-  }
-  
-export const IdeasTable: React.FC<IdeasTableProps> = ({ editable }) => {
+  editable: boolean;
+  selectCallback?: (selectedValue: string) => void;
+}
+
+export const IdeasTable: React.FC<IdeasTableProps> = ({ editable, selectCallback }) => {
     const ideas = useSelector((state: RootState) => state.essayWorkshop.ideas);
     const dispatch = useDispatch();
   
@@ -70,12 +71,14 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({ editable }) => {
   
     const handleRowClick = (key: string) => {
       setSelectedIdeaKey(key);
+      if (selectCallback) {
+        selectCallback(key);
+      }
     };
   
     return (
       <div className="ideas-table-container">
             <ProgressModal show = {showModal} message = {progressMessage}/>
-        <h2>Essay Ideas</h2>
         {editable && (
           <div className="buttons-container">
             <button onClick={handleAdd}>Add</button>
