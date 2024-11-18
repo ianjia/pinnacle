@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from './api';
+import { api } from './api';
 
 export const Register: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -13,7 +13,7 @@ export const Register: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/register', { username, password });
+      await api.post('/register', { email, password });
       setSuccess('Registration successful. Redirecting to login...');
       setTimeout(() => navigate('/login'), 1500); // Redirect to login page after 1.5 seconds
     } catch (err: any) {
@@ -27,9 +27,9 @@ export const Register: React.FC = () => {
       <form onSubmit={handleRegister} style={styles.form}>
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
           required
         />

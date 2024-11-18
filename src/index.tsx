@@ -5,11 +5,9 @@ import { store } from './store';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { setAuthToken } from './auth/api';
-import { AuthProvider } from './auth';
+import { AuthProvider, initializeAuthToken } from './auth';
 
-const token = localStorage.getItem('token');
-setAuthToken(token);
+initializeAuthToken();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

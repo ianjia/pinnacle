@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api, { setAuthToken } from './api';
+import { api, setAuthToken } from './api';
 
 export const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post('/login', { username, password });
+      const response = await api.post('/login', { email, password });
       const { token } = response.data;
       setAuthToken(token);
       navigate('/home');
@@ -26,9 +26,9 @@ export const Login: React.FC = () => {
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={styles.input}
           required
         />

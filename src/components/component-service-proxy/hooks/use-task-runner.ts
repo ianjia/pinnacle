@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { SERVER_URL } from "../port-url-config";
 import { ITaskRequest } from "../request-types";
 import { TaskResult } from "../result-types";
+import { api } from '../../../auth';
 
 interface UseTaskRunnerParams {
   taskType: string;
@@ -15,8 +16,8 @@ interface UseTaskRunnerReturn {
   progressMessage: string;
 }
 
-const TIMEOUT_DURATION = 60*1000; // 1 minute
-const FETCH_TIMEOUT_DURATION = 30 * 1000; // 30 seconds for fetch timeout (start the task and get the task id)
+const TIMEOUT_DURATION = 60 * 1000; // 1 minute
+const FETCH_TIMEOUT_DURATION = 30 * 1000; // 30 seconds for fetch timeout
 
 export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunnerParams): UseTaskRunnerReturn => {
   const [showModal, setShowModal] = useState(false);
@@ -24,28 +25,17 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const startTask = async () => {
-    // Create a fetch request with a timeout
-    const fetchWithTimeout = new Promise<Response>((resolve, reject) => {
-      const timeoutId = setTimeout(() => reject(new Error('Fetch timed out')), FETCH_TIMEOUT_DURATION);
-
-      fetch(`${SERVER_URL}/api/v1/task/schedule`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ taskType, requestData }),
-      })
-        .then(response => {
-          clearTimeout(timeoutId); // Clear the timeout if fetch succeeds
-          resolve(response);
-        })
-        .catch(error => {
-          clearTimeout(timeoutId); // Clear the timeout if fetch fails
-          reject(error);
-        });
-    });
-
     try {
-      const response = await fetchWithTimeout;
-      const { taskId } = await response.json();
+      const controller = new AbortController(); // For fetch timeout
+      const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_DURATION);
+
+      const response = await api.post(`${SERVER_URL}/api/v1/task/schedule`, {
+        taskType,
+        requestData,
+      });
+
+      clearTimeout(timeoutId); // Clear the timeout on success
+      const { taskId } = response.data;
 
       // Show the modal dialog
       setShowModal(true);
