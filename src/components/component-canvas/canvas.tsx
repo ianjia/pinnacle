@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Map } from '../component-map';
-import { NavTabType } from '../../common';
+import { NavTabType } from '../../shared';
 import { RootState } from '../../store';
 import { CommitteCanvas } from '../component-canvas-comittee';
 import { InterviewCanvas } from '../component-canvas-interview';

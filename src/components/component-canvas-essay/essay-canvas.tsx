@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { EssayBrainStormForm } from './essay-brainstorm-form';
-import { EssayWorkshopType } from '../../common';
+import { EssayWorkshopType } from '../../shared';
 import { EssayDraftForm } from './essay-draft-form';
 
 export const EssayCanvas: React.FC = () => {

@@ -1,6 +1,6 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProfileType } from '../common';
+import { ProfileType } from '../shared';
 
 interface selectedProfileState {
     activeProfile: ProfileType;

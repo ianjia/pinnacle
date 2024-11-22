@@ -1,6 +1,6 @@
 // See result_types.py on AI python server side
 
-import { CombinedCollegeData, MyChanceOnCollege } from "../../store";
+import { CombinedCollegeData, MyChanceOnCollege } from "../../../store";
 import { TaskType } from "./basic-types";
 
 // Define a base interface for TaskResult

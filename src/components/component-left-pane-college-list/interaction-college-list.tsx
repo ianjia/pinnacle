@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { collegeListWorkshopActions, RootState, AppDispatch } from '../../store';
-import { CollegeListWorkshopType } from '../../common';
+import { CollegeListWorkshopType } from '../../shared';
 import './interaction-college-list.css';
 
 export const InteractionCollegeListPane: React.FC = () => {

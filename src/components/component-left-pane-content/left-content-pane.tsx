@@ -1,5 +1,5 @@
 import './left-content-pane.css';
-import { NavTabType } from '../../common';
+import { NavTabType } from '../../shared';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { InteractionCollegeNav } from '../component-left-pane-college-nav';

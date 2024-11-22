@@ -7,7 +7,7 @@ import { ActivityFileForm } from './activity-file-form';
 import { HonorFileForm } from './honor-file-form';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { ProfileType } from '../../common';
+import { ProfileType } from '../../shared';
 import { LifeAndGoalsForm } from './life_goal_form';
 
 export const ProfileCanvas: React.FC = () => {

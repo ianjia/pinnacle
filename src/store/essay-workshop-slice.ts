@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EssayWorkshopType } from '../common';
+import { EssayWorkshopType } from '../shared';
 
 interface EssayWorkshopState {
     activeWorkshop: EssayWorkshopType;

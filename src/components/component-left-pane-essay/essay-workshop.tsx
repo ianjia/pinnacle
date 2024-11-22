@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './essay-workshop.css';
 import { essayWorkshopActions, RootState, AppDispatch } from '../../store';
-import { EssayWorkshopType } from '../../common';
+import { EssayWorkshopType } from '../../shared';
 
 export const EssayWorkshopPane: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();

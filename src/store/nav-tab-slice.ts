@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NavTabType } from '../common';
+import { NavTabType } from '../shared';
 
 interface NavigationTabState {
     activeTab: NavTabType;

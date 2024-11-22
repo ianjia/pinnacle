@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { navigationTabActions } from '../../store';
-import { NavTabType } from "../../common";
+import { NavTabType } from "../../shared";
 import { NavigationTab } from './navigation-tab';
 
 export const TabList: React.FC = () => {

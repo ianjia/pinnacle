@@ -1,12 +1,4 @@
-// Defintion here would match the definion in request-types.py on server side
-
-import { AcademicProfile, ActivityProfile, LifeStoryGoalProfile, PersonalProfile } from "../../common";
-
 export interface ITaskRequest {
-    academicProfile?: AcademicProfile;
-    activityProfile?: ActivityProfile;
-    lifeStoryGoalProfile?: LifeStoryGoalProfile;
-    personalProfile?: PersonalProfile;
 }
 
 export interface CollegeListBuildRequest extends ITaskRequest {

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { SERVER_URL } from "../port-url-config";
-import { ITaskRequest } from "../request-types";
-import { TaskResult } from "../result-types";
+import { ITaskRequest } from "./request-types";
+import { TaskResult } from "./result-types";
 import { api } from '../../../auth';
 
 interface UseTaskRunnerParams {

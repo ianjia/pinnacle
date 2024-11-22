@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CollegeListWorkshopType } from '../common';
+import { CollegeListWorkshopType } from '../shared';
 
 // Define the structure for CollegeBasicData and other data types
 interface CollegeBasicData {

@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './profile_nav.css';
 import { selectedProfileActions, RootState, AppDispatch } from '../../store';
-import { ProfileType } from '../../common';
+import { ProfileType } from '../../shared';
 
 export const ProfileNavPane: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();

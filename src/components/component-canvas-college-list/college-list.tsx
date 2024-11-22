@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { CollegeListWorkshopType } from '../../common';
+import { CollegeListWorkshopType } from '../../shared';
 import { CollegeListRefineForm } from './college-list-refine-form';
 import { CollegeListNavigationForm } from './college-list-navigation-form';
 import { CollegePreferenceForm } from './college-preferences-form';
