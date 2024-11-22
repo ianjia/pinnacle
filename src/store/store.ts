@@ -6,6 +6,7 @@ import { selectedProfileReducers } from './selected-profile-slice';
 import { essayWorkshopReducers } from './essay-workshop-slice';
 import { collegeListWorkshopReducers } from './college-list-slice';
 import { collegePreferencesReducers } from './college-preference-slice';
+import { userReducers } from './user-slice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     essayWorkshop: essayWorkshopReducers,
     collegeListWorkshop: collegeListWorkshopReducers,
     collegePreferences: collegePreferencesReducers,
+    user: userReducers,
   },
 });
 

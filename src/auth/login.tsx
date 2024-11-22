@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, setAuthToken } from './api';
+import { store } from '../store';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ export const Login: React.FC = () => {
     try {
       const response = await api.post('/login', { email, password });
       const { token } = response.data;
-      setAuthToken(token);
+      setAuthToken(token, store.dispatch);
       navigate('/home');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');

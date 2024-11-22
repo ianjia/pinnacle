@@ -7,7 +7,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider, initializeAuthToken } from './auth';
 
-initializeAuthToken();
+initializeAuthToken(store.dispatch);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
