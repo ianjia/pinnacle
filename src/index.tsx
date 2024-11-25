@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
+import { FluentProvider, webLightTheme } from '@fluentui/react-components';
 import { store } from './store';
 import './index.css';
 import App from './App';
@@ -16,9 +17,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider>
+    <FluentProvider theme={webLightTheme}>
     <Provider store={store}>
       <App />
     </Provider>
+    </FluentProvider>,
     </AuthProvider>
   </React.StrictMode>
 );

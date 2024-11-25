@@ -1,7 +1,7 @@
 // ProfileCanvas.tsx
 import './profile-canvas.css';
 import React from 'react';
-import { StudentProfileForm } from './student-profile-form';
+import { StudentProfileForm } from './student-profile/student-profile-form';
 import { AcademicProfileForm } from './academic-file-form';
 import { ActivityFileForm } from './activity-file-form';
 import { HonorFileForm } from './honor-file-form';

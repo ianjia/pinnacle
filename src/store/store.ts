@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { navigationTabReducers } from './nav-tab-slice';
 import { committeeReviewReducers }  from './committee-review-slice';
 import { intervieConverstationReducers } from './interview-slice';
-import { selectedProfileReducers } from './selected-profile-slice';
+import { selectedProfileReducers } from './profile-slice';
 import { essayWorkshopReducers } from './essay-workshop-slice';
 import { collegeListWorkshopReducers } from './college-list-slice';
 import { collegePreferencesReducers } from './college-preference-slice';

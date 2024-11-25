@@ -1,7 +1,7 @@
 // File 3 (App.tsx)
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, Login, ProtectedRoute, Register } from './auth';
+import { Login, ProtectedRoute, Register } from './auth';
 
 import './App.css';
 
@@ -9,7 +9,6 @@ import { HomePage } from './components/component-home-page';
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
       <div className="App">
         <Router>
           <Routes>
@@ -35,7 +34,6 @@ const App: React.FC = () => {
           </Routes>
         </Router>
       </div>
-    </AuthProvider>
   );
 };
 

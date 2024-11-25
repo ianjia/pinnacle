@@ -1,7 +1,7 @@
-import { Gender, Race, Ranking, Residency_Status } from "./student_structure";
+import { Gender, Race, Ranking, Resident_State, Residency_Status } from "./student_structure";
 
 export interface StudentProfile {
-    id: string;
+    id: string; // the user_id retrieved during log-in
     name?: string;
     race?: Race;
     school?: string;
@@ -11,7 +11,7 @@ export interface StudentProfile {
     alumni_legacy?: string;  // Format would be like "University 1; University 2", as student's parents might graduate from different colleges
     firstGenerationStudent?: boolean;
     needFinancialAid?: boolean;
-    residenceState?: string;
+    residenceState?: Resident_State;
     residency_status?: Residency_Status
   }
 
