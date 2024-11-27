@@ -14,8 +14,7 @@ export const useStyles = makeStyles({
     marginBottom: '32px',
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    textAlign: 'left',
-    paddingLeft: '8px',
+    paddingLeft: '0px',
   },
   grid: {
     display: 'grid !important', // Force priority

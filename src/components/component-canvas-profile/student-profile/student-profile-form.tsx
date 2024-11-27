@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, selectedProfileActions } from '../../../store';
 import {
@@ -12,16 +12,22 @@ import { Race, Gender, Residency_Status, Resident_State, Ranking, StudentProfile
 import { getStudent, updateStudent } from '../../component-service-proxy';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { useStyles } from './student-profile-form.styles';
+import { AuthContext } from '../../../auth';
 
 export const StudentProfileForm: React.FC = () => {
   const dispatch = useDispatch();
+  const { userId } = useContext(AuthContext);
   const student = useSelector((state: RootState) => state.selectedProfile.studentData);
 
   useEffect(() => {
     const fetchData = async () => {
-      const userId = '123'; // Replace with actual user ID from login context
-    //   const data = await getStudent(userId);
-    //   dispatch(selectedProfileActions.setStudentData(data));
+      try {
+        const data = await getStudent(userId as number);
+        dispatch(selectedProfileActions.setStudentData(data));
+      } 
+      catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, [dispatch]);
@@ -41,7 +47,7 @@ export const StudentProfileForm: React.FC = () => {
   return (
     <div className = {styles.container}>
       <Card className = {styles.card}>
-        <h2 className = {styles.header}>
+        <h2 className = {styles.header} style={{ textAlign: 'left' }}>
             Basic Information
         </h2>
         <CardPreview>
@@ -99,7 +105,7 @@ export const StudentProfileForm: React.FC = () => {
         </CardPreview>
       </Card>
       <Card className = {styles.card}>
-        <h2 className = {styles.header}>
+        <h2 className = {styles.header} style={{ textAlign: 'left' }}>
           Extended Information
         </h2>
         <CardPreview>

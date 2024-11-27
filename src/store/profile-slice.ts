@@ -10,7 +10,7 @@ interface selectedProfileState {
 const initialState: selectedProfileState = {
     activeProfile: ProfileType.Student,
     studentData: {
-        id: '',
+        id: 0,
         name: '',
         race: undefined,
         school: '',

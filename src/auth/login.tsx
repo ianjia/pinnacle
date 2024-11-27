@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, setAuthToken } from './api';
 import { store } from '../store';
+import { AuthContext } from './auth-context';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { loginUser } = useContext(AuthContext);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await api.post('/login', { email, password });
       const { token } = response.data;
-      setAuthToken(token, store.dispatch);
+      loginUser(token); // Update context with the new token
       navigate('/home');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');

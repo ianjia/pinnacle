@@ -1,19 +1,21 @@
 import { api } from "../../../auth";
 import { StudentProfile } from "../../../shared";
 
+const STUDENT_END_POINT_PATH: string = "/api/v1/query/student";
+
 // Create a new student
 export async function createStudent(student: StudentProfile): Promise<void> {
   try {
-    await api.post('/students', student);
+    await api.post(STUDENT_END_POINT_PATH, student);
   } catch (error: any) {
     throw new Error(`Failed to create student: ${error.response?.data?.detail || error.message}`);
   }
 }
 
 // Get a student by ID
-export async function getStudent(userId: string): Promise<StudentProfile> {
+export async function getStudent(userId: number): Promise<StudentProfile> {
   try {
-    const response = await api.get<StudentProfile>(`/students/${userId}`);
+    const response = await api.get<StudentProfile>(`${STUDENT_END_POINT_PATH}/${userId}`);
     return response.data;
   } catch (error: any) {
     throw new Error(`Failed to fetch student: ${error.response?.data?.detail || error.message}`);
@@ -23,16 +25,16 @@ export async function getStudent(userId: string): Promise<StudentProfile> {
 // Update a student
 export async function updateStudent(student: StudentProfile): Promise<void> {
   try {
-    await api.put(`/students/${student.id}`, student);
+    await api.put(`${STUDENT_END_POINT_PATH}/${student.id}`, student);
   } catch (error: any) {
     throw new Error(`Failed to update student: ${error.response?.data?.detail || error.message}`);
   }
 }
 
 // Delete a student
-export async function deleteStudent(userId: string): Promise<void> {
+export async function deleteStudent(userId: number): Promise<void> {
   try {
-    await api.delete(`/students/${userId}`);
+    await api.delete(`${STUDENT_END_POINT_PATH}/${userId}`);
   } catch (error: any) {
     throw new Error(`Failed to delete student: ${error.response?.data?.detail || error.message}`);
   }
@@ -41,7 +43,7 @@ export async function deleteStudent(userId: string): Promise<void> {
 // Get all students
 export async function getAllStudents(): Promise<StudentProfile[]> {
   try {
-    const response = await api.get<StudentProfile[]>('/students');
+    const response = await api.get<StudentProfile[]>(STUDENT_END_POINT_PATH);
     return response.data;
   } catch (error: any) {
     throw new Error(`Failed to fetch students: ${error.response?.data?.detail || error.message}`);

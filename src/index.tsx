@@ -8,7 +8,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider, initializeAuthToken } from './auth';
 
-initializeAuthToken(store.dispatch);
+initializeAuthToken();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,11 +17,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider>
-    <FluentProvider theme={webLightTheme}>
-    <Provider store={store}>
-      <App />
-    </Provider>
-    </FluentProvider>,
+      <FluentProvider theme={webLightTheme}>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </FluentProvider>,
     </AuthProvider>
   </React.StrictMode>
 );
