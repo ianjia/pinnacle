@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, selectedProfileActions } from '../../../store';
 import {
@@ -9,71 +9,52 @@ import {
   CardPreview,
 } from '@fluentui/react-components';
 import { Race, Gender, Residency_Status, Resident_State, Ranking, StudentProfile } from '../../../shared';
-import { createStudent, getStudent, updateStudent } from '../../component-service-proxy';
+import { updateStudent } from '../../component-service-proxy';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { useStyles } from './student-profile-form.styles';
 import { AuthContext } from '../../../auth';
 import { logError } from '../../../util';
-import axios from 'axios';
 
 export const StudentProfileForm: React.FC = () => {
   const dispatch = useDispatch();
   const { userId } = useContext(AuthContext);
+  
+  // Get Redux values at the beginning of the component
   const student = useSelector((state: RootState) => state.selectedProfile.studentData);
+  const race = useSelector((state: RootState) => state.selectedProfile.studentData.race);
+  const gender = useSelector((state: RootState) => state.selectedProfile.studentData.gender);
+  const residencyStatus = useSelector((state: RootState) => state.selectedProfile.studentData.residency_status);
+  const residenceState = useSelector((state: RootState) => state.selectedProfile.studentData.residenceState);
+  const classRank = useSelector((state: RootState) => state.selectedProfile.studentData.classRank);
+  const firstGenerationStudent = useSelector(
+    (state: RootState) => state.selectedProfile.studentData.firstGenerationStudent
+  );
+  const needFinancialAid = useSelector(
+    (state: RootState) => state.selectedProfile.studentData.needFinancialAid
+  );
 
-  // Initialize states with empty strings to avoid controlled/uncontrolled warnings
-  const [name, setName] = useState<string>('');
-  const [birthDate, setBirthDate] = useState<string>('');
-  const [school, setSchool] = useState<string>('');
-  const [alumniLegacy, setAlumniLegacy] = useState<string>('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getStudent(userId as number);
-        dispatch(selectedProfileActions.setStudentData(data));
-
-        // Update states with fetched data
-        setName(data.name || '');
-        setBirthDate(data.birthDate || '');
-        setSchool(data.school || '');
-        setAlumniLegacy(data.alumni_legacy || '');
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          if (error.response && error.response.status === 404 && error.response.data.detail === "Student not found") {
-            dispatch(selectedProfileActions.updateStudentField({ field: 'id', value: userId as number }));
-            try {
-              await createStudent(student);
-            } catch (e: unknown) {
-              logError(e);
-            }
-          }
-        }
-        logError(error);
-      }
-    };
-    fetchData();
-  }, [dispatch]);
+  // Local states for other fields
+  const [name, setName] = useState<string>(student.name || '');
+  const [birthDate, setBirthDate] = useState<string>(student.birthDate ||'');
+  const [school, setSchool] = useState<string>(student.school || '');
+  const [alumniLegacy, setAlumniLegacy] = useState<string>(student.alumni_legacy || '');
 
   const handleBlur = async (field: keyof StudentProfile, value: any) => {
-    // Validation logic
     if (field === 'birthDate') {
-        const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getTime());
-        if (!isValidDate) {
-            alert('Birth Date must be in the format YYYY-MM-DD. Please provide a valid date.');
-            return;
-        }
-
-        // Convert empty string to null
-        value = value === '' ? null : value;
+      const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getTime());
+      if (!isValidDate) {
+        alert('Birth Date must be in the format YYYY-MM-DD. Please provide a valid date.');
+        return;
+      }
+      value = value === '' ? null : value;
     }
 
     try {
-        dispatch(selectedProfileActions.updateStudentField({ field, value }));
-        await updateStudent({ ...student, [field]: value });
+      dispatch(selectedProfileActions.updateStudentField({ field, value }));
+      await updateStudent({ ...student, [field]: value });
     } catch (error: unknown) {
-        logError(error);
-        alert('Retry'); // replace with Dialog
+      logError(error);
+      alert('Retry'); // Replace with a dialog
     }
   };
 
@@ -99,7 +80,7 @@ export const StudentProfileForm: React.FC = () => {
               <DropdownCustom
                 options={Race}
                 onOptionSelect={(e, option) => handleBlur('race', option.optionValue as Race)}
-                value={student.race}
+                value={race}
                 placeHolder="Select race"
               />
             </Field>
@@ -107,7 +88,7 @@ export const StudentProfileForm: React.FC = () => {
               <DropdownCustom
                 options={Gender}
                 onOptionSelect={(e, option) => handleBlur('gender', option.optionValue as Gender)}
-                value={student.gender}
+                value={gender}
                 placeHolder="Select gender"
               />
             </Field>
@@ -123,16 +104,20 @@ export const StudentProfileForm: React.FC = () => {
             <Field label="Residency Status" className={styles.field}>
               <DropdownCustom
                 options={Residency_Status}
-                onOptionSelect={(e, option) => handleBlur('residency_status', option.optionValue as Residency_Status)}
-                value={student.residency_status}
+                onOptionSelect={(e, option) =>
+                  handleBlur('residency_status', option.optionValue as Residency_Status)
+                }
+                value={residencyStatus}
                 placeHolder="Select residency status"
               />
             </Field>
             <Field label="Residence State" className={styles.field}>
               <DropdownCustom
                 options={Resident_State}
-                onOptionSelect={(e, option) => handleBlur('residenceState', option.optionValue as Resident_State)}
-                value={student.residenceState}
+                onOptionSelect={(e, option) =>
+                  handleBlur('residenceState', option.optionValue as Resident_State)
+                }
+                value={residenceState}
                 placeHolder="Select residence state"
               />
             </Field>
@@ -156,8 +141,10 @@ export const StudentProfileForm: React.FC = () => {
             <Field label="Class Rank" className={styles.field}>
               <DropdownCustom
                 options={Ranking}
-                onOptionSelect={(e, option) => handleBlur('classRank', option.optionValue as Ranking)}
-                value={student.classRank}
+                onOptionSelect={(e, option) =>
+                  handleBlur('classRank', option.optionValue as Ranking)
+                }
+                value={classRank}
                 placeHolder="Select class ranking"
               />
             </Field>
@@ -171,13 +158,15 @@ export const StudentProfileForm: React.FC = () => {
             </Field>
             <Field label="First Generation Student" className={styles.field}>
               <Switch
-                checked={student.firstGenerationStudent || false}
-                onChange={(e, data) => handleBlur('firstGenerationStudent', data.checked)}
+                checked={firstGenerationStudent || false}
+                onChange={(e, data) =>
+                  handleBlur('firstGenerationStudent', data.checked)
+                }
               />
             </Field>
             <Field label="Need Financial Aid" className={styles.field}>
               <Switch
-                checked={student.needFinancialAid || false}
+                checked={needFinancialAid || false}
                 onChange={(e, data) => handleBlur('needFinancialAid', data.checked)}
               />
             </Field>

@@ -1,15 +1,26 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api, setAuthToken } from './api';
-import { store } from '../store';
+import { api } from './api';
 import { AuthContext } from './auth-context';
+import { useLoadData } from '../init';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // New state to track login
   const navigate = useNavigate();
-  const { loginUser } = useContext(AuthContext);
+  const { loginUser, userId } = useContext(AuthContext);
+
+  // Get the load data function
+  const loadData = useLoadData();
+
+  useEffect(() => {
+    if (isLoggedIn && userId != null) {
+      loadData(userId); // Call the returned function to load data
+      navigate('/home'); // Navigate after loading data
+    }
+  }, [isLoggedIn, userId, loadData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +28,7 @@ export const Login: React.FC = () => {
       const response = await api.post('/login', { email, password });
       const { token } = response.data;
       loginUser(token); // Update context with the new token
-      navigate('/home');
+      setIsLoggedIn(true); // Set login status
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
     }
@@ -48,7 +59,7 @@ export const Login: React.FC = () => {
       </form>
       <div style={styles.registerContainer}>
         <button onClick={() => navigate('/register')} style={styles.button}>
-            Register
+          Register
         </button>
       </div>
     </div>
