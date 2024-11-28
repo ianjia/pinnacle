@@ -18,7 +18,8 @@ export async function getStudent(userId: number): Promise<StudentProfile> {
     const response = await api.get<StudentProfile>(`${STUDENT_END_POINT_PATH}/${userId}`);
     return response.data;
   } catch (error: any) {
-    throw new Error(`Failed to fetch student: ${error.response?.data?.detail || error.message}`);
+    throw error; // Keep the original error, to let logic in student_profile_form to handle, might need to revisit
+    // throw new Error(`Failed to fetch student: ${error.response?.data?.detail || error.message}`);
   }
 }
 

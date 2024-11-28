@@ -15,7 +15,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode> // !!!!!!!!!!@Todo, temp disable strict mode to prevent dup call trigger in like react userEffect, will enable later.
     <AuthProvider>
       <FluentProvider theme={webLightTheme}>
         <Provider store={store}>
@@ -23,7 +23,7 @@ root.render(
         </Provider>
       </FluentProvider>,
     </AuthProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

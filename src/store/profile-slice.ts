@@ -16,7 +16,7 @@ const initialState: selectedProfileState = {
         school: '',
         classRank: undefined,
         gender: undefined,
-        birthDate: '',
+        birthDate: undefined,
         alumni_legacy: '',
         firstGenerationStudent: false,
         needFinancialAid: false,
