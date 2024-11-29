@@ -10,26 +10,26 @@ export function createService<T>(endpoint: string) {
       }
     },
 
-    async getById(id: number): Promise<T> {
+    async getById(user_id: number): Promise<T> {
       try {
-        const response = await api.get<T>(`${endpoint}/${id}`);
+        const response = await api.get<T>(`${endpoint}/${user_id}`);
         return response.data;
       } catch (error: any) {
         throw error; // Let calling logic handle the original error, mainly to let logic in init load model(useLoadData) to handle, create one if none found, might need to revist
       }
     },
 
-    async update(item: T & { id: number }): Promise<void> {
+    async update(item: T & { user_id: number }): Promise<void> {
       try {
-        await api.put(`${endpoint}/${item.id}`, item);
+        await api.put(`${endpoint}/${item.user_id}`, item);
       } catch (error: any) {
         throw new Error(`Failed to update record: ${error.response?.data?.detail || error.message}`);
       }
     },
 
-    async deleteById(id: number): Promise<void> {
+    async deleteById(user_id: number): Promise<void> {
       try {
-        await api.delete(`${endpoint}/${id}`);
+        await api.delete(`${endpoint}/${user_id}`);
       } catch (error: any) {
         throw new Error(`Failed to delete record: ${error.response?.data?.detail || error.message}`);
       }

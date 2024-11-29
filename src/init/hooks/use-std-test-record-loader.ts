@@ -19,7 +19,7 @@ export function useStdTestRecordLoader() {
                 // Handle the case where no record is found
                 if (error.response && error.response.status === 404 && error.response.data.detail === NO_RECORD_FOUND) {
                     // Update the Redux store with the new userId
-                    dispatch(selectedProfileActions.updateStandardizedTestField({ field: 'id', value: userId }));
+                    dispatch(selectedProfileActions.updateStandardizedTestField({ field: 'user_id', value: userId }));
 
                     // Retrieve the updated state after dispatch
                     const updatedStdTestRecord = {

@@ -12,7 +12,7 @@ interface selectedProfileState {
 const initialState: selectedProfileState = {
     activeProfile: ProfileType.Student,
     studentData: {
-        id: 0,
+        user_id: 0,
         name: '',
         race: undefined,
         school: '',
@@ -26,12 +26,12 @@ const initialState: selectedProfileState = {
         residency_status: undefined,
       },
     standardizedTest: {
-        id: 0,
+        user_id: 0,
         act: undefined,
         sat: undefined,
     },
     gpa: {
-        id: 0,
+        user_id: 0,
         ninth: undefined,
         tenth: undefined,
         eleventh: undefined,

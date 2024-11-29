@@ -1,7 +1,7 @@
 import { Gender, Race, Ranking, Resident_State, Residency_Status } from "./student_structure";
 
 export interface StudentProfile {
-    id: number; // the user_id retrieved during log-in
+    user_id: number; // the user_id retrieved during log-in
     name?: string;
     race?: Race;
     school?: string;
