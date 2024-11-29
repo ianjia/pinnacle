@@ -17,8 +17,15 @@ export function useStudentProfileLoader() {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.status === 404 && error.response.data.detail === NO_RECORD_FOUND) {
                     dispatch(selectedProfileActions.updateStudentField({ field: 'id', value: userId }));
+
+                    // Retrieve the updated state after dispatch
+                    const updatedStudentRecord = {
+                        ...student,
+                        id: userId, // Manually ensure the id is up-to-date
+                    };
+
                     try {
-                        await studentService.create(student);
+                        await studentService.create(updatedStudentRecord);
                     } catch (e: unknown) {
                         logError(e);
                     }

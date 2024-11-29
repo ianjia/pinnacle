@@ -9,8 +9,8 @@ export function useLoadData() {
 
     // Return a callable function
     return async (userId: number): Promise<void> => {
-        await loadStudentProfile(userId);
-        await loadStdTestRecordProfile(userId);
         await loadGpaRecordProfile(userId);
+        await loadStdTestRecordProfile(userId);
+        await loadStudentProfile(userId);
     };
 }

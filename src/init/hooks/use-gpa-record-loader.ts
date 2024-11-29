@@ -17,8 +17,15 @@ export function useGpaRecordLoader() {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.status === 404 && error.response.data.detail === NO_RECORD_FOUND) {
                     dispatch(selectedProfileActions.updateGpaField({ field: 'id', value: userId }));
+
+                    // Retrieve the updated state after dispatch
+                    const updatedGpaRecord = {
+                        ...gpaRecord,
+                        id: userId, // Manually ensure the id is up-to-date
+                    };
+
                     try {
-                        await gpaService.create(gpaRecord);
+                        await gpaService.create(updatedGpaRecord);
                     } catch (e: unknown) {
                         logError(e);
                     }

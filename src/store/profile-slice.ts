@@ -1,7 +1,6 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GPA, ProfileType, StudentProfile } from '../shared';
-import { StandardizedTest } from '../shared/model/standardized-test';
+import { GPA, ProfileType, StandardizedTest, StudentProfile } from '../shared';
 
 interface selectedProfileState {
     activeProfile: ProfileType;

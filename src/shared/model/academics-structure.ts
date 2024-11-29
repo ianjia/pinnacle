@@ -1,3 +1,10 @@
+
+export interface StandardizedTest {
+    id: number; // the user_id retrieved during log-in
+    sat?: number;
+    act?: number;
+}
+
 export interface GPA {
     id: number; // the user_id retrieved during log-in
     ninth?: number;
@@ -6,3 +13,4 @@ export interface GPA {
     twelfth?: number;
     overall?: number;
   }
+

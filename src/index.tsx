@@ -15,7 +15,7 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <AuthProvider>
       <FluentProvider theme={webLightTheme}>
         <Provider store={store}>
@@ -23,7 +23,7 @@ root.render(
         </Provider>
       </FluentProvider>,
     </AuthProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
