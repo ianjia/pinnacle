@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, selectedProfileActions } from '../../../store';
 import {
@@ -9,15 +9,13 @@ import {
   CardPreview,
 } from '@fluentui/react-components';
 import { Race, Gender, Residency_Status, Resident_State, Ranking, StudentProfile } from '../../../shared';
-import { updateStudent } from '../../component-service-proxy';
+import { studentService } from '../../component-service-proxy';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { useStyles } from './student-profile-form.styles';
-import { AuthContext } from '../../../auth';
 import { logError } from '../../../util';
 
 export const StudentProfileForm: React.FC = () => {
   const dispatch = useDispatch();
-  const { userId } = useContext(AuthContext);
   
   // Get Redux values at the beginning of the component
   const student = useSelector((state: RootState) => state.selectedProfile.studentData);
@@ -43,7 +41,7 @@ export const StudentProfileForm: React.FC = () => {
     if (field === 'birthDate') {
       const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getTime());
       if (!isValidDate) {
-        alert('Birth Date must be in the format YYYY-MM-DD. Please provide a valid date.');
+        alert('Please provide a valid date.');
         return;
       }
       value = value === '' ? null : value;
@@ -51,7 +49,7 @@ export const StudentProfileForm: React.FC = () => {
 
     try {
       dispatch(selectedProfileActions.updateStudentField({ field, value }));
-      await updateStudent({ ...student, [field]: value });
+      await studentService.update({ ...student, [field]: value });
     } catch (error: unknown) {
       logError(error);
       alert('Retry'); // Replace with a dialog

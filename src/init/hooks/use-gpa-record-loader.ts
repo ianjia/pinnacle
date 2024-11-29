@@ -1,24 +1,24 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { studentService } from "../../components/component-service-proxy";
 import { RootState, selectedProfileActions } from "../../store";
 import axios from 'axios';
 import { logError } from '../../util';
 import { NO_RECORD_FOUND } from '../../shared';
+import { gpaService } from '../../components/component-service-proxy';
 
-export function useStudentProfileLoader() {
+export function useGpaRecordLoader() {
     const dispatch = useDispatch();
-    const student = useSelector((state: RootState) => state.selectedProfile.studentData);
+    const gpaRecord = useSelector((state: RootState) => state.selectedProfile.gpa);
 
-    const loadStudentProfile = async (userId: number): Promise<void> => {
+    const loadGpaRecordProfile = async (userId: number): Promise<void> => {
         try {
-            const data = await studentService.getById(userId);
-            dispatch(selectedProfileActions.setStudentData(data));
+            const data = await gpaService.getById(userId);
+            dispatch(selectedProfileActions.setGpaRecord(data));
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
                 if (error.response && error.response.status === 404 && error.response.data.detail === NO_RECORD_FOUND) {
-                    dispatch(selectedProfileActions.updateStudentField({ field: 'id', value: userId }));
+                    dispatch(selectedProfileActions.updateGpaField({ field: 'id', value: userId }));
                     try {
-                        await studentService.create(student);
+                        await gpaService.create(gpaRecord);
                     } catch (e: unknown) {
                         logError(e);
                     }
@@ -28,5 +28,5 @@ export function useStudentProfileLoader() {
         }
     };
 
-    return { loadStudentProfile };
+    return { loadGpaRecordProfile };
 }
