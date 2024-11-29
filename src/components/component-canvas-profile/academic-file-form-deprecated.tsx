@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './academic-file-form.css';  // Import external CSS file
+import './academic-file-form-deprecated.css';  // Import external CSS file
 
 enum CourseType {
   AP = 'AP',
