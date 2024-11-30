@@ -1,7 +1,7 @@
 import React from "react";
 import { Dropdown, Option } from "@fluentui/react-components";
 import { DropDownCustomTypes } from "./drop-down-custom.types";
-import { useStyles } from "./drop-down-custom.styles";
+import { useStyles} from "./drop-down-custom.styles";
 
 export const DropdownCustom: React.FC<DropDownCustomTypes> = ({
     options,
@@ -12,24 +12,25 @@ export const DropdownCustom: React.FC<DropDownCustomTypes> = ({
     const styles = useStyles();
 
     const showPlaceHolder: boolean = value === "" || value === undefined;
-    const placeHolderStr: string = placeHolder === undefined ? "" : placeHolder;
+    const placeHolderStr: string = placeHolder !== undefined ? String(placeHolder) : "";
 
     // Render options directly from the enum
-    const renderedOptions = Object.values(options).map((option) => (
-        <Option key={option} text={String(option)}>
-            {option}
+    const renderedOptions = Object.entries(options).map(([key, val]) => (
+        <Option key={key} text={String(val)}>
+            {val}
         </Option>
     ));
 
     return (
         <Dropdown
-            className = {styles.root}
+            className={styles.root}
             placeholder={showPlaceHolder ? placeHolderStr : undefined}
             onOptionSelect={onOptionSelect}
-            defaultSelectedOptions={!showPlaceHolder ? [value as string] : undefined}
-            defaultValue={!showPlaceHolder ? value as string : undefined}
+            defaultSelectedOptions={!showPlaceHolder ? [String(value)] : undefined}
+            defaultValue={!showPlaceHolder ? String(value) : undefined}
         >
             {renderedOptions}
         </Dropdown>
     );
 };
+

@@ -1,6 +1,6 @@
 import { SchoolYear } from "./common-types";
 
-enum CourseType {
+export enum CourseType {
     AP = "AP",
     DUAL_ENROLLMENT = "Dual Enrollment",
     HONOR = "Honor",
@@ -8,7 +8,7 @@ enum CourseType {
     REGULAR = "Regular",
   }
   
-enum CourseGrade {
+export enum CourseGrade {
     A_PLUS = 'A+',
     A = 'A',
     A_MINUS = 'A-',
@@ -25,7 +25,7 @@ enum CourseGrade {
     N = 'Not Available Yet',
   }
   
-enum Score_IB {
+export enum Score_IB {
     ONE = 1,
     TWO = 2,
     THREE = 3,
@@ -35,7 +35,7 @@ enum Score_IB {
     SEVEN = 7,
   }
 
-enum Score_AP_Exam {
+export enum Score_AP_Exam {
     ONE = 1,
     TWO = 2,
     THREE = 3,

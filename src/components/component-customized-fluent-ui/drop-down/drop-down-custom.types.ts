@@ -1,10 +1,10 @@
-import type { SelectionEvents,  OptionOnSelectData} from "@fluentui/react-components";
+import type { SelectionEvents, OptionOnSelectData } from "@fluentui/react-components";
 
 type EnumOptions = Record<string, string | number>;
 
 export type DropDownCustomTypes = {
-    options: EnumOptions; // Now can accept enums directly
+    options: EnumOptions; // Accepts enums directly
     onOptionSelect: (event: SelectionEvents, data: OptionOnSelectData) => void;
-    value: string | undefined;
-    placeHolder?: string;
+    value: string | number | undefined; // Updated to include `number`
+    placeHolder?: string | number; // Updated to include `number`
 };
