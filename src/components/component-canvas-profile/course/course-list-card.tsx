@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Card,
   Button,
@@ -25,6 +25,32 @@ interface CourseListCardProps {
   onDeleteCourse: (courseId: number) => void;
 }
 
+const CourseNameCell: React.FC<{
+    value: string;
+    onUpdate: (updatedValue: string) => void;
+    className?: string; // Accept a className prop for styling
+  }> = ({ value, onUpdate, className }) => {
+    const [inputValue, setInputValue] = useState(value || '');
+  
+    const handleBlur = () => {
+      if (inputValue.trim() === '') {
+        alert('Course Name cannot be empty!');
+      } else if (inputValue !== value) {
+        onUpdate(inputValue);
+      }
+    };
+  
+    return (
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onBlur={handleBlur}
+        className={className} // Apply the passed className
+      />
+    );
+  };  
+
 export const CourseListCard: React.FC<CourseListCardProps> = ({
   courseList,
   onAddCourse,
@@ -35,20 +61,20 @@ export const CourseListCard: React.FC<CourseListCardProps> = ({
 
   const columns: TableColumnDefinition<Course>[] = [
     createTableColumn<Course>({
-      columnId: 'name',
-      compare: (a, b) => (a.name || '').localeCompare(b.name || ''),
-      renderHeaderCell: () => 'Course Name',
-      renderCell: (item) => (
-        <TableCellLayout className={styles.cell}>
-          <input
-            type="text"
-            value={item.name || ''}
-            onChange={(e) => onUpdateCourse({ ...item, name: e.target.value })}
-            className={styles.input}
-          />
-        </TableCellLayout>
-      ),
-    }),
+        columnId: 'name',
+        compare: (a, b) => (a.name || '').localeCompare(b.name || ''),
+        renderHeaderCell: () => 'Course Name',
+        renderCell: (item) => (
+          <TableCellLayout className={styles.cell}>
+            <CourseNameCell
+              value={item.name || ''}
+              onUpdate={(updatedValue) => onUpdateCourse({ ...item, name: updatedValue })}
+              className={styles.input} // Pass the input style here
+            />
+          </TableCellLayout>
+        ),
+      }),
+      
     createTableColumn<Course>({
       columnId: 'type',
       compare: (a, b) => (a.type || '').localeCompare(b.type || ''),
