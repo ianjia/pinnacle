@@ -12,7 +12,7 @@ import {
 import { selectedProfileActions, RootState, AppDispatch } from '../../store';
 import { ProfileType } from '../../shared';
 
-export const ProfileNavPaneNewUX: React.FC = () => {
+export const ProfileNavPane: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const activeProfile = useSelector((state: RootState) => state.selectedProfile.activeProfile);
 
@@ -26,7 +26,6 @@ export const ProfileNavPaneNewUX: React.FC = () => {
         <div
             style={{
                 width: "250px",
-                borderRight: "1px solid #e0e0e0",
                 padding: "16px",
                 overflowY: "auto",
             }}

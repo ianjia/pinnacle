@@ -6,8 +6,7 @@ import { InteractionCollegeNav } from '../component-left-pane-college-nav';
 import { InteractionCollegeListPane } from '../component-left-pane-college-list';
 import { InteractionCommitteeReview } from '../component-left-pane-committe-review';
 import { InteractionInterview } from '../component-interaction-interview';
-import { ProfileNavPaneNewUX } from '../component-left-pane-profile';
-//import { ProfileNavPane } from '../component-left-pane-profile';
+import { ProfileNavPane } from '../component-left-pane-profile';
 import { EssayWorkshopPane } from '../component-left-pane-essay';
 
 export const LeftContentPane: React.FC = () => {
@@ -15,7 +14,7 @@ export const LeftContentPane: React.FC = () => {
 
     return (
         <div className="container">
-          { activeTab === NavTabType.Profile && (<ProfileNavPaneNewUX/>)}
+          { activeTab === NavTabType.Profile && (<ProfileNavPane/>)}
            { activeTab === NavTabType.CollegeNavigatoin && (<InteractionCollegeNav/>)}
            { activeTab === NavTabType.CollegeList && (<InteractionCollegeListPane/>)}
            { activeTab === NavTabType.ComitteReview && (<InteractionCommitteeReview/>)}
