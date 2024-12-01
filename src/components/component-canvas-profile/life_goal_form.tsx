@@ -1,7 +1,7 @@
 // Component: LifeAndGoalsForm.tsx
 
 import React, { useState, useRef } from 'react';
-import './academic-file-form-deprecated'; // Reusing the same CSS file
+import './academic-file-form-deprecated.css'; // Reusing the same CSS file
 
 export interface ILifeStory {
   story: string;

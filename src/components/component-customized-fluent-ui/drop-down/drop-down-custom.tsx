@@ -14,12 +14,14 @@ export const DropdownCustom: React.FC<DropDownCustomTypes> = ({
     const showPlaceHolder: boolean = value === "" || value === undefined;
     const placeHolderStr: string = placeHolder !== undefined ? String(placeHolder) : "";
 
-    // Render options directly from the enum
-    const renderedOptions = Object.entries(options).map(([key, val]) => (
-        <Option key={key} text={String(val)}>
-            {val}
-        </Option>
-    ));
+    // Filter out reverse mappings in numeric enums
+    const renderedOptions = Object.values(options)
+        .filter((val) => typeof val === "number") // Only include numeric values
+        .map((val) => (
+            <Option key={String(val)} text={String(val)}>
+                {val}
+            </Option>
+        ));
 
     return (
         <Dropdown

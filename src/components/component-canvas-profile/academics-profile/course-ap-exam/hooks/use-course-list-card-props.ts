@@ -2,9 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, selectedProfileActions } from '../../../../../store';
 import { Course, SchoolYear } from "../../../../../shared";
 import { CourseListCardProps } from "../data-list-types";
+import { useContext } from 'react';
+import { AuthContext } from '../../../../../auth';
+import { courseService } from '../../../../component-service-proxy';
 
 export function useCourseListCardProps(grade: SchoolYear): CourseListCardProps {
     const dispatch = useDispatch();
+    const { userId } = useContext(AuthContext);
   
     const gradeMapping = {
       [SchoolYear.NINTH]: {
@@ -42,27 +46,31 @@ export function useCourseListCardProps(grade: SchoolYear): CourseListCardProps {
     return {
       title: 'Course List',
       courseList: useSelector(gradeConfig.courseListSelector),
-      onAddCourse: () => {
+      onAddCourse: async () => {
         const newCourse: Course = {
           id: Date.now(),
-          user_id: 0,
+          user_id: userId as number,
           name: '',
           type: undefined,
           grade: undefined,
           score: undefined,
         };
+        const id: number = await courseService.create(newCourse);
+        newCourse.id = id;
         dispatch(gradeConfig.addAction(newCourse));
       },
-      onUpdateCourse: (updatedCourse: Course) => {
+      onUpdateCourse: async (updatedCourse: Course) => {
         dispatch(
           gradeConfig.updateAction({
             id: updatedCourse.id,
             course: updatedCourse,
           })
         );
+        await courseService.update(updatedCourse);
       },
-      onDeleteCourse: (courseId: number) => {
+      onDeleteCourse: async (courseId: number) => {
         dispatch(gradeConfig.deleteAction(courseId));
+        await courseService.deleteById(courseId);
       },
     };
   }

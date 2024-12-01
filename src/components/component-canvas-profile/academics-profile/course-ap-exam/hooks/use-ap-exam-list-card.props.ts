@@ -2,9 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, selectedProfileActions } from '../../../../../store';
 import { ApExam, SchoolYear } from "../../../../../shared";
 import { ApExamListCardProps } from "../data-list-types";
+import { apExamService } from '../../../../component-service-proxy';
+import { useContext } from 'react';
+import { AuthContext } from '../../../../../auth';
 
 export function useApExamListCardProps(grade: SchoolYear): ApExamListCardProps {
   const dispatch = useDispatch();
+  const { userId } = useContext(AuthContext);
 
   const gradeMapping = {
     [SchoolYear.NINTH]: {
@@ -42,26 +46,30 @@ export function useApExamListCardProps(grade: SchoolYear): ApExamListCardProps {
   return {
     title: 'AP Exam List',
     apExamList: useSelector(gradeConfig.apExamListSelector),
-    onAddApExam: () => {
+    onAddApExam: async () => {
       const newApExam: ApExam = {
         id: Date.now(),
-        user_id: 0,
+        user_id: userId as number,
         name: '',
         year: undefined,
         score: undefined,
       };
+      const id: number = await apExamService.create(newApExam);
+      newApExam.id = id;
       dispatch(gradeConfig.addAction(newApExam));
     },
-    onUpdateApExam: (updatedApExam: ApExam) => {
+    onUpdateApExam: async (updatedApExam: ApExam) => {
       dispatch(
         gradeConfig.updateAction({
           id: updatedApExam.id,
           exam: updatedApExam,
         })
       );
+      await apExamService.update(updatedApExam);
     },
-    onDeleteApExam: (apExamId: number) => {
+    onDeleteApExam: async (apExamId: number) => {
       dispatch(gradeConfig.deleteAction(apExamId));
+      await apExamService.deleteById(apExamId);
     },
   };
 }

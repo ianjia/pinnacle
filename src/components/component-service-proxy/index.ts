@@ -1,4 +1,5 @@
 export * from "./query/query-services";
+export * from "./queryinc/queryinc-services";
 export * from "./task/use-task-runner";
 export * from "./port-url-config";
 export * from "./task/basic-types";
