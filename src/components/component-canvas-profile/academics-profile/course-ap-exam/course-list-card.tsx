@@ -14,16 +14,10 @@ import {
   mergeClasses,
 } from '@fluentui/react-components';
 import { Add20Regular, Delete20Regular } from '@fluentui/react-icons';
-import { Course, CourseType, CourseGrade, Score_IB } from '../../../shared';
-import { DropdownCustom } from '../../component-customized-fluent-ui';
-import { useStyles } from './couse-list-styles';
-
-interface CourseListCardProps {
-  courseList: Course[];
-  onAddCourse: () => void;
-  onUpdateCourse: (updatedCourse: Course) => void;
-  onDeleteCourse: (courseId: number) => void;
-}
+import { Course, CourseType, CourseGrade, Score_IB } from '../../../../shared';
+import { DropdownCustom } from '../../../component-customized-fluent-ui';
+import { useStyles } from './data-list-styles';
+import { CourseListCardProps } from './data-list-types';
 
 const CourseNameCell: React.FC<{
     value: string;
@@ -52,6 +46,7 @@ const CourseNameCell: React.FC<{
   };  
 
 export const CourseListCard: React.FC<CourseListCardProps> = ({
+  title,
   courseList,
   onAddCourse,
   onUpdateCourse,
@@ -74,7 +69,7 @@ export const CourseListCard: React.FC<CourseListCardProps> = ({
           </TableCellLayout>
         ),
       }),
-      
+
     createTableColumn<Course>({
       columnId: 'type',
       compare: (a, b) => (a.type || '').localeCompare(b.type || ''),
@@ -144,8 +139,8 @@ export const CourseListCard: React.FC<CourseListCardProps> = ({
   ];
 
   return (
-    <Card className={styles.card}>
-      <h2 className={styles.header} style={{ textAlign: 'left' }}>Course List</h2>
+    <Card className={styles.subcard}>
+      <h2 className={styles.subcardheader} style={{ textAlign: 'left' }}>{title}</h2>
       <DataGrid
         items={courseList}
         columns={columns}

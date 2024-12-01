@@ -68,7 +68,7 @@ export interface Course {
     score?: Score_IB; 
   }
 
-export interface APExam {
+export interface ApExam {
     id: number; // auto inc id from database, unique identifier
     user_id: number;
     name?: string;

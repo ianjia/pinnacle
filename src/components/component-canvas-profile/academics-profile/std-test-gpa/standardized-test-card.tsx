@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../store';
+import { RootState, selectedProfileActions } from '../../../../store';
 import {
   Field,
   Input,
   Card,
   CardPreview,
 } from '@fluentui/react-components';
-import { StandardizedTest } from '../../../shared';
-import { stdTestService } from '../../component-service-proxy';
-import { useStyles } from './standardized-test-card.styles';
-import { logError } from '../../../util';
+import { StandardizedTest } from '../../../../shared';
+import { stdTestService } from '../../../component-service-proxy';
+import { useStyles } from './std-test-gpa.styles';
+import { logError } from '../../../../util';
 
 export const StandardizedTestCard: React.FC = () => {
     const dispatch = useDispatch();

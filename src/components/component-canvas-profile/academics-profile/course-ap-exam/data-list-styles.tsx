@@ -11,6 +11,16 @@ export const useStyles = makeStyles({
     fontWeight: 'bold',
     paddingLeft: '0px',
   },
+  subcard: {
+    marginBottom: '10px',
+    padding: '12px',
+  },
+  subcardheader: {
+    marginBottom: '8px',
+    fontSize: '1.2rem',
+    fontWeight: 'bold',
+    paddingLeft: '0px',
+  },
   row: {
     height: '50px',
     display: 'flex',

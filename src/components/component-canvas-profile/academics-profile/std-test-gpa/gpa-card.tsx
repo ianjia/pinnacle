@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../store';
+import { RootState, selectedProfileActions } from '../../../../store';
 import {
   Field,
   Input,
   Card,
   CardPreview,
 } from '@fluentui/react-components';
-import { GPA } from '../../../shared';
-import { gpaService } from '../../component-service-proxy';
-import { logError } from '../../../util';
-import { useStyles } from './gpa-card.styles';
+import { GPA } from '../../../../shared';
+import { gpaService } from '../../../component-service-proxy';
+import { logError } from '../../../../util';
+import { useStyles } from './std-test-gpa.styles';
 
 export const GpaCard: React.FC = () => {
     const dispatch = useDispatch();

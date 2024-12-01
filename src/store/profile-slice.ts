@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, APExam } from '../shared';
+import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, ApExam } from '../shared';
 
 interface selectedProfileState {
     activeProfile: ProfileType;
@@ -10,10 +10,10 @@ interface selectedProfileState {
     tenthGradeCourseList: Course[];
     eleventhGradeCourseList: Course[];
     twelfthGradeCourseList: Course[];
-    ninthGradeApExamList: APExam[];
-    tenthGradeApExamList: APExam[];
-    eleventhGradeApExamList: APExam[];
-    twelfthGradeApExamList: APExam[];
+    ninthGradeApExamList: ApExam[];
+    tenthGradeApExamList: ApExam[];
+    eleventhGradeApExamList: ApExam[];
+    twelfthGradeApExamList: ApExam[];
 }
 
 const initialState: selectedProfileState = {
@@ -108,13 +108,13 @@ const selectedProfileSlice = createSlice({
         },
 
         //  9th AP Exam List
-        setNinthGradeApExamList(state, action: PayloadAction<APExam[]>) {
+        setNinthGradeApExamList(state, action: PayloadAction<ApExam[]>) {
             state.ninthGradeApExamList = action.payload;
         },
-        addNinthGradeApExam(state, action: PayloadAction<APExam>) {
+        addNinthGradeApExam(state, action: PayloadAction<ApExam>) {
             state.ninthGradeApExamList.push(action.payload);
         },
-        updateNinthGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<APExam> }>) {
+        updateNinthGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<ApExam> }>) {
             const index = state.ninthGradeApExamList.findIndex(exam => exam.id === action.payload.id);
             if (index !== -1) {
                 state.ninthGradeApExamList[index] = { ...state.ninthGradeApExamList[index], ...action.payload.exam };
@@ -142,13 +142,13 @@ const selectedProfileSlice = createSlice({
         },
 
         // Tenth Grade AP Exam List Reducers
-        setTenthGradeApExamList(state, action: PayloadAction<APExam[]>) {
+        setTenthGradeApExamList(state, action: PayloadAction<ApExam[]>) {
             state.tenthGradeApExamList = action.payload;
         },
-        addTenthGradeApExam(state, action: PayloadAction<APExam>) {
+        addTenthGradeApExam(state, action: PayloadAction<ApExam>) {
             state.tenthGradeApExamList.push(action.payload);
         },
-        updateTenthGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<APExam> }>) {
+        updateTenthGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<ApExam> }>) {
             const index = state.tenthGradeApExamList.findIndex(exam => exam.id === action.payload.id);
             if (index !== -1) {
                 state.tenthGradeApExamList[index] = { ...state.tenthGradeApExamList[index], ...action.payload.exam };
@@ -176,13 +176,13 @@ const selectedProfileSlice = createSlice({
         },
 
         // Eleventh Grade AP Exam List Reducers
-        setEleventhGradeApExamList(state, action: PayloadAction<APExam[]>) {
+        setEleventhGradeApExamList(state, action: PayloadAction<ApExam[]>) {
             state.eleventhGradeApExamList = action.payload;
         },
-        addEleventhGradeApExam(state, action: PayloadAction<APExam>) {
+        addEleventhGradeApExam(state, action: PayloadAction<ApExam>) {
             state.eleventhGradeApExamList.push(action.payload);
         },
-        updateEleventhGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<APExam> }>) {
+        updateEleventhGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<ApExam> }>) {
             const index = state.eleventhGradeApExamList.findIndex(exam => exam.id === action.payload.id);
             if (index !== -1) {
                 state.eleventhGradeApExamList[index] = { ...state.eleventhGradeApExamList[index], ...action.payload.exam };
@@ -210,13 +210,13 @@ const selectedProfileSlice = createSlice({
         },
 
         // Twelfth Grade AP Exam List Reducers
-        setTwelfthGradeApExamList(state, action: PayloadAction<APExam[]>) {
+        setTwelfthGradeApExamList(state, action: PayloadAction<ApExam[]>) {
             state.twelfthGradeApExamList = action.payload;
         },
-        addTwelfthGradeApExam(state, action: PayloadAction<APExam>) {
+        addTwelfthGradeApExam(state, action: PayloadAction<ApExam>) {
             state.twelfthGradeApExamList.push(action.payload);
         },
-        updateTwelfthGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<APExam> }>) {
+        updateTwelfthGradeApExam(state, action: PayloadAction<{ id: number; exam: Partial<ApExam> }>) {
             const index = state.twelfthGradeApExamList.findIndex(exam => exam.id === action.payload.id);
             if (index !== -1) {
                 state.twelfthGradeApExamList[index] = { ...state.twelfthGradeApExamList[index], ...action.payload.exam };
