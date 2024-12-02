@@ -1,11 +1,6 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../store';
+import React from 'react';
 import {
-  Field,
-  Input,
   Card,
-  CardPreview,
 } from '@fluentui/react-components';
 import { ApExamListCardProps, CourseApExamCombinedCardProps, CourseListCardProps } from './data-list-types';
 import { useCourseListCardProps } from './hooks/use-course-list-card-props';
@@ -15,17 +10,17 @@ import { CourseListCard } from './course-list-card';
 import { ApExamListCard } from './ap-exam-list-card';
 
 export const CouseApExamCombinedCard: React.FC<CourseApExamCombinedCardProps> = ({
-    grade
+  school_year
   }) => {
-    const couseCardProps: CourseListCardProps = useCourseListCardProps(grade);
-    const apExamCardProps: ApExamListCardProps = useApExamListCardProps(grade);
+    const couseCardProps: CourseListCardProps = useCourseListCardProps(school_year);
+    const apExamCardProps: ApExamListCardProps = useApExamListCardProps(school_year);
 
     const styles = useStyles();
 
     return (
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
-          {grade}th Grade Work
+          {school_year}th Grade Work
         </h2>
         
         <CourseListCard

@@ -11,10 +11,10 @@ export const AcademicsProfileForm: React.FC = () => {
     <div className={styles.container}>
         <StandardizedTestCard/>
         <GpaCard/>
-        <CouseApExamCombinedCard grade = {SchoolYear.NINTH}/>
-        <CouseApExamCombinedCard grade = {SchoolYear.TENTH}/>
-        <CouseApExamCombinedCard grade = {SchoolYear.ELEVENTH}/>
-        <CouseApExamCombinedCard grade = {SchoolYear.TWELFTH}/>
+        <CouseApExamCombinedCard school_year = {SchoolYear.NINTH}/>
+        <CouseApExamCombinedCard school_year = {SchoolYear.TENTH}/>
+        <CouseApExamCombinedCard school_year = {SchoolYear.ELEVENTH}/>
+        <CouseApExamCombinedCard school_year = {SchoolYear.TWELFTH}/>
     </div>
   );
 };

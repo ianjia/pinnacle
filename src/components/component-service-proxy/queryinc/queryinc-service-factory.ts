@@ -1,4 +1,5 @@
 import { api } from "../../../auth";
+import { transformNullToUndefined } from "../util/transformNullToUndefined";
 
 export function createIncService<T>(endpoint: string) {
   return {
@@ -14,7 +15,7 @@ export function createIncService<T>(endpoint: string) {
     async getById(id: number): Promise<T> {
       try {
         const response = await api.get<T>(`${endpoint}/${id}`);
-        return response.data;
+        return transformNullToUndefined(response.data); // Apply transformation
       } catch (error: any) {
         throw error;
       }
@@ -39,7 +40,7 @@ export function createIncService<T>(endpoint: string) {
     async getAllByUserId(user_id: number): Promise<T[]> {
       try {
         const response = await api.get<T[]>(`${endpoint}/user/${user_id}`);
-        return response.data;
+        return response.data.map(transformNullToUndefined); // Apply transformation to all items
       } catch (error: any) {
         throw new Error(`Failed to fetch records: ${error.response?.data?.detail || error.message}`);
       }

@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../../../../auth';
 import { courseService } from '../../../../component-service-proxy';
 
-export function useCourseListCardProps(grade: SchoolYear): CourseListCardProps {
+export function useCourseListCardProps(school_year: SchoolYear): CourseListCardProps {
     const dispatch = useDispatch();
     const { userId } = useContext(AuthContext);
   
@@ -37,7 +37,7 @@ export function useCourseListCardProps(grade: SchoolYear): CourseListCardProps {
       },
     };
   
-    const gradeConfig = gradeMapping[grade];
+    const gradeConfig = gradeMapping[school_year];
   
     if (!gradeConfig) {
       throw new Error('Unexpected grade in useCourseListCardProps');
@@ -51,6 +51,7 @@ export function useCourseListCardProps(grade: SchoolYear): CourseListCardProps {
           id: Date.now(),
           user_id: userId as number,
           name: '',
+          year: school_year,
           type: undefined,
           grade: undefined,
           score: undefined,

@@ -1,4 +1,5 @@
 import { api } from "../../../auth";
+import { transformNullToUndefined } from "../util/transformNullToUndefined";
 
 export function createService<T>(endpoint: string) {
   return {
@@ -13,9 +14,9 @@ export function createService<T>(endpoint: string) {
     async getById(user_id: number): Promise<T> {
       try {
         const response = await api.get<T>(`${endpoint}/${user_id}`);
-        return response.data;
+        return transformNullToUndefined(response.data); // Apply transformation
       } catch (error: any) {
-        throw error; // Let calling logic handle the original error, mainly to let logic in init load model(useLoadData) to handle, create one if none found, might need to revist
+        throw error; // Let calling logic handle the original error
       }
     },
 
@@ -38,7 +39,7 @@ export function createService<T>(endpoint: string) {
     async getAll(): Promise<T[]> {
       try {
         const response = await api.get<T[]>(endpoint);
-        return response.data;
+        return response.data.map(transformNullToUndefined); // Apply transformation to all items
       } catch (error: any) {
         throw new Error(`Failed to fetch records: ${error.response?.data?.detail || error.message}`);
       }

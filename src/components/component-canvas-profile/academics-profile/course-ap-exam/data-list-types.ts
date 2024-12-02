@@ -17,5 +17,5 @@ export interface ApExamListCardProps {
   }
 
 export interface CourseApExamCombinedCardProps {
-    grade: SchoolYear;
+    school_year: SchoolYear;
 }

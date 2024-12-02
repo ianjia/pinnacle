@@ -6,7 +6,7 @@ import { apExamService } from '../../../../component-service-proxy';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../../auth';
 
-export function useApExamListCardProps(grade: SchoolYear): ApExamListCardProps {
+export function useApExamListCardProps(school_year: SchoolYear): ApExamListCardProps {
   const dispatch = useDispatch();
   const { userId } = useContext(AuthContext);
 
@@ -37,7 +37,7 @@ export function useApExamListCardProps(grade: SchoolYear): ApExamListCardProps {
     },
   };
 
-  const gradeConfig = gradeMapping[grade];
+  const gradeConfig = gradeMapping[school_year];
 
   if (!gradeConfig) {
     throw new Error('Unexpected grade in useApExamListCardProps');
@@ -51,7 +51,7 @@ export function useApExamListCardProps(grade: SchoolYear): ApExamListCardProps {
         id: Date.now(),
         user_id: userId as number,
         name: '',
-        year: undefined,
+        year: school_year,
         score: undefined,
       };
       const id: number = await apExamService.create(newApExam);
