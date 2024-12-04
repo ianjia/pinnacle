@@ -1,3 +1,4 @@
+import { useActivityListLoader } from "./use-activity-record-loader";
 import { useApExamListLoader } from "./use-ap-exam-record-loader";
 import { useCourseListLoader } from "./use-course-record-loader";
 import { useGpaRecordLoader } from "./use-gpa-record-loader";
@@ -10,6 +11,7 @@ export function useLoadData() {
     const { loadGpaRecordProfile } = useGpaRecordLoader();
     const { loadCourseList } = useCourseListLoader();
     const { loadApExamList } = useApExamListLoader();
+    const { loadActivityList } = useActivityListLoader();
 
     // Return a callable function
     return async (userId: number): Promise<void> => {
@@ -18,5 +20,6 @@ export function useLoadData() {
         await loadStudentProfile(userId);
         await loadCourseList(userId);
         await loadApExamList(userId);
+        await loadActivityList(userId);
     };
 }

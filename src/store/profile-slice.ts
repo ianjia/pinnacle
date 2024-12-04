@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, ApExam } from '../shared';
+import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, ApExam, Activity } from '../shared';
 
 interface selectedProfileState {
     activeProfile: ProfileType;
@@ -14,6 +14,7 @@ interface selectedProfileState {
     tenthGradeApExamList: ApExam[];
     eleventhGradeApExamList: ApExam[];
     twelfthGradeApExamList: ApExam[];
+    activityList: Activity[];
 }
 
 const initialState: selectedProfileState = {
@@ -53,6 +54,7 @@ const initialState: selectedProfileState = {
     tenthGradeApExamList: [],
     eleventhGradeApExamList: [],
     twelfthGradeApExamList: [],
+    activityList: [],
 };
 
 const selectedProfileSlice = createSlice({
@@ -225,6 +227,23 @@ const selectedProfileSlice = createSlice({
         deleteTwelfthGradeApExam(state, action: PayloadAction<number>) {
             state.twelfthGradeApExamList = state.twelfthGradeApExamList.filter(exam => exam.id !== action.payload);
         },
+
+        // Activity List reducers
+        setActivityList(state, action: PayloadAction<Activity[]>) {
+            state.activityList = action.payload;
+        },
+        addActivity(state, action: PayloadAction<Activity>) {
+            state.activityList.push(action.payload);
+        },
+        updateActivity(state, action: PayloadAction<{id: number; activity: Partial<Activity>}>) {
+            const index = state.activityList.findIndex(activity => activity.id === action.payload.id);
+            if (index !== -1) {
+                state.activityList[index] = {...state.activityList[index], ...action.payload.activity};
+            }
+        },
+        deleteActivity(state, action: PayloadAction<number>) {
+            state.activityList = state.activityList.filter(activity => activity.id != action.payload);
+        }
     }
 });
 

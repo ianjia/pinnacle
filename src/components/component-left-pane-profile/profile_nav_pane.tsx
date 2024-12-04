@@ -38,7 +38,7 @@ export const ProfileNavPane: React.FC = () => {
                         icon={<Trophy24Regular />}
                         onClick={() => handleProfileSelection(ProfileType.Student)}
                     >
-                        Student
+                        Student Information
                     </AccordionHeader>
                 </AccordionItem>
 
@@ -48,7 +48,7 @@ export const ProfileNavPane: React.FC = () => {
                         icon={<Trophy24Regular />}
                         onClick={() => handleProfileSelection(ProfileType.Academic)}
                     >
-                        Academics
+                        School Academics
                     </AccordionHeader>
                     {/* <AccordionPanel>
                         <ul style={{ listStyle: "none", padding: 0 }}>

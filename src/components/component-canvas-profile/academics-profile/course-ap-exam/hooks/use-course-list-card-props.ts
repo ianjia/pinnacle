@@ -50,8 +50,8 @@ export function useCourseListCardProps(school_year: SchoolYear): CourseListCardP
         const newCourse: Course = {
           id: Date.now(),
           user_id: userId as number,
-          name: '',
-          year: school_year,
+          name: undefined,
+          year: undefined,
           type: undefined,
           grade: undefined,
           score: undefined,

@@ -50,8 +50,8 @@ export function useApExamListCardProps(school_year: SchoolYear): ApExamListCardP
       const newApExam: ApExam = {
         id: Date.now(),
         user_id: userId as number,
-        name: '',
-        year: school_year,
+        name: undefined,
+        year: undefined,
         score: undefined,
       };
       const id: number = await apExamService.create(newApExam);
