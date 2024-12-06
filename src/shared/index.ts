@@ -6,3 +6,5 @@ export * from './model/common-constants';
 export * from './model/common-types';
 export * from './model/activity-structure';
 export * from './model/honor-structure';
+export * from './model/life-story-structure';
+export * from './model/academic-career-goal';

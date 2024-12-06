@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, ApExam, Activity, Honor } from '../shared';
+import { GPA, LifeStory, ProfileType, StandardizedTest, StudentProfile, Course, ApExam, Activity, Honor, AcademicCareerGoal } from '../shared';
 
 interface selectedProfileState {
     activeProfile: ProfileType;
@@ -16,6 +16,8 @@ interface selectedProfileState {
     twelfthGradeApExamList: ApExam[];
     activityList: Activity[];
     honorList: Honor[];
+    lifeStoryList: LifeStory[];
+    careerGoalList: AcademicCareerGoal[];
 }
 
 const initialState: selectedProfileState = {
@@ -57,6 +59,8 @@ const initialState: selectedProfileState = {
     twelfthGradeApExamList: [],
     activityList: [],
     honorList: [],
+    lifeStoryList: [],
+    careerGoalList: [],
 };
 
 const selectedProfileSlice = createSlice({
@@ -262,6 +266,40 @@ const selectedProfileSlice = createSlice({
         },
         deleteHonor(state, action: PayloadAction<number>) {
             state.honorList = state.honorList.filter(honor => honor.id != action.payload);
+        },
+
+        // Life story List reducers
+        setLifeStoryList(state, action: PayloadAction<LifeStory[]>) {
+            state.lifeStoryList = action.payload;
+        },
+        addLifeStory(state, action: PayloadAction<LifeStory>) {
+            state.lifeStoryList.push(action.payload);
+        },
+        updateLifeStory(state, action: PayloadAction<{id: number; lifeStory: Partial<Honor>}>) {
+            const index = state.lifeStoryList.findIndex(lifeStory => lifeStory.id === action.payload.id);
+            if (index !== -1) {
+                state.lifeStoryList[index] = {...state.lifeStoryList[index], ...action.payload.lifeStory};
+            }
+        },
+        deleteLifeStory(state, action: PayloadAction<number>) {
+            state.lifeStoryList = state.lifeStoryList.filter(lifeStory => lifeStory.id != action.payload);
+        },
+
+        // Career goal  List reducers
+        setCareerGoalList(state, action: PayloadAction<AcademicCareerGoal[]>) {
+            state.careerGoalList = action.payload;
+        },
+        addCareerGoal(state, action: PayloadAction<AcademicCareerGoal>) {
+            state.careerGoalList.push(action.payload);
+        },
+        updateCareerGoal(state, action: PayloadAction<{id: number; careerGoal: Partial<AcademicCareerGoal>}>) {
+            const index = state.careerGoalList.findIndex(careerGoal => careerGoal.id === action.payload.id);
+            if (index !== -1) {
+                state.careerGoalList[index] = {...state.careerGoalList[index], ...action.payload.careerGoal};
+            }
+        },
+        deleteCareerGoal(state, action: PayloadAction<number>) {
+            state.careerGoalList = state.careerGoalList.filter(careerGoal => careerGoal.id != action.payload);
         }
     }
 });

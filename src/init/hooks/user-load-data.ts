@@ -1,8 +1,10 @@
+import { useCareerGoalListLoader } from "./load-career-goal-record.loader";
 import { useActivityListLoader } from "./use-activity-record-loader";
 import { useApExamListLoader } from "./use-ap-exam-record-loader";
 import { useCourseListLoader } from "./use-course-record-loader";
 import { useGpaRecordLoader } from "./use-gpa-record-loader";
 import { useHonorListLoader } from "./use-honor-record-loader";
+import { useLifeStoryListLoader } from "./use-life-story-record.loader";
 import { useStdTestRecordLoader } from "./use-std-test-record-loader";
 import { useStudentProfileLoader } from "./use-student-profile-loader";
 
@@ -14,6 +16,8 @@ export function useLoadData() {
     const { loadApExamList } = useApExamListLoader();
     const { loadActivityList } = useActivityListLoader();
     const { loadHonorList } = useHonorListLoader();
+    const { loadLifeStoryList} = useLifeStoryListLoader();
+    const { loadCareerGoalList } = useCareerGoalListLoader();
 
     // Return a callable function
     return async (userId: number): Promise<void> => {
@@ -24,5 +28,7 @@ export function useLoadData() {
         await loadApExamList(userId);
         await loadActivityList(userId);
         await loadHonorList(userId);
+        await loadLifeStoryList(userId);
+        await loadCareerGoalList(userId);
     };
 }
