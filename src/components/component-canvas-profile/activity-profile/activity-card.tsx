@@ -15,7 +15,7 @@ interface ActivityCardProps {
     onUpdateActivity: (activity: Activity) => void;
   }
   
-  export const ActivityCard: React.FC<ActivityCardProps> = ({
+export const ActivityCard: React.FC<ActivityCardProps> = ({
     activity,
     onUpdateActivity,
   }) => {

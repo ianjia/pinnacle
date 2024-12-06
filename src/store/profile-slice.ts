@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, ApExam, Activity } from '../shared';
+import { GPA, ProfileType, StandardizedTest, StudentProfile, Course, ApExam, Activity, Honor } from '../shared';
 
 interface selectedProfileState {
     activeProfile: ProfileType;
@@ -15,6 +15,7 @@ interface selectedProfileState {
     eleventhGradeApExamList: ApExam[];
     twelfthGradeApExamList: ApExam[];
     activityList: Activity[];
+    honorList: Honor[];
 }
 
 const initialState: selectedProfileState = {
@@ -55,6 +56,7 @@ const initialState: selectedProfileState = {
     eleventhGradeApExamList: [],
     twelfthGradeApExamList: [],
     activityList: [],
+    honorList: [],
 };
 
 const selectedProfileSlice = createSlice({
@@ -243,6 +245,23 @@ const selectedProfileSlice = createSlice({
         },
         deleteActivity(state, action: PayloadAction<number>) {
             state.activityList = state.activityList.filter(activity => activity.id != action.payload);
+        },
+
+        // Honor List reducers
+        setHonorList(state, action: PayloadAction<Honor[]>) {
+            state.honorList = action.payload;
+        },
+        addHonor(state, action: PayloadAction<Honor>) {
+            state.honorList.push(action.payload);
+        },
+        updateHonor(state, action: PayloadAction<{id: number; honor: Partial<Honor>}>) {
+            const index = state.honorList.findIndex(honor => honor.id === action.payload.id);
+            if (index !== -1) {
+                state.honorList[index] = {...state.honorList[index], ...action.payload.honor};
+            }
+        },
+        deleteHonor(state, action: PayloadAction<number>) {
+            state.honorList = state.honorList.filter(honor => honor.id != action.payload);
         }
     }
 });

@@ -5,7 +5,14 @@ import { Activity } from '../../../../shared';
 import { logError } from '../../../../util';
 import { activityService } from '../../../component-service-proxy';
 import { AuthContext } from '../../../../auth';
-import { ActivityProfileFormProps } from '../activity-profile-form.types';
+
+export interface ActivityProfileFormProps {
+    title: string;
+    activityList: Activity[];
+    onAddActivity: () => void;
+    onUpdateActivity: (activity: Activity) => void;
+    onDeleteActivity: (id: number) => void;
+  }  
 
 export const useActivityProfile = () : ActivityProfileFormProps => {
   const dispatch = useDispatch();
