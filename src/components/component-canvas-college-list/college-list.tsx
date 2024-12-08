@@ -4,8 +4,8 @@ import { RootState } from '../../store';
 import { CollegeListWorkshopType } from '../../shared';
 import { CollegeListRefineForm } from './college-list-refine-form';
 import { CollegeListNavigationForm } from './college-list-navigation-form';
-import { CollegePreferenceForm } from './college-preferences-form';
 import './college-list.css';
+import { CollegePreferenceForm } from './college-preference/college-preference-form';
 
 export const CollegeListCanvas: React.FC = () => {
     const activeWorkShop: CollegeListWorkshopType = useSelector((state: RootState) => state.collegeListWorkshop.activeCollegeListWorkshop);

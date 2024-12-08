@@ -1,4 +1,5 @@
-import { Gender, Race, Ranking, Resident_State, Residency_Status } from "./student_structure";
+import { Resident_State } from "./resident-state";
+import { Gender, Race, Ranking, Residency_Status } from "./student_structure";
 
 export interface StudentProfile {
     user_id: number; // the user_id retrieved during log-in

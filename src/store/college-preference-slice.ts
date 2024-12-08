@@ -1,79 +1,98 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+  SchoolSize,
+  LocationRegion,
+  Urbanization,
+  Prestige,
+  AcademicFocus,
+  AcademicFields,
+  Major,
+  MajorReputation,
+  SocialEnviroment,
+  Diversity,
+  ExtracurricularScene,
+  TuitionRange,
+  FinancialSupport,
+  Housing,
+  Facilities,
+  ClimatePreference,
+  Athletics,
+  Arts,
+  ResearchInternship,
+  DistanceFromHome,
+  ClassSizes,
+  StatePreference,
+  ImportanceLevel,
+} from '../shared'; // Import the enums
 
-export enum ImportanceLevel {
-    VeryImportant = "Very important",
-    SomewhatImportant = "Somewhat important",
-    NiceToHave = "Nice to have",
-}
-
-export interface PreferenceItem {
-  value: string;
+// Generic PreferenceItem with strong typing for `value`
+export interface PreferenceItem<T> {
+  value: T;
   importance: ImportanceLevel;
 }
 
+// Updated CollegePreferences interface with strong types
 export interface CollegePreferences {
-  schoolSize: PreferenceItem;
-  locationRegion: PreferenceItem;
-  locationState: PreferenceItem;
-  urbanization: PreferenceItem;
-  prestige: PreferenceItem;
-  academicGeneral: PreferenceItem;
-  academicFields: PreferenceItem;
-  specializedProgram: PreferenceItem;
-  programReputation: PreferenceItem;
-  campusSocialEnvironment: PreferenceItem;
-  campusDiversity: PreferenceItem;
-  extracurricularScene: PreferenceItem;
-  tuitionRange: PreferenceItem;
-  financialSupport: PreferenceItem;
-  housing: PreferenceItem;
-  facilities: PreferenceItem;
-  climatePreference: PreferenceItem;
-  athletics: PreferenceItem;
-  artsPrograms: PreferenceItem;
-  researchInternships: PreferenceItem;
-  distanceFromHome: PreferenceItem;
-  averageClassSize: PreferenceItem;
+  schoolSize: PreferenceItem<SchoolSize>;
+  locationRegion: PreferenceItem<LocationRegion>;
+  locationState: PreferenceItem<StatePreference>; 
+  urbanization: PreferenceItem<Urbanization>;
+  prestige: PreferenceItem<Prestige>;
+  academicGeneral: PreferenceItem<AcademicFocus>;
+  academicFields: PreferenceItem<AcademicFields>;
+  specializedProgram: PreferenceItem<Major>;
+  programReputation: PreferenceItem<MajorReputation>;
+  campusSocialEnvironment: PreferenceItem<SocialEnviroment>;
+  campusDiversity: PreferenceItem<Diversity>;
+  extracurricularScene: PreferenceItem<ExtracurricularScene>;
+  tuitionRange: PreferenceItem<TuitionRange>;
+  financialSupport: PreferenceItem<FinancialSupport>;
+  housing: PreferenceItem<Housing>;
+  facilities: PreferenceItem<Facilities>;
+  climatePreference: PreferenceItem<ClimatePreference>;
+  athletics: PreferenceItem<Athletics>;
+  artsPrograms: PreferenceItem<Arts>;
+  researchInternships: PreferenceItem<ResearchInternship>;
+  distanceFromHome: PreferenceItem<DistanceFromHome>;
+  averageClassSize: PreferenceItem<ClassSizes>;
 }
 
-// New CollegePreferencesState with collegePreferences property
+// CollegePreferencesState with strong types
 export interface CollegePreferencesState {
   collegePreferences: CollegePreferences;
 }
 
-const initialPreferenceItem: PreferenceItem = {
-  value: 'No Preference',
+// Helper to create initial preference items
+const createInitialPreferenceItem = <T>(value: T): PreferenceItem<T> => ({
+  value,
   importance: ImportanceLevel.NiceToHave,
-};
+});
 
-// Initial state with updated prestige values
+// Initial state with updated strong types
 const initialState: CollegePreferencesState = {
   collegePreferences: {
-    schoolSize: { ...initialPreferenceItem },
-    locationRegion: { ...initialPreferenceItem },
-    locationState: { ...initialPreferenceItem },
-    urbanization: { ...initialPreferenceItem },
-    prestige: {
-      value: 'Very Prestigious: Acceptance rate 10–20%',
-      importance: ImportanceLevel.VeryImportant,
-    },
-    academicGeneral: { ...initialPreferenceItem },
-    academicFields: { ...initialPreferenceItem },
-    specializedProgram: { ...initialPreferenceItem },
-    programReputation: { ...initialPreferenceItem },
-    campusSocialEnvironment: { ...initialPreferenceItem },
-    campusDiversity: { ...initialPreferenceItem },
-    extracurricularScene: { ...initialPreferenceItem },
-    tuitionRange: { ...initialPreferenceItem },
-    financialSupport: { ...initialPreferenceItem },
-    housing: { ...initialPreferenceItem },
-    facilities: { ...initialPreferenceItem },
-    climatePreference: { ...initialPreferenceItem },
-    athletics: { ...initialPreferenceItem },
-    artsPrograms: { ...initialPreferenceItem },
-    researchInternships: { ...initialPreferenceItem },
-    distanceFromHome: { ...initialPreferenceItem },
-    averageClassSize: { ...initialPreferenceItem },
+    schoolSize: createInitialPreferenceItem(SchoolSize.NO_PREFERENCE),
+    locationRegion: createInitialPreferenceItem(LocationRegion.NO_PREFERENCE),
+    locationState: createInitialPreferenceItem(StatePreference.NO_PREFERENCE),
+    urbanization: createInitialPreferenceItem(Urbanization.NO_PREFERENCE),
+    prestige: createInitialPreferenceItem(Prestige.NO_PREFERENCE),
+    academicGeneral: createInitialPreferenceItem(AcademicFocus.NO_PREFERENCE),
+    academicFields: createInitialPreferenceItem(AcademicFields.NO_PREFERENCE),
+    specializedProgram: createInitialPreferenceItem(Major.NO_PREFERENCE),
+    programReputation: createInitialPreferenceItem(MajorReputation.NO_PREFERENCE),
+    campusSocialEnvironment: createInitialPreferenceItem(SocialEnviroment.NO_PREFERENCE),
+    campusDiversity: createInitialPreferenceItem(Diversity.NO_PREFERENCE),
+    extracurricularScene: createInitialPreferenceItem(ExtracurricularScene.NO_PREFERENCE),
+    tuitionRange: createInitialPreferenceItem(TuitionRange.NO_PREFERENCE),
+    financialSupport: createInitialPreferenceItem(FinancialSupport.NO_PREFERENCE),
+    housing: createInitialPreferenceItem(Housing.NO_PREFERENCE),
+    facilities: createInitialPreferenceItem(Facilities.NO_PREFERENCE),
+    climatePreference: createInitialPreferenceItem(ClimatePreference.NO_PREFERENCE),
+    athletics: createInitialPreferenceItem(Athletics.NO_PREFERENCE),
+    artsPrograms: createInitialPreferenceItem(Arts.NO_PREFERENCE),
+    researchInternships: createInitialPreferenceItem(ResearchInternship.NO_PREFERENCE),
+    distanceFromHome: createInitialPreferenceItem(DistanceFromHome.NO_PREFERENCE),
+    averageClassSize: createInitialPreferenceItem(ClassSizes.NO_PREFERENCE),
   },
 };
 
@@ -81,15 +100,15 @@ const collegePreferencesSlice = createSlice({
   name: 'collegePreferences',
   initialState,
   reducers: {
-    setPreference(
-      state,
-      action: PayloadAction<{ key: keyof CollegePreferences; value: string }>
+    setPreference<T>(
+      state: { key?: keyof CollegePreferences; value?: string; collegePreferences?: any; },
+      action: PayloadAction<{ key: keyof CollegePreferences; value: T }>
     ) {
       const { key, value } = action.payload;
       state.collegePreferences[key].value = value;
 
       // Reset importance to 'Nice to have' if value is 'No Preference'
-      if (value === 'No Preference') {
+      if (value === "No Preference") {
         state.collegePreferences[key].importance = ImportanceLevel.NiceToHave;
       }
     },

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import { CollegePreferences, RootState, ImportanceLevel } from '../../../store';
+import { CollegePreferences, RootState } from '../../../store';
+import { ImportanceLevel } from '../../../shared';
 
 const preferenceLabelMap: Record<keyof CollegePreferences, string> = {
   schoolSize: "School Size",

@@ -8,3 +8,5 @@ export * from './model/activity-structure';
 export * from './model/honor-structure';
 export * from './model/life-story-structure';
 export * from './model/academic-career-goal';
+export * from './model/resident-state';
+export * from './model/college-preference-structure';
