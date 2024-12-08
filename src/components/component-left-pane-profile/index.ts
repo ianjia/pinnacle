@@ -1,1 +1,1 @@
-export * from './profile_nav_pane';
+export * from './profile-nav-pane';

@@ -6,15 +6,27 @@ import { SchoolYear } from '../../../shared';
 import { CouseApExamCombinedCard } from './course-ap-exam/course-ap-exam-combined-card';
 
 export const AcademicsProfileForm: React.FC = () => {
-  const styles = useStyles();
-  return (
-    <div className={styles.container}>
-        <StandardizedTestCard/>
-        <GpaCard/>
-        <CouseApExamCombinedCard school_year = {SchoolYear.NINTH}/>
-        <CouseApExamCombinedCard school_year = {SchoolYear.TENTH}/>
-        <CouseApExamCombinedCard school_year = {SchoolYear.ELEVENTH}/>
-        <CouseApExamCombinedCard school_year = {SchoolYear.TWELFTH}/>
-    </div>
-  );
+    const styles = useStyles();
+    return (
+        <div className={styles.container}>
+            <div id="standardized-tests">
+                <StandardizedTestCard />
+            </div>
+            <div id="gpa-section">
+                <GpaCard />
+            </div>
+            <div id="ninth-grade">
+                <CouseApExamCombinedCard school_year={SchoolYear.NINTH} />
+            </div>
+            <div id="tenth-grade">
+                <CouseApExamCombinedCard school_year={SchoolYear.TENTH} />
+            </div>
+            <div id="eleventh-grade">
+                <CouseApExamCombinedCard school_year={SchoolYear.ELEVENTH} />
+            </div>
+            <div id="twelfth-grade">
+                <CouseApExamCombinedCard school_year={SchoolYear.TWELFTH} />
+            </div>
+        </div>
+    );
 };

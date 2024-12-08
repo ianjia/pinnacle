@@ -1,32 +1,26 @@
-.interaction-container {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+.interaction-college-list-pane {
+    width: 250px;
+    padding: 16px;
+    overflow-y: auto;
 }
 
-.interaction-header {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.accordion-header {
     align-items: center;
-    width: 100%;
-}
-
-.review-button {
-    padding: 15px 30px;
+    gap: 10px;
     font-size: 16px;
-    border: none;
-    border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
-    color: white;
-    background-color: #5cb85c;
-    width: 100%; /* Make the buttons fill the width of the parent */
-    max-width: 400px; /* Set a maximum width to prevent them from being too wide */
-    text-align: center; /* Center the text inside the buttons */
 }
 
-.review-button.active {
-    background-color: #0078d4;
+.accordion-title {
+    flex-grow: 1;
+}
+
+.accordion-icon {
+    display: flex;
+    align-items: center;
+}
+
+.accordion-header.active {
+    color: #0078d4;
 }
