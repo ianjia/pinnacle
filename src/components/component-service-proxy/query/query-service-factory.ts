@@ -16,7 +16,8 @@ export function createService<T>(endpoint: string) {
         const response = await api.get<T>(`${endpoint}/${user_id}`);
         return transformNullToUndefined(response.data); // Apply transformation
       } catch (error: any) {
-        throw error; // Let calling logic handle the original error
+        throw error; // Attention: Let calling logic handle the original error, different from other APIs in this file, so that it could be
+        // checked as axios error and create the record since it was never created before
       }
     },
 

@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { CollegePreferences, RootState } from '../../../store';
-import { ImportanceLevel } from '../../../shared';
+import { RootState } from '../../../store';
+import { CollegePreferenceKeys, CollegePreferences, ImportanceLevel } from '../../../shared';
 
-const preferenceLabelMap: Record<keyof CollegePreferences, string> = {
+const preferenceLabelMap: Record<CollegePreferenceKeys, string> = {
   schoolSize: "School Size",
   locationRegion: "Location Region",
   locationState: "Location State",
@@ -35,10 +35,11 @@ export function useCollegePreferenceSummary(): string {
   // Helper function to filter preferences by importance level
   const getPreferencesByImportance = (importance: ImportanceLevel) => {
     return Object.entries(preferences)
+      .filter(([key]) => key !== 'user_id') // Explicitly exclude user_id
       .filter(([, preference]) => preference.importance === importance && preference.value !== 'No Preference')
-      .map(([key, preference]) => `${preferenceLabelMap[key as keyof CollegePreferences]}: ${preference.value}`);
+      .map(([key, preference]) => `${preferenceLabelMap[key as CollegePreferenceKeys]}: ${preference.value}`);
   };
-
+  
   // Collect summaries based on importance with labels
   const veryImportantPreferences = getPreferencesByImportance(ImportanceLevel.VeryImportant);
   const somewhatImportantPreferences = getPreferencesByImportance(ImportanceLevel.SomewhatImportant);

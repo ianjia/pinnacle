@@ -23,39 +23,10 @@ import {
   ClassSizes,
   StatePreference,
   ImportanceLevel,
-} from '../shared'; // Import the enums
-
-// Generic PreferenceItem with strong typing for `value`
-export interface PreferenceItem<T> {
-  value: T;
-  importance: ImportanceLevel;
-}
-
-// Updated CollegePreferences interface with strong types
-export interface CollegePreferences {
-  schoolSize: PreferenceItem<SchoolSize>;
-  locationRegion: PreferenceItem<LocationRegion>;
-  locationState: PreferenceItem<StatePreference>; 
-  urbanization: PreferenceItem<Urbanization>;
-  prestige: PreferenceItem<Prestige>;
-  academicGeneral: PreferenceItem<AcademicFocus>;
-  academicFields: PreferenceItem<AcademicFields>;
-  specializedProgram: PreferenceItem<Major>;
-  programReputation: PreferenceItem<MajorReputation>;
-  campusSocialEnvironment: PreferenceItem<SocialEnviroment>;
-  campusDiversity: PreferenceItem<Diversity>;
-  extracurricularScene: PreferenceItem<ExtracurricularScene>;
-  tuitionRange: PreferenceItem<TuitionRange>;
-  financialSupport: PreferenceItem<FinancialSupport>;
-  housing: PreferenceItem<Housing>;
-  facilities: PreferenceItem<Facilities>;
-  climatePreference: PreferenceItem<ClimatePreference>;
-  athletics: PreferenceItem<Athletics>;
-  artsPrograms: PreferenceItem<Arts>;
-  researchInternships: PreferenceItem<ResearchInternship>;
-  distanceFromHome: PreferenceItem<DistanceFromHome>;
-  averageClassSize: PreferenceItem<ClassSizes>;
-}
+  CollegePreferences,
+  PreferenceItem,
+  CollegePreferenceKeys,
+} from '../shared';
 
 // CollegePreferencesState with strong types
 export interface CollegePreferencesState {
@@ -71,6 +42,7 @@ const createInitialPreferenceItem = <T>(value: T): PreferenceItem<T> => ({
 // Initial state with updated strong types
 const initialState: CollegePreferencesState = {
   collegePreferences: {
+    user_id: 0, 
     schoolSize: createInitialPreferenceItem(SchoolSize.NO_PREFERENCE),
     locationRegion: createInitialPreferenceItem(LocationRegion.NO_PREFERENCE),
     locationState: createInitialPreferenceItem(StatePreference.NO_PREFERENCE),
@@ -100,27 +72,41 @@ const collegePreferencesSlice = createSlice({
   name: 'collegePreferences',
   initialState,
   reducers: {
-    setPreference<T>(
-      state: { key?: keyof CollegePreferences; value?: string; collegePreferences?: any; },
-      action: PayloadAction<{ key: keyof CollegePreferences; value: T }>
+    updateUserId(state, action: PayloadAction<number>)  {
+      state.collegePreferences.user_id = action.payload;
+    },
+
+    updatePreference<T>(
+      state: { key?: keyof CollegePreferenceKeys; value?: string; collegePreferences?: any; },
+      action: PayloadAction<{ key: CollegePreferenceKeys; value: T }>
     ) {
       const { key, value } = action.payload;
       state.collegePreferences[key].value = value;
 
-      // Reset importance to 'Nice to have' if value is 'No Preference'
       if (value === "No Preference") {
         state.collegePreferences[key].importance = ImportanceLevel.NiceToHave;
       }
     },
-    setImportance(
+
+    updateImportance(
       state,
       action: PayloadAction<{
-        key: keyof CollegePreferences;
+        key: CollegePreferenceKeys;
         importance: ImportanceLevel;
       }>
     ) {
       const { key, importance } = action.payload;
       state.collegePreferences[key].importance = importance;
+    },
+
+    /**
+     * Set the entire CollegePreferences object
+     */
+    setCollegePreferences(
+      state,
+      action: PayloadAction<CollegePreferences>
+    ) {
+      state.collegePreferences = action.payload;
     },
   },
 });

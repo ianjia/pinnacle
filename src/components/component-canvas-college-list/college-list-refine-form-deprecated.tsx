@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { collegeListWorkshopActions, CollegePreferences, committeeReviewActions, RootState } from '../../store';
+import { collegeListWorkshopActions, committeeReviewActions, RootState } from '../../store';
 import './college-list-refine-form.css';
 import { useCollegePreferenceSummary } from './hooks/use-college-preference-summary';
 import { getCollegeNameKey } from '../component-map';
 import { CollegeDataAndChanceRequest, CollegeListBuildRequest, ProgressModal, GetCollegeDataChanceTaskResult, BuildCollegeListTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
+import { CollegePreferences } from '../../shared';
 
 export const CollegeListRefineForm: React.FC = () => {
   const dispatch = useDispatch();

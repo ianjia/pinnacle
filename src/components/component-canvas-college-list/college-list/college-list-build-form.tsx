@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   collegeListWorkshopActions, 
-  CollegePreferences, 
   committeeReviewActions, 
   RootState 
 } from '../../../store';
@@ -37,6 +36,7 @@ import {
 
 import { Add20Regular, Delete20Regular } from '@fluentui/react-icons';
 import { useStyles } from './college-list-build-form.styles';
+import { CollegePreferences } from '../../../shared';
 
 
 export const CollegeListBuildForm: React.FC = () => {

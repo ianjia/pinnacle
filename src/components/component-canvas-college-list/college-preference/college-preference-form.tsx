@@ -1,31 +1,38 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { CollegePreferences, collegePreferencesActions, RootState } from '../../../store';
+import { collegePreferencesActions, RootState } from '../../../store';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
-import { AcademicFields, AcademicFocus, Arts, Athletics, ClassSizes, ClimatePreference, DistanceFromHome, Diversity, ExtracurricularScene, Facilities, FinancialSupport, Housing, ImportanceLevel, LocationRegion, Major, MajorReputation, Prestige, ResearchInternship, SchoolSize, SocialEnviroment, StatePreference, TuitionRange, Urbanization } from '../../../shared';
+import { AcademicFields, AcademicFocus, Arts, Athletics, ClassSizes, ClimatePreference, CollegePreferenceKeys, CollegePreferences, DistanceFromHome, Diversity, ExtracurricularScene, Facilities, FinancialSupport, Housing, ImportanceLevel, LocationRegion, Major, MajorReputation, Prestige, ResearchInternship, SchoolSize, SocialEnviroment, StatePreference, TuitionRange, Urbanization } from '../../../shared';
 import { useStyles } from './preference-section-card.styles';
 import { PreferenceSectionCard } from './preference-secion-card';
+import { collegePreferenceService } from '../../component-service-proxy';
+import { AuthContext } from '../../../auth';
 
 export const CollegePreferenceForm: React.FC = () => {
+  const { userId } = useContext(AuthContext);
+
   const preferences = useSelector(
     (state: RootState) => state.collegePreferences.collegePreferences
   );
   const dispatch = useDispatch();
   const styles = useStyles();
 
-  const handlePreferenceChange = <K extends keyof CollegePreferences>(
+  const handlePreferenceChange = <K extends CollegePreferenceKeys>(
     key: K,
     value: CollegePreferences[K]['value']
   ) => {
-    dispatch(collegePreferencesActions.setPreference({ key, value }));
+    dispatch(collegePreferencesActions.updatePreference({ key, value }));
+    collegePreferenceService.updateFieldValue(userId as number, key, value);
   };
-
-  const handleImportanceChange = <K extends keyof CollegePreferences>(
+  
+  const handleImportanceChange = <K extends CollegePreferenceKeys>(
     key: K,
     importance: ImportanceLevel
   ) => {
-    dispatch(collegePreferencesActions.setImportance({ key, importance }));
+    dispatch(collegePreferencesActions.updateImportance({ key, importance }));
+    collegePreferenceService.updateFieldImportance(userId as number, key, importance);
   };
+  
 
   return (
     <div className="college-preference-form">

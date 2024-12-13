@@ -240,3 +240,37 @@ export enum SchoolSize {
     Wyoming = "Wyoming",
   }
   
+
+export interface PreferenceItem<T> {
+    value: T;
+    importance: ImportanceLevel;
+  }
+  
+export type CollegePreferenceKeys = Exclude<keyof CollegePreferences, 'user_id'>;
+
+export interface CollegePreferences {
+    user_id: number; 
+    schoolSize: PreferenceItem<SchoolSize>;
+    locationRegion: PreferenceItem<LocationRegion>;
+    locationState: PreferenceItem<StatePreference>; 
+    urbanization: PreferenceItem<Urbanization>;
+    prestige: PreferenceItem<Prestige>;
+    academicGeneral: PreferenceItem<AcademicFocus>;
+    academicFields: PreferenceItem<AcademicFields>;
+    specializedProgram: PreferenceItem<Major>;
+    programReputation: PreferenceItem<MajorReputation>;
+    campusSocialEnvironment: PreferenceItem<SocialEnviroment>;
+    campusDiversity: PreferenceItem<Diversity>;
+    extracurricularScene: PreferenceItem<ExtracurricularScene>;
+    tuitionRange: PreferenceItem<TuitionRange>;
+    financialSupport: PreferenceItem<FinancialSupport>;
+    housing: PreferenceItem<Housing>;
+    facilities: PreferenceItem<Facilities>;
+    climatePreference: PreferenceItem<ClimatePreference>;
+    athletics: PreferenceItem<Athletics>;
+    artsPrograms: PreferenceItem<Arts>;
+    researchInternships: PreferenceItem<ResearchInternship>;
+    distanceFromHome: PreferenceItem<DistanceFromHome>;
+    averageClassSize: PreferenceItem<ClassSizes>;
+  }
+  

@@ -17,7 +17,8 @@ export function createIncService<T>(endpoint: string) {
         const response = await api.get<T>(`${endpoint}/${id}`);
         return transformNullToUndefined(response.data); // Apply transformation
       } catch (error: any) {
-        throw error;
+        throw error; // Attention: Let calling logic handle the original error, different from other APIs in this file, so that it could be
+        // checked as axios error and create the record since it was never created before
       }
     },
 
