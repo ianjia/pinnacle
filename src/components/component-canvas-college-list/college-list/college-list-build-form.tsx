@@ -59,7 +59,7 @@ export const CollegeListBuildForm: React.FC = () => {
 
   const {startTask: startCollegeListTask, showModal: showCollegeListModal, progressMessage: progressCollegeListMessage } = useTaskRunner({
     taskType: TaskType.BuildCollegeList,
-    requestData: { college_preferences: preference } as CollegeListBuildRequest,
+    requestData: {} as CollegeListBuildRequest,
     onResult: (data: TaskResult) => {
       dispatch(collegeListWorkshopActions.setCollegeList((data as BuildCollegeListTaskResult).college_list));
       setActiveTask(null);

@@ -2,7 +2,6 @@ export interface ITaskRequest {
 }
 
 export interface CollegeListBuildRequest extends ITaskRequest {
-    college_preferences: string
 }
 
 export interface InterviewRequest extends ITaskRequest {

@@ -28,6 +28,7 @@ const modalStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 9999, // Add this line
   },
   content: {
     backgroundColor: '#fff',
@@ -38,13 +39,14 @@ const modalStyles = {
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',   // Center the message both horizontally and vertically
+    justifyContent: 'center',
     textAlign: 'center' as 'center',
   },
   message: {
     fontSize: '16px',
     lineHeight: '1.5',
     color: '#333',
-    margin: 0,                 // Remove default margin from the <p> tag
+    margin: 0,
   },
 };
+

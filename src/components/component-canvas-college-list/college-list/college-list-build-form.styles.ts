@@ -16,14 +16,14 @@ export const useStyles = makeStyles({
     padding: '12px',
   },
   row: {
-    height: '50px',
+    height: '70px',
     display: 'flex',
     alignItems: 'center',
     overflow: 'hidden',
     cursor: 'pointer',
   },
   wideColumn: {
-    width: '100px', // Adjust the width as needed
+    width: '120px', // Adjust the width as needed
     minWidth: '100px',
     maxWidth: '150px', // Optional to set a max width
   },

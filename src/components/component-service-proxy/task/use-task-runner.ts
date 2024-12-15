@@ -26,6 +26,8 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
 
   const startTask = async () => {
     try {
+      // Show the modal dialog
+      setShowModal(true);
       const controller = new AbortController(); // For fetch timeout
       const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_DURATION);
 
@@ -37,8 +39,7 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
       clearTimeout(timeoutId); // Clear the timeout on success
       const { taskId } = response.data;
 
-      // Show the modal dialog
-      setShowModal(true);
+
 
       // Initialize SSE for progress updates
       const eventSource = new EventSource(`${SERVER_URL}/api/v1/task/progress?taskId=${taskId}`);
@@ -81,6 +82,7 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
         if (timeoutRef.current) clearTimeout(timeoutRef.current); // Clear timeout on error
       };
     } catch (error) {
+      setShowModal(false);
       console.error('Error in startTask:', error);
       alert("Could not reach server, please try again later.");
     }
