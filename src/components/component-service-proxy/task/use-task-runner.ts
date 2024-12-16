@@ -16,8 +16,8 @@ interface UseTaskRunnerReturn {
   progressMessage: string;
 }
 
-const TIMEOUT_DURATION = 60 * 1000; // 1 minute
-const FETCH_TIMEOUT_DURATION = 30 * 1000; // 30 seconds for fetch timeout
+const TIMEOUT_DURATION = 180 * 1000; // 3 minutes
+const FETCH_TIMEOUT_DURATION = 60 * 1000; // 30 seconds for fetch timeout
 
 export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunnerParams): UseTaskRunnerReturn => {
   const [showModal, setShowModal] = useState(false);
