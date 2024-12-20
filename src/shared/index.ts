@@ -10,3 +10,4 @@ export * from './model/life-story-structure';
 export * from './model/academic-career-goal';
 export * from './model/resident-state';
 export * from './model/college-preference-structure';
+export * from './model/interview-structure';

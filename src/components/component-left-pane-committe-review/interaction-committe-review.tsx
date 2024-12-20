@@ -11,12 +11,12 @@ export const InteractionCommitteeReview: React.FC = () => {
     const [collegeInput, setCollegeInput] = useState('');
     const collegeInputRef = useRef<HTMLInputElement>(null); // Reference for the input field
 
-    const college_to_evaluate: string = useSelector((state: RootState) => state.committeeReview.college_to_evaluate);
-    const major_to_evaluate: string = useSelector((state: RootState) => state.committeeReview.major_to_evalute);
+    const college: string = useSelector((state: RootState) => state.committeeReview.college);
+    const major: string = useSelector((state: RootState) => state.committeeReview.major);
 
     const {startTask: startReviewTask, showModal, progressMessage } = useTaskRunner({
         taskType: TaskType.CommitteReview,
-        requestData: {college_name: college_to_evaluate, major: major_to_evaluate} as CommitteeReviewRequest, 
+        requestData: {college_name: college, major: major} as CommitteeReviewRequest, 
         onResult: (data: TaskResult) => {
           dispatch(committeeReviewActions.setReviewResult((data as CommitteeReviewTaskResult).review));
           }
@@ -24,7 +24,7 @@ export const InteractionCommitteeReview: React.FC = () => {
       )
 
     const handleStartReviewTask = () => {
-        if (college_to_evaluate === "") {
+        if (college === "") {
             alert("College Name is empty, please fill in");
             return;
         }
@@ -38,7 +38,7 @@ export const InteractionCommitteeReview: React.FC = () => {
         if (matchedCollegeName) {
             // Update collegeInput with the matched college name
             setCollegeInput(matchedCollegeName);
-            dispatch(committeeReviewActions.setCollegeToEvaluate(matchedCollegeName));
+            dispatch(committeeReviewActions.setCollege(matchedCollegeName));
         } else {
             // Alert user if no match is found
             alert("The college name you entered is not valid. Please re-enter.");
@@ -67,7 +67,7 @@ export const InteractionCommitteeReview: React.FC = () => {
                 <input
                     id="collegeInput"
                     type="text"
-                    value={collegeInput}
+                    value={college}
                     ref={collegeInputRef} // Assign the ref to the input
                     onChange={(e) => setCollegeInput(e.target.value)}
                     onBlur={handleCollegeBlur} // Handle blur for both Enter and clicking outside
@@ -78,8 +78,8 @@ export const InteractionCommitteeReview: React.FC = () => {
             <div className="interaction-input">
                 <label>Major:</label>
                 <SpecializedProgram
-                    value={major_to_evaluate}
-                    onPreferenceChange={(newMajor) => dispatch(committeeReviewActions.setMajorToEvaluate(newMajor))}
+                    value={major}
+                    onPreferenceChange={(newMajor) => dispatch(committeeReviewActions.setMajor(newMajor))}
                 />
             </div>
         </div>

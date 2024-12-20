@@ -6,19 +6,12 @@ import { TaskType } from "./basic-types";
 // Define a base interface for TaskResult
 export interface TaskResult {
     type: TaskType;
-    error?: string // @Todo: leverge this field, for example, for essay drafting, if the input essay idea does not make sense, could return this 
-                   // instead of still running LLM to generate essay and give one that is nonsense
 }
 
 // Specific TaskResult interfaces for each type
 export interface CommitteeReviewTaskResult extends TaskResult {
     type: TaskType.CommitteReview;
     review: string;
-}
-
-export interface StartInterviewTaskResult extends TaskResult {
-    type: TaskType.StartInterview;
-    initial_message: string;
 }
 
 export interface GenerateEssayIdeasTaskResult extends TaskResult {

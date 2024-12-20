@@ -1,18 +1,47 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import { interviewConversationActions } from '../../store';
 import './interaction-interview.css';
 import { SERVER_URL } from '../component-service-proxy';
+import { SpecializedProgram } from '../component-specalized-program';
+import { getCollegeNameKey } from '../component-map';
+import { InterviewAnswerRequest, InterviewStartRequest } from '../component-service-proxy/interview/request-types';
+import { api } from '../../auth';
+import { InterviewAnswerResult, InterviewStartResult } from '../component-service-proxy/interview/result-types';
 
 export const InteractionInterview: React.FC = () => {
+  const dispatch = useDispatch();
+
+  // Imported states from the global store
+  const college: string = useSelector((state: RootState) => state.conversation.college);
+  const major: string = useSelector((state: RootState) => state.conversation.major);
+
+  // Local state for college input
+  const [collegeInput, setCollegeInput] = useState('');
+  const collegeInputRef = useRef<HTMLInputElement>(null);
+
+  // Existing states for interview functionality
   const [interviewActive, setInterviewActive] = useState<boolean>(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synth = window.speechSynthesis;
-  const [sessionId, setSessionId] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const dispatch = useDispatch();
+
+  const handleCollegeBlur = () => {
+    const matchedCollegeName = getCollegeNameKey(collegeInput); // Fuzzy search/match
+    if (matchedCollegeName) {
+      setCollegeInput(matchedCollegeName);
+      dispatch(interviewConversationActions.setCollege(matchedCollegeName));
+    } else {
+      alert("The college name you entered is not valid. Please re-enter.");
+    }
+  };
+
+  const handleCollegeKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      collegeInputRef.current?.blur();
+    }
+  };
 
   const startSpeechRecognition = () => {
     const SpeechRecognition =
@@ -40,21 +69,20 @@ export const InteractionInterview: React.FC = () => {
   
       // Send transcript to backend
       try {
-        const response = await axios.post(`${SERVER_URL}/api/interview-answer`, {
-          message: transcript,
-          session_id: sessionId,
+        const response = await api.post(`${SERVER_URL}/api/v1/interview/answer`, {
+          requestData: {message: transcript} as InterviewAnswerRequest
         });
   
-        const aiResponse = response.data.question;
+        const aiResponse: InterviewAnswerResult = response.data;
         if (aiResponse) {
           dispatch(
             interviewConversationActions.addMessage({
               role: 'interviewer',
-              content: aiResponse,
+              content: aiResponse.message,
             })
           );
   
-          const utterance = new SpeechSynthesisUtterance(aiResponse);
+          const utterance = new SpeechSynthesisUtterance(aiResponse.message);
           utterance.onend = () => {
             startSpeechRecognition(); // Restart recognition after interviewer finishes speaking
           };
@@ -87,34 +115,28 @@ export const InteractionInterview: React.FC = () => {
     recognitionRef.current = recognition;
     recognition.start();
   };
-  
 
   const toggleInterview = async () => {
     if (interviewActive) {
       setInterviewActive(false);
-      setSessionId('');
-      // Optionally, reset the conversation
-      // dispatch(interviewConversationActions.resetConversation());
       recognitionRef.current?.stop();
     } else {
       setIsProcessing(true);
-      const newSessionId = uuidv4();
-      setSessionId(newSessionId);
 
       try {
-        const response = await axios.post(`${SERVER_URL}/api/interview-start`, {
-          session_id: newSessionId,
+        const response = await api.post(`${SERVER_URL}/api/v1/interview/start`, {
+          requestData: {college: college, major: major} as InterviewStartRequest
         });
 
-        const initialQuestion = response.data.question;
+        const aiResponse: InterviewStartResult = response.data;
         dispatch(
           interviewConversationActions.addMessage({
             role: 'interviewer',
-            content: initialQuestion,
+            content: aiResponse.message,
           })
         );
 
-        const utterance = new SpeechSynthesisUtterance(initialQuestion);
+        const utterance = new SpeechSynthesisUtterance(aiResponse.message);
         utterance.onend = () => {
           // Start listening after the interviewer finishes speaking
           startSpeechRecognition();
@@ -144,6 +166,7 @@ export const InteractionInterview: React.FC = () => {
           {interviewActive ? 'Stop Interview' : 'Start Interview'}
         </button>
       </div>
+
       {isProcessing && (
         <div className="processing-modal">
           <div className="processing-dialog">
@@ -152,6 +175,28 @@ export const InteractionInterview: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* New Inputs for College and Major (mirroring File 1's logic) */}
+      <div className="interaction-input">
+        <label htmlFor="collegeInput">College:</label>
+        <input
+          id="collegeInput"
+          type="text"
+          value={college}
+          ref={collegeInputRef}
+          onChange={(e) => setCollegeInput(e.target.value)}
+          onBlur={handleCollegeBlur}
+          onKeyDown={handleCollegeKeyPress}
+        />
+      </div>
+
+      <div className="interaction-input">
+        <label>Major:</label>
+        <SpecializedProgram
+          value={major}
+          onPreferenceChange={(newMajor) => dispatch(interviewConversationActions.setMajor(newMajor))}
+        />
+      </div>
     </div>
   );
 };

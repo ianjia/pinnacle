@@ -4,10 +4,6 @@ export interface ITaskRequest {
 export interface CollegeListBuildRequest extends ITaskRequest {
 }
 
-export interface InterviewRequest extends ITaskRequest {
-    message?: string; 
-}
-
 export interface EssayIdeasGenerationRequest extends ITaskRequest {
     college: string;
     major: string;

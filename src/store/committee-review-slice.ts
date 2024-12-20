@@ -2,26 +2,26 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CommitteeReviewState {
     review_result: string | undefined;
-    college_to_evaluate: string;
-    major_to_evalute: string; 
+    college: string;
+    major: string; 
 }
 
 const initialState: CommitteeReviewState = {
     review_result: undefined,
-    college_to_evaluate: "",
-    major_to_evalute: "No Preference",
+    college: "",
+    major: "No Preference",
 };
 
 const committeeReviewSlice = createSlice({
     name: 'committeeReview',
     initialState,
     reducers: {
-        setCollegeToEvaluate: (state, action: PayloadAction<string>) => {
-            state.college_to_evaluate = action.payload;
+        setCollege: (state, action: PayloadAction<string>) => {
+            state.college = action.payload;
         },
 
-        setMajorToEvaluate: (state, action: PayloadAction<string>) => {
-            state.major_to_evalute = action.payload;
+        setMajor: (state, action: PayloadAction<string>) => {
+            state.major = action.payload;
         },
 
         setReviewResult: (state, action: PayloadAction<string>) => {

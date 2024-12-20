@@ -3,10 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { 
   collegeListWorkshopActions, 
   committeeReviewActions, 
+  interviewConversationActions, 
+  navigationTabActions, 
   RootState 
 } from '../../../store';
 
-import { useCollegePreferenceSummary } from '../hooks/use-college-preference-summary';
 import { getCollegeNameKey } from '../../component-map';
 import {
   CollegeDataAndChanceRequest,
@@ -36,8 +37,7 @@ import {
 
 import { Add20Regular, Delete20Regular } from '@fluentui/react-icons';
 import { useStyles } from './college-list-build-form.styles';
-import { CollegePreferences } from '../../../shared';
-
+import { CollegePreferences, NavTabType } from '../../../shared';
 
 export const CollegeListBuildForm: React.FC = () => {
   const dispatch = useDispatch();
@@ -45,7 +45,6 @@ export const CollegeListBuildForm: React.FC = () => {
 
   const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
   const collegeDetails = useSelector((state: RootState) => state.collegeListWorkshop.collegeDetails);
-  const preference: string = useCollegePreferenceSummary();
   const collegePref: CollegePreferences = useSelector(
     (state: RootState) => state.collegePreferences.collegePreferences
   );
@@ -119,13 +118,16 @@ export const CollegeListBuildForm: React.FC = () => {
 
   const handleSelectCollege = (college: string) => {
     setSelectedCollege(college);
-    dispatch(committeeReviewActions.setCollegeToEvaluate(college));
-    dispatch(committeeReviewActions.setMajorToEvaluate(majorPref));
+    dispatch(committeeReviewActions.setCollege(college));
+    dispatch(committeeReviewActions.setMajor(majorPref));
+
+    dispatch(interviewConversationActions.setCollege(college));
+    dispatch(interviewConversationActions.setMajor(majorPref));   
   }
 
   const handleCommitteeReview = () => {
-    // Placeholder function
-    console.log('Committee Review triggered');
+    dispatch(navigationTabActions.setActiveTab(NavTabType.ComitteReview
+    ));
   };
 
   // DataGrid columns definition
@@ -277,7 +279,7 @@ export const CollegeListBuildForm: React.FC = () => {
         <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
           <Button onClick={handleStartCollegeListTask}>Create Initial List</Button>
           <Button onClick={handleStartEvaluationTask} disabled={!selectedCollege}>Evaluate</Button>
-          <Button onClick={handleCommitteeReview}>Committee Review</Button>
+          <Button onClick={handleCommitteeReview}  disabled={!selectedCollege}>Committee Review</Button>
         </div>
       </Card>
 

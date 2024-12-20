@@ -16,7 +16,7 @@ interface UseTaskRunnerReturn {
   progressMessage: string;
 }
 
-const TIMEOUT_DURATION = 180 * 1000; // 3 minutes
+const TIMEOUT_DURATION = 150 * 1000; // 3 minutes
 const FETCH_TIMEOUT_DURATION = 60 * 1000; // 30 seconds for fetch timeout
 
 export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunnerParams): UseTaskRunnerReturn => {
@@ -38,8 +38,6 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
 
       clearTimeout(timeoutId); // Clear the timeout on success
       const { taskId } = response.data;
-
-
 
       // Initialize SSE for progress updates
       const eventSource = new EventSource(`${SERVER_URL}/api/v1/task/progress?taskId=${taskId}`);
