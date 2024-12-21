@@ -5,9 +5,9 @@ import { RootState } from '../../store';
 import { InteractionCollegeNav } from '../component-left-pane-college-nav';
 import { InteractionCollegeListPane } from '../component-left-pane-college-list';
 import { InteractionCommitteeReview } from '../component-left-pane-committe-review';
-import { InteractionInterview } from '../component-interaction-interview';
 import { ProfileNavPane } from '../component-left-pane-profile';
 import { EssayWorkshopPane } from '../component-left-pane-essay';
+import { InteractionInterview } from '../component-interaction-interview';
 
 export const LeftContentPane: React.FC = () => {
     const activeTab: NavTabType = useSelector((state: RootState) => state.navigationTab.activeTab);

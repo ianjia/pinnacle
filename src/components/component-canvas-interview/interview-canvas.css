@@ -1,10 +1,12 @@
 .interview-background {
-    background-color: #f0f0f0; /* Light gray for good text contrast */
-    background-position: center;
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Ensure no overflow from the outer div */
-  }
+  background-color: #f0f0f0;
+  background-position: center;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   
+  /* Prevent scrolling of the outer container and ensure 
+     all scrolling happens inside the conversation box. */
+  overflow: hidden;
+}
