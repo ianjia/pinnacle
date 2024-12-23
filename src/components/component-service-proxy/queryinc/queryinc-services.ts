@@ -17,4 +17,4 @@ export const activityService = createIncService<Activity>(ACTIVITY_END_POINT_PAT
 export const honorService = createIncService<Honor>(HONOR_END_POINT_PATH);
 export const lifeStoryService = createIncService<LifeStory>(LIFE_STORY_END_POINT_PATH);
 export const careerGoalService = createIncService<AcademicCareerGoal>(ACADEMIC_CAREER_GOAL_END_POINT_PATH);
-export const converationService = createIncService<Conversation>(CONVERSATION_END_POINT_PATH)
+export const conversationService = createIncService<Conversation>(CONVERSATION_END_POINT_PATH)

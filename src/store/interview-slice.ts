@@ -2,69 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ConversationItem, InterviewWorkshopType } from '../shared';
 
 interface ConversationState {
-  conversation: ConversationItem[];
-  college: string;
-  major: string;
+  liveConversationItems: ConversationItem[];
+  liveConversationCollege: string;
+  liveConversationMajor: string;
+  liveConverstationId: number;
   activeInterviewWorkshop: InterviewWorkshopType;
 }
 
 const initialState: ConversationState = {
-  conversation: [
-    {
-      role: 'interviewer',
-      content: 'Hello! I’m here to ask you a few questions about your college preferences.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-    {
-      role: 'interviewer',
-      content: 'Hello! I’m here to ask you a few questions about your college preferences.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-    {
-      role: 'interviewer',
-      content: 'Hello! I’m here to ask you a few questions about your college preferences.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-    {
-      role: 'interviewer',
-      content: 'Hello! I’m here to ask you a few questions about your college preferences.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-    {
-      role: 'interviewer',
-      content: 'Hello! I’m here to ask you a few questions about your college preferences.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-    {
-      role: 'interviewer',
-      content: 'Hello! I’m here to ask you a few questions about your college preferences.',
-    },
-    {
-      role: 'interviewee',
-      content: 'Sure! I’d be glad to discuss my interests and goals.',
-    },
-  ],
-  college: "",
-  major: "No Preference",
+  liveConversationItems: [],
+  liveConversationCollege: "",
+  liveConversationMajor: "No Preference",
+  liveConverstationId: 0, // Place holder, will be updated on inserting converation into backend database
   activeInterviewWorkshop: InterviewWorkshopType.LiveInterview
 };
 
@@ -75,19 +24,24 @@ const conversationSlice = createSlice({
     setActiveInterviewWorkshop(state, action: PayloadAction<InterviewWorkshopType>) {
         state.activeInterviewWorkshop = action.payload;
     },
-    setCollege: (state, action: PayloadAction<string>) => {
-      state.college = action.payload;
+    setLiveConversationCollege: (state, action: PayloadAction<string>) => {
+      state.liveConversationCollege = action.payload;
     },
 
-    setMajor: (state, action: PayloadAction<string>) => {
-        state.major = action.payload;
+    setLiveConversationMajor: (state, action: PayloadAction<string>) => {
+        state.liveConversationMajor = action.payload;
     },
 
-    addMessage: (state, action: PayloadAction<ConversationItem>) => {
-      state.conversation.push(action.payload);
+    setLiveConversationId: (state, action: PayloadAction<number>) => {
+      state.liveConverstationId = action.payload;
     },
-    resetConversation: (state) => {
-      state.conversation = [];
+    
+    addLiveConversationMessage: (state, action: PayloadAction<ConversationItem>) => {
+      state.liveConversationItems.push(action.payload);
+    },
+
+    resetLiveConversation: (state) => {
+      state.liveConversationItems = [];
     },
   },
 });

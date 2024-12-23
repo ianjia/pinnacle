@@ -121,8 +121,8 @@ export const CollegeListBuildForm: React.FC = () => {
     dispatch(committeeReviewActions.setCollege(college));
     dispatch(committeeReviewActions.setMajor(majorPref));
 
-    dispatch(interviewConversationActions.setCollege(college));
-    dispatch(interviewConversationActions.setMajor(majorPref));   
+    dispatch(interviewConversationActions.setLiveConversationCollege(college));
+    dispatch(interviewConversationActions.setLiveConversationMajor(majorPref));   
   }
 
   const handleCommitteeReview = () => {
