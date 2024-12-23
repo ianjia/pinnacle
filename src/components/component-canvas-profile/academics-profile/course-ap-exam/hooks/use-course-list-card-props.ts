@@ -71,7 +71,7 @@ export function useCourseListCardProps(school_year: SchoolYear): CourseListCardP
       },
       onDeleteCourse: async (courseId: number) => {
         dispatch(gradeConfig.deleteAction(courseId));
-        await courseService.deleteById(courseId);
+        await courseService.deleteById(courseId, userId as number);
       },
     };
   }

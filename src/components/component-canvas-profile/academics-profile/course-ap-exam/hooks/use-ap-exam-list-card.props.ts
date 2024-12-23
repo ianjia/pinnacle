@@ -69,7 +69,7 @@ export function useApExamListCardProps(school_year: SchoolYear): ApExamListCardP
     },
     onDeleteApExam: async (apExamId: number) => {
       dispatch(gradeConfig.deleteAction(apExamId));
-      await apExamService.deleteById(apExamId);
+      await apExamService.deleteById(apExamId, userId as number);
     },
   };
 }

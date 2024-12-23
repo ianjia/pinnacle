@@ -11,7 +11,7 @@ export const CollegeListCanvas: React.FC = () => {
     const activeWorkShop: CollegeListWorkshopType = useSelector((state: RootState) => state.collegeListWorkshop.activeCollegeListWorkshop);
 
     return (
-        <div className="essay-background">
+        <div className="collegelist-background">
             {activeWorkShop === CollegeListWorkshopType.Preferences && <CollegePreferenceForm/>}
             {activeWorkShop === CollegeListWorkshopType.List && <CollegeListBuildForm/>}
             {activeWorkShop === CollegeListWorkshopType.Navigation && <CollegeListNavigationForm/>}

@@ -8,6 +8,11 @@ export interface TaskResult {
     type: TaskType;
 }
 
+export interface InterviewAnalyzeResult extends TaskResult {
+    type: TaskType.AnalyzeInterview;
+    message: string;
+}
+
 // Specific TaskResult interfaces for each type
 export interface CommitteeReviewTaskResult extends TaskResult {
     type: TaskType.CommitteReview;

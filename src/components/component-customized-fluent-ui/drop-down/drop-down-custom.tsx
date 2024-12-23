@@ -14,7 +14,6 @@ export const DropdownCustom: React.FC<DropDownCustomTypes> = ({
     const showPlaceHolder: boolean = value === "" || value === undefined;
     const placeHolderStr: string = placeHolder !== undefined ? String(placeHolder) : "";
 
-
     const renderedOptions = Object.keys(options)
         .filter((key) => isNaN(Number(key))) // Exclude numeric keys (reverse mappings)
         .map((key) => {

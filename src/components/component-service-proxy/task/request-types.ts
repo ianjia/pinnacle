@@ -4,6 +4,10 @@ export interface ITaskRequest {
 export interface CollegeListBuildRequest extends ITaskRequest {
 }
 
+export interface InterviewAnalyzeRequest extends ITaskRequest {
+    conversation_id: number
+}
+
 export interface EssayIdeasGenerationRequest extends ITaskRequest {
     college: string;
     major: string;

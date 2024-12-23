@@ -62,7 +62,7 @@ export const useActivityProfile = () : ActivityProfileFormProps => {
 
   const onDeleteActivity = async (id: number) => {
     try {
-      await activityService.deleteById(id);
+      await activityService.deleteById(id, userId as number);
       dispatch(selectedProfileActions.deleteActivity(id));
     } catch (error: unknown) {
       logError(error);

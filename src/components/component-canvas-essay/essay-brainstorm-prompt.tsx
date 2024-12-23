@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import { getCollegeNameKey } from '../component-map';
 import { RootState, AppDispatch, essayWorkshopActions } from '../../store';
-import { SpecializedProgram } from '../component-specalized-program';
 import { EssayIdeasGenerationRequest, ProgressModal, GenerateEssayIdeasTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
 import './essay-brainstorm-prompt.css';
+import { DropdownCustom } from '../component-customized-fluent-ui';
+import { Major } from '../../shared';
 
 // Todo - temp validity checker
 function isPromptValid(prompt: string): boolean {
@@ -116,9 +117,13 @@ export const EssayPrompt: React.FC = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="major">Major:</label>
-                    <SpecializedProgram
+                    <DropdownCustom
+                        options={Major}
+                        onOptionSelect={(e, option) =>
+                            dispatch(essayWorkshopActions.setMajor(option.optionValue as Major))
+                        }
                         value={major}
-                        onPreferenceChange={(newMajor) => dispatch(essayWorkshopActions.setMajor(newMajor))}
+                        placeHolder={undefined}
                     />
                 </div>
             </div>

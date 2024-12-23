@@ -25,3 +25,8 @@ export enum CollegeListWorkshopType {
     List,
     Navigation,
 }
+
+export enum InterviewWorkshopType {
+    LiveInterview,
+    InterviewHistory,
+}

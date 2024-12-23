@@ -58,7 +58,7 @@ export const useHonorProfile = (): HonorProfileFormProps => {
 
   const onDeleteHonor = async (id: number) => {
     try {
-      await honorService.deleteById(id);
+      await honorService.deleteById(id, userId as number);
       dispatch(selectedProfileActions.deleteHonor(id));
     } catch (error: unknown) {
       logError(error);

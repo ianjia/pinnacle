@@ -1,5 +1,4 @@
 import React from 'react';
-import { Activity } from '../../../shared';
 import { Button } from '@fluentui/react-components';
 import { Add20Regular, Delete24Regular } from '@fluentui/react-icons';
 import { useStyles } from './activity-profile-form.styles';

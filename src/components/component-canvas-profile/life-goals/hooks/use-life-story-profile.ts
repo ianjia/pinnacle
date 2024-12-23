@@ -47,7 +47,7 @@ export const useLifeStoryProfile = () => {
 
   const onDeleteEntity = async (id: number) => {
     try {
-      await lifeStoryService.deleteById(id);
+      await lifeStoryService.deleteById(id, userId as number);
       dispatch(selectedProfileActions.deleteLifeStory(id));
     } catch (error: unknown) {
       logError(error);

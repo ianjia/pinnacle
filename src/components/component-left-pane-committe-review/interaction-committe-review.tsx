@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch, committeeReviewActions} from '../../store';
-import { SpecializedProgram } from '../component-specalized-program';
 import './interaction-committe-review.css';
 import { getCollegeNameKey } from '../component-map';
 import { CommitteeReviewRequest, ProgressModal, CommitteeReviewTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
+import { DropdownCustom } from '../component-customized-fluent-ui';
+import { Major } from '../../shared';
 
 export const InteractionCommitteeReview: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -77,9 +78,13 @@ export const InteractionCommitteeReview: React.FC = () => {
 
             <div className="interaction-input">
                 <label>Major:</label>
-                <SpecializedProgram
+                <DropdownCustom
+                    options={Major}
+                    onOptionSelect={(e, option) =>
+                        dispatch(committeeReviewActions.setMajor(option.optionValue as Major))
+                    }
                     value={major}
-                    onPreferenceChange={(newMajor) => dispatch(committeeReviewActions.setMajor(newMajor))}
+                    placeHolder={undefined}
                 />
             </div>
         </div>

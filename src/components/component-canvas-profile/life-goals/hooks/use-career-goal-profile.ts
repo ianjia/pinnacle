@@ -47,7 +47,7 @@ export const useCareerGoalProfile = () => {
 
   const onDeleteEntity = async (id: number) => {
     try {
-      await careerGoalService.deleteById(id);
+      await careerGoalService.deleteById(id, userId as number);
       dispatch(selectedProfileActions.deleteCareerGoal(id));
     } catch (error: unknown) {
       logError(error);

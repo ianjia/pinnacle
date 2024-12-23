@@ -1,7 +1,6 @@
 // Define the TaskType values to match the server-side TaskType Enum, see basic_types.py on server side
 export enum TaskType {
     CommitteReview = "CommitteReview",
-    StartInterview = "StartInterview",
     GenerateEssayIdeas = "GenerateEssayIdeas",
     RefineEssayIdea = "RefineEssayIdea",
     BuildCollegeList = "BuildCollegeList",
@@ -9,4 +8,5 @@ export enum TaskType {
     MyChance = "MyChance",
     DraftEssay = "DraftEssay",
     RefineEssay = "RefineEssay",
+    AnalyzeInterview = "AnalyzeInterview"
 }

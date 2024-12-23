@@ -7,7 +7,7 @@ import { InteractionCollegeListPane } from '../component-left-pane-college-list'
 import { InteractionCommitteeReview } from '../component-left-pane-committe-review';
 import { ProfileNavPane } from '../component-left-pane-profile';
 import { EssayWorkshopPane } from '../component-left-pane-essay';
-import { InteractionInterview } from '../component-interaction-interview';
+import { InteractionInterviewPane } from '../component-left-pane-interview/interaction-interview';
 
 export const LeftContentPane: React.FC = () => {
     const activeTab: NavTabType = useSelector((state: RootState) => state.navigationTab.activeTab);
@@ -18,7 +18,7 @@ export const LeftContentPane: React.FC = () => {
            { activeTab === NavTabType.CollegeNavigatoin && (<InteractionCollegeNav/>)}
            { activeTab === NavTabType.CollegeList && (<InteractionCollegeListPane/>)}
            { activeTab === NavTabType.ComitteReview && (<InteractionCommitteeReview/>)}
-           { activeTab === NavTabType.Interview && (<InteractionInterview/>)}
+           { activeTab === NavTabType.Interview && (<InteractionInterviewPane/>)}
            { activeTab === NavTabType.Essay && (<EssayWorkshopPane/>)}
         </div>
       );

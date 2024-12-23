@@ -1,12 +1,3 @@
-export interface InterviewResult {
+export interface InterviewStartResult {
     message: string;
-}
-
-export interface InterviewStartResult extends InterviewResult {
-}
-
-export interface InterviewAnswerResult extends InterviewResult {
-}
-
-export interface InterviewAnalyzeResult extends InterviewResult {
 }

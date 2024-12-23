@@ -2,7 +2,11 @@ import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { collegePreferencesActions, RootState } from '../../../store';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
-import { AcademicFields, AcademicFocus, Arts, Athletics, ClassSizes, ClimatePreference, CollegePreferenceKeys, CollegePreferences, DistanceFromHome, Diversity, ExtracurricularScene, Facilities, FinancialSupport, Housing, ImportanceLevel, LocationRegion, Major, MajorReputation, Prestige, ResearchInternship, SchoolSize, SocialEnviroment, StatePreference, TuitionRange, Urbanization } from '../../../shared';
+import { AcademicFields, AcademicFocus, Arts, Athletics, ClassSizes, ClimatePreference, 
+        CollegePreferenceKeys, CollegePreferences, DistanceFromHome, Diversity, ExtracurricularScene, 
+        Facilities, FinancialSupport, Housing, ImportanceLevel, LocationRegion, Major, MajorReputation, 
+        Prestige, ResearchInternship, SchoolSize, SocialEnviroment, StatePreference, TuitionRange, 
+        Urbanization } from '../../../shared';
 import { useStyles } from './preference-section-card.styles';
 import { PreferenceSectionCard } from './preference-secion-card';
 import { collegePreferenceService } from '../../component-service-proxy';

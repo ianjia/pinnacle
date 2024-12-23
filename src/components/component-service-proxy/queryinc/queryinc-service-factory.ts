@@ -30,9 +30,9 @@ export function createIncService<T>(endpoint: string) {
       }
     },
 
-    async deleteById(id: number): Promise<void> {
+    async deleteById(id: number, userId: number): Promise<void> {
       try {
-        await api.delete(`${endpoint}/${id}`);
+        await api.delete(`${endpoint}/${id}/${userId}`);
       } catch (error: any) {
         throw new Error(`Failed to delete record: ${error.response?.data?.detail || error.message}`);
       }
