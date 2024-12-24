@@ -10,30 +10,47 @@ import { Major } from '../../../shared';
 import { useOnStartInterviewCreator } from './hooks/use-on-start-interview-creator';
 import { useOnStopInterviewCreator } from './hooks/use-on-stop-interview-creator';
 import { useInterviewConnection } from './hooks/use-interview-connection';
+import { useOnReviewCompleteCreator } from './hooks/use-on-review-complete-creator';
+import { InterviewAnalyzeRequest, InterviewAnalyzeResult, ProgressModal, TaskResult, TaskType, useTaskRunner } from '../../component-service-proxy';
 
 export const InterviewActionPanel: React.FC = () => {
   const dispatch = useDispatch();
   const styles = useStyles();
 
-  const storeCollege: string = useSelector(
+  const liveCollege: string = useSelector(
     (state: RootState) => state.conversation.liveConversationCollege
   );
-  const storeMajor: string = useSelector(
+  const liveMajor: string = useSelector(
     (state: RootState) => state.conversation.liveConversationMajor
   );
 
+  const liveId: number = useSelector(
+    (state: RootState) => state.conversation.liveConverstationId
+  );
+
   // Local states
-  const [collegeInput, setCollegeInput] = useState(storeCollege);
+  const [collegeInput, setCollegeInput] = useState(liveCollege);
   const collegeInputRef = useRef<HTMLInputElement>(null);
 
   const onStartInterview = useOnStartInterviewCreator();
   const onStopInterview = useOnStopInterviewCreator();
+  const onReviewComplete = useOnReviewCompleteCreator();
 
   // Hook that handles all the real-time / PeerConnection logic
   const { interviewActive, isProcessing, toggleInterview } = useInterviewConnection({
     onStartInterview,
-    onStopInterview,   // async
+    onStopInterview, 
   });
+
+  const {startTask: startInterviewReviewTask, showModal, progressMessage } = useTaskRunner({
+    taskType: TaskType.AnalyzeInterview,
+    requestData: {conversation_id: liveId} as InterviewAnalyzeRequest, 
+    onResult: (data: TaskResult) => {
+      const review = (data as InterviewAnalyzeResult).message;
+      dispatch(interviewConversationActions.setLiveConversationReview(review))
+      onReviewComplete();
+    }
+})    
 
   /**
    * Validate and set the college name from user input.
@@ -59,7 +76,7 @@ export const InterviewActionPanel: React.FC = () => {
   };
 
   const toggleInterviewHandler = () => {
-    const matchedCollegeName = getCollegeNameKey(storeCollege);
+    const matchedCollegeName = getCollegeNameKey(liveCollege);
     // Check if matchedCollegeName is not undefined/null and has length >= 3
     if (!matchedCollegeName || matchedCollegeName.length < 3) {
       alert('The college name you entered is not valid. Please re-enter.');
@@ -73,13 +90,18 @@ export const InterviewActionPanel: React.FC = () => {
   /**
    * For "Interview Review" button, now a local handler
    */
-  const handleReviewClick = () => {
-    // To be implemented, temp hack to test
-    onStopInterview();
+  const handleReviewClick = async () => {
+    try {
+      startInterviewReviewTask();
+    } catch (error) {
+      console.error("Error in review flow:", error);
+    }
   };
 
   return (
     <div className={styles.container}>
+      <ProgressModal show = {showModal} message = {progressMessage}/>
+
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
           Action Panel
@@ -106,7 +128,7 @@ export const InterviewActionPanel: React.FC = () => {
                 onOptionSelect={(e, option) =>
                   handleMajorChange(option.optionValue as Major)
                 }
-                value={storeMajor}
+                value={liveMajor}
                 placeHolder="Select a major"
               />
             </Field>

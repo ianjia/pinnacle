@@ -78,7 +78,7 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({ editable, selectCallback
   
     return (
       <div className="ideas-table-container">
-            <ProgressModal show = {showModal} message = {progressMessage}/>
+        <ProgressModal show = {showModal} message = {progressMessage}/>
         {editable && (
           <div className="buttons-container">
             <button onClick={handleAdd}>Add</button>

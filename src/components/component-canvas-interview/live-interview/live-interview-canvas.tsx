@@ -8,9 +8,8 @@ import { InterviewActionPanel } from '../action-panel/interview-action-panel';
 
 export const LiveInterviewCanvas: React.FC = () => {
     const conversationItems = useSelector((state: RootState) => state.conversation.liveConversationItems);
-    const review: string = "test";
+    const review: string | undefined = useSelector((state: RootState) => state.conversation.liveConversationReview);
     const styles = useStyles();
-
 
     return (
     <div>

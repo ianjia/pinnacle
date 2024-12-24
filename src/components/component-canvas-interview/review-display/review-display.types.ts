@@ -1,5 +1,5 @@
 
 export interface ReviewDisplayProps {
-    review: string;
+    review: string | undefined;
   }
   

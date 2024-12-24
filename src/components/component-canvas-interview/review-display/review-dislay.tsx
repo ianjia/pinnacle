@@ -9,7 +9,7 @@ export const ReviewDisplay: React.FC<ReviewDisplayProps> = ({ review }) => {
   return (
     <div className={styles.reviewContainer}>
       <div className={styles.reviewBox}>
-        <MarkdownMessageDisplay resultMessage={review} />
+        { review && <MarkdownMessageDisplay resultMessage={ review } />}
       </div>
     </div>
   );

@@ -30,3 +30,8 @@ export enum InterviewWorkshopType {
     LiveInterview,
     InterviewHistory,
 }
+
+export enum LiveConversationDisplayType {
+    Conversation,
+    Review,
+}

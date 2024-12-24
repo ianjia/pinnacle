@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ConversationItem, InterviewWorkshopType } from '../shared';
+import { ConversationItem, InterviewWorkshopType, LiveConversationDisplayType } from '../shared';
 
 interface ConversationState {
   liveConversationItems: ConversationItem[];
   liveConversationCollege: string;
   liveConversationMajor: string;
   liveConverstationId: number;
+  liveConversationReview: string | undefined;
   activeInterviewWorkshop: InterviewWorkshopType;
+  activeConversationDisplay: LiveConversationDisplayType;
 }
 
 const initialState: ConversationState = {
@@ -14,7 +16,9 @@ const initialState: ConversationState = {
   liveConversationCollege: "",
   liveConversationMajor: "No Preference",
   liveConverstationId: 0, // Place holder, will be updated on inserting converation into backend database
-  activeInterviewWorkshop: InterviewWorkshopType.LiveInterview
+  liveConversationReview: undefined,
+  activeInterviewWorkshop: InterviewWorkshopType.LiveInterview,
+  activeConversationDisplay: LiveConversationDisplayType.Conversation, 
 };
 
 const conversationSlice = createSlice({
@@ -24,6 +28,11 @@ const conversationSlice = createSlice({
     setActiveInterviewWorkshop(state, action: PayloadAction<InterviewWorkshopType>) {
         state.activeInterviewWorkshop = action.payload;
     },
+
+    setActiveConversationDisplay(state, action: PayloadAction<LiveConversationDisplayType>) {
+      state.activeConversationDisplay = action.payload;
+    },    
+    
     setLiveConversationCollege: (state, action: PayloadAction<string>) => {
       state.liveConversationCollege = action.payload;
     },
@@ -36,12 +45,18 @@ const conversationSlice = createSlice({
       state.liveConverstationId = action.payload;
     },
     
+    setLiveConversationReview: (state, action: PayloadAction<string>) => {
+      state.liveConversationReview = action.payload;
+    },
+
     addLiveConversationMessage: (state, action: PayloadAction<ConversationItem>) => {
       state.liveConversationItems.push(action.payload);
     },
 
     resetLiveConversation: (state) => {
       state.liveConversationItems = [];
+      state.liveConversationReview = undefined;
+      state.liveConverstationId = 0;
     },
   },
 });
