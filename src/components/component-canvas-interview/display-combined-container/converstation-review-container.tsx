@@ -1,4 +1,3 @@
-// File 1:
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { TabList, Tab, SelectTabEvent, SelectTabData, Card } from '@fluentui/react-components';

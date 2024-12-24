@@ -8,6 +8,7 @@ import { useLifeStoryListLoader } from "./use-life-story-record.loader";
 import { useStdTestRecordLoader } from "./use-std-test-record-loader";
 import { useStudentProfileLoader } from "./use-student-profile-loader";
 import { useCollegePrefRecordLoader } from "./use-college-pref-record-loader";
+import { useInterviewHistoryRecordLoader } from "./use-interview-history-record-loader";
 
 export function useLoadData() {
     const { loadStudentProfile } = useStudentProfileLoader();
@@ -20,6 +21,7 @@ export function useLoadData() {
     const { loadLifeStoryList} = useLifeStoryListLoader();
     const { loadCareerGoalList } = useCareerGoalListLoader();
     const { loadCollegePrefRecord } = useCollegePrefRecordLoader();
+    const { loadInterviewHisotry } = useInterviewHistoryRecordLoader();
 
     // Return a callable function
     return async (userId: number): Promise<void> => {
@@ -33,5 +35,6 @@ export function useLoadData() {
         await loadLifeStoryList(userId);
         await loadCareerGoalList(userId);
         await loadCollegePrefRecord(userId);
+        await loadInterviewHisotry(userId);
     };
 }

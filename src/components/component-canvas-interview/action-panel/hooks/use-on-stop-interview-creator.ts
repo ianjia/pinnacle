@@ -37,6 +37,10 @@ export function useOnStopInterviewCreator() {
       // 4) Update Redux with new ID
       dispatch(interviewConversationActions.setLiveConversationId(newId));
 
+      // 5) Add the new conversation to interview history
+      conversationToCreate.id = newId;
+      dispatch(interviewConversationActions.addInterviewToHistory(conversationToCreate));      
+
     } catch (error) {
       console.error("Error saving conversation to server:", error);
       throw error;

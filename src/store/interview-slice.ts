@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ConversationItem, InterviewWorkshopType, LiveConversationDisplayType } from '../shared';
+import { Conversation, ConversationItem, InterviewWorkshopType, LiveConversationDisplayType } from '../shared';
 
 interface ConversationState {
   liveConversationItems: ConversationItem[];
@@ -9,6 +9,7 @@ interface ConversationState {
   liveConversationReview: string | undefined;
   activeInterviewWorkshop: InterviewWorkshopType;
   activeConversationDisplay: LiveConversationDisplayType;
+  interviewHistoryList: Conversation[];
 }
 
 const initialState: ConversationState = {
@@ -18,7 +19,8 @@ const initialState: ConversationState = {
   liveConverstationId: 0, // Place holder, will be updated on inserting converation into backend database
   liveConversationReview: undefined,
   activeInterviewWorkshop: InterviewWorkshopType.LiveInterview,
-  activeConversationDisplay: LiveConversationDisplayType.Conversation, 
+  activeConversationDisplay: LiveConversationDisplayType.Conversation,
+  interviewHistoryList: [] 
 };
 
 const conversationSlice = createSlice({
@@ -33,6 +35,21 @@ const conversationSlice = createSlice({
       state.activeConversationDisplay = action.payload;
     },    
     
+    setInterviewHistoryList(state, action: PayloadAction<Conversation[]>) {
+      state.interviewHistoryList = action.payload;
+    },
+
+    deleteInterviewFromHistory(state, action: PayloadAction<number>) {
+      state.interviewHistoryList = state.interviewHistoryList.filter(interview => interview.id != action.payload);
+      if (action.payload === state.liveConverstationId) {
+        conversationSlice.caseReducers.resetLiveConversation(state);
+      }
+    },
+
+    addInterviewToHistory(state, action: PayloadAction<Conversation>) {
+      state.interviewHistoryList.push(action.payload);
+    },
+
     setLiveConversationCollege: (state, action: PayloadAction<string>) => {
       state.liveConversationCollege = action.payload;
     },

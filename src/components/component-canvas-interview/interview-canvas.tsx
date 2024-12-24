@@ -4,7 +4,7 @@ import { RootState } from '../../store';
 import { InterviewWorkshopType } from '../../shared';
 import './interview-canvas.css';
 import { LiveInterviewCanvas } from './live-interview/live-interview-canvas';
-import { HistoryInterviewCanvas } from './history-interview/history-interview-canvas';
+import { ConversationHistoryMainContainer } from './history-interview/conversation-history-main-container';
 
 export const InterviewCanvas: React.FC = () => {
     const activeWorkshop = useSelector((state: RootState) => state.conversation.activeInterviewWorkshop);
@@ -12,7 +12,7 @@ export const InterviewCanvas: React.FC = () => {
     return (
         <div className="interview-background">
             {activeWorkshop === InterviewWorkshopType.LiveInterview && <LiveInterviewCanvas/>}
-            {activeWorkshop === InterviewWorkshopType.InterviewHistory && <HistoryInterviewCanvas/>}
+            {activeWorkshop === InterviewWorkshopType.InterviewHistory && <ConversationHistoryMainContainer/>}
         </div>
     );
 };

@@ -92,6 +92,10 @@ export const InterviewActionPanel: React.FC = () => {
    */
   const handleReviewClick = async () => {
     try {
+      if (liveId === 0) {
+        alert("Review could only be performed after finishing the interview.");
+        return;
+      }
       startInterviewReviewTask();
     } catch (error) {
       console.error("Error in review flow:", error);
