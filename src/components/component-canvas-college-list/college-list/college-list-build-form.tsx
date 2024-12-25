@@ -118,8 +118,8 @@ export const CollegeListBuildForm: React.FC = () => {
 
   const handleSelectCollege = (college: string) => {
     setSelectedCollege(college);
-    dispatch(committeeReviewActions.setCollege(college));
-    dispatch(committeeReviewActions.setMajor(majorPref));
+    dispatch(committeeReviewActions.setLiveReviewCollege(college));
+    dispatch(committeeReviewActions.setLiveReviewMajor(majorPref));
 
     dispatch(interviewConversationActions.setLiveConversationCollege(college));
     dispatch(interviewConversationActions.setLiveConversationMajor(majorPref));   

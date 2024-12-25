@@ -35,3 +35,8 @@ export enum LiveConversationDisplayType {
     Conversation,
     Review,
 }
+
+export enum CommitteeReviewWorkshopType {
+    CurrentReview,
+    ReviewHistory,
+}

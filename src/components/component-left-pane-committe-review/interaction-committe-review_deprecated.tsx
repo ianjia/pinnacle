@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch, committeeReviewActions} from '../../store';
-import './interaction-committe-review.css';
+import './interaction-committe-review_deprecated.css';
 import { getCollegeNameKey } from '../component-map';
 import { CommitteeReviewRequest, ProgressModal, CommitteeReviewTaskResult, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
 import { DropdownCustom } from '../component-customized-fluent-ui';
@@ -12,14 +12,14 @@ export const InteractionCommitteeReview: React.FC = () => {
     const [collegeInput, setCollegeInput] = useState('');
     const collegeInputRef = useRef<HTMLInputElement>(null); // Reference for the input field
 
-    const college: string = useSelector((state: RootState) => state.committeeReview.college);
-    const major: string = useSelector((state: RootState) => state.committeeReview.major);
+    const college: string = useSelector((state: RootState) => state.committeeReview.liveReviewCollege);
+    const major: string = useSelector((state: RootState) => state.committeeReview.liveReviewMajor);
 
     const {startTask: startReviewTask, showModal, progressMessage } = useTaskRunner({
         taskType: TaskType.CommitteReview,
         requestData: {college_name: college, major: major} as CommitteeReviewRequest, 
         onResult: (data: TaskResult) => {
-          dispatch(committeeReviewActions.setReviewResult((data as CommitteeReviewTaskResult).review));
+          dispatch(committeeReviewActions.setLiveReviewResult((data as CommitteeReviewTaskResult).review));
           }
         }
       )
@@ -39,7 +39,7 @@ export const InteractionCommitteeReview: React.FC = () => {
         if (matchedCollegeName) {
             // Update collegeInput with the matched college name
             setCollegeInput(matchedCollegeName);
-            dispatch(committeeReviewActions.setCollege(matchedCollegeName));
+            dispatch(committeeReviewActions.setLiveReviewCollege(matchedCollegeName));
         } else {
             // Alert user if no match is found
             alert("The college name you entered is not valid. Please re-enter.");
@@ -81,7 +81,7 @@ export const InteractionCommitteeReview: React.FC = () => {
                 <DropdownCustom
                     options={Major}
                     onOptionSelect={(e, option) =>
-                        dispatch(committeeReviewActions.setMajor(option.optionValue as Major))
+                        dispatch(committeeReviewActions.setLiveReviewMajor(option.optionValue as Major))
                     }
                     value={major}
                     placeHolder={undefined}

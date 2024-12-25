@@ -1,1 +1,1 @@
-export * from './interaction-committe-review';
+export * from './interaction-committee-review';

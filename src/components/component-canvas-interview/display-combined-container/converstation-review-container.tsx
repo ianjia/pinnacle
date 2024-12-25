@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { TabList, Tab, SelectTabEvent, SelectTabData, Card } from '@fluentui/react-components';
 import { ConversationDisplay } from '../conversation-display/conversation-display';
-import { ReviewDisplay } from '../review-display/review-dislay';
+import { ReviewDisplay } from '../../component-review-display/review-dislay';
 import { ConversationDisplayProps } from '../conversation-display/conversation-display.types';
-import { ReviewDisplayProps } from '../review-display/review-display.types';
+import { ReviewDisplayProps } from '../../component-review-display/review-display.types';
 import { interviewConversationActions, RootState } from '../../../store';
 import { LiveConversationDisplayType } from '../../../shared';
 

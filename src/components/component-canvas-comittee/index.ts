@@ -1,1 +1,1 @@
-export * from './committe-canvas';
+export * from './committee-review-canvas';

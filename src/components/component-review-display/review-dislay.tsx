@@ -1,7 +1,7 @@
 import React from 'react';
 import { ReviewDisplayProps } from './review-display.types';
 import { useStyles } from './review-display.styles';
-import { MarkdownMessageDisplay } from '../../component-mark-down-display';
+import { MarkdownMessageDisplay } from '../component-mark-down-display';
 
 export const ReviewDisplay: React.FC<ReviewDisplayProps> = ({ review }) => {
   const styles = useStyles();

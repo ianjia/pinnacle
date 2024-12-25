@@ -1,34 +1,72 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CommitteeReview, CommitteeReviewWorkshopType } from '../shared';
 
 interface CommitteeReviewState {
-    review_result: string | undefined;
-    college: string;
-    major: string; 
+    liveReviewResult: string;
+    liveReviewCollege: string;
+    liveReviewMajor: string;
+    liveReviewId: number;
+    activeCommitteeReviewWorkshop: CommitteeReviewWorkshopType;
+    committeeReviewHistory: CommitteeReview[];
 }
 
 const initialState: CommitteeReviewState = {
-    review_result: undefined,
-    college: "",
-    major: "No Preference",
+    liveReviewResult: "",
+    liveReviewCollege: "",
+    liveReviewMajor: "No Preference",
+    liveReviewId: 0, // Place holder, will be updated on inserting review into backend database,
+    activeCommitteeReviewWorkshop: CommitteeReviewWorkshopType.CurrentReview,
+    committeeReviewHistory: [],
 };
 
 const committeeReviewSlice = createSlice({
     name: 'committeeReview',
     initialState,
     reducers: {
-        setCollege: (state, action: PayloadAction<string>) => {
-            state.college = action.payload;
-        },
+      setActiveCommitteeReviewWorkshop: (
+        state,
+        action: PayloadAction<CommitteeReviewWorkshopType>
+        ) => {
+        state.activeCommitteeReviewWorkshop = action.payload;
+      },
 
-        setMajor: (state, action: PayloadAction<string>) => {
-            state.major = action.payload;
-        },
-
-        setReviewResult: (state, action: PayloadAction<string>) => {
-            state.review_result = action.payload;
+      setCommitteeReviewHistory(state, action: PayloadAction<CommitteeReview[]>) {
+        state.committeeReviewHistory = action.payload;
+      },
+  
+      deleteReviewFromHistory(state, action: PayloadAction<number>) {
+        state.committeeReviewHistory = state.committeeReviewHistory.filter(review => review.id != action.payload);
+        if (action.payload === state.liveReviewId) {
+            committeeReviewSlice.caseReducers.resetLiveReview(state);
         }
+      },
+  
+      addReviewToHistory(state, action: PayloadAction<CommitteeReview>) {
+        state.committeeReviewHistory.push(action.payload);
+      },
+
+      setLiveReviewCollege: (state, action: PayloadAction<string>) => {
+        state.liveReviewCollege = action.payload;
+      },
+  
+      setLiveReviewMajor: (state, action: PayloadAction<string>) => {
+        state.liveReviewMajor = action.payload;
+      },
+  
+      setLiveReviewResult: (state, action: PayloadAction<string>) => {
+        state.liveReviewResult = action.payload;
+      },
+  
+      setLiveReviewId: (state, action: PayloadAction<number>) => {
+        state.liveReviewId = action.payload;
+      },
+  
+      resetLiveReview: (state) => {
+        state.liveReviewResult = "";
+        state.liveReviewId = 0;
+      },
     },
-});
+  });
 
 export const committeeReviewReducers = committeeReviewSlice.reducer;
 export const committeeReviewActions = committeeReviewSlice.actions;

@@ -1,5 +1,5 @@
 import { createIncService } from "./queryinc-service-factory";
-import { AcademicCareerGoal, Activity, Conversation, Course, Honor, LifeStory } from "../../../shared";
+import { AcademicCareerGoal, Activity, CommitteeReview, Conversation, Course, Honor, LifeStory } from "../../../shared";
 import { ApExam } from "../../../shared";
 
 const APEXAM_END_POINT_PATH = "/api/v1/queryinc/apexam";
@@ -8,7 +8,8 @@ const ACTIVITY_END_POINT_PATH = "/api/v1/queryinc/activity";
 const HONOR_END_POINT_PATH = "/api/v1/queryinc/honor";
 const LIFE_STORY_END_POINT_PATH = "/api/v1/queryinc/lifestory";
 const ACADEMIC_CAREER_GOAL_END_POINT_PATH = "/api/v1/queryinc/careergoal";
-const CONVERSATION_END_POINT_PATH = "/api/v1/queryinc/conversation"
+const CONVERSATION_END_POINT_PATH = "/api/v1/queryinc/conversation";
+const COMMITTEE_REVIEW_END_POINT_PATH = "/api/v1/queryinc/committee"
 
 
 export const apExamService = createIncService<ApExam>(APEXAM_END_POINT_PATH);
@@ -18,3 +19,4 @@ export const honorService = createIncService<Honor>(HONOR_END_POINT_PATH);
 export const lifeStoryService = createIncService<LifeStory>(LIFE_STORY_END_POINT_PATH);
 export const careerGoalService = createIncService<AcademicCareerGoal>(ACADEMIC_CAREER_GOAL_END_POINT_PATH);
 export const conversationService = createIncService<Conversation>(CONVERSATION_END_POINT_PATH)
+export const committeeReviewService = createIncService<CommitteeReview>(COMMITTEE_REVIEW_END_POINT_PATH)
