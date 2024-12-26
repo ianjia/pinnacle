@@ -12,3 +12,4 @@ export * from './model/resident-state';
 export * from './model/college-preference-structure';
 export * from './model/interview-structure';
 export * from './model/committee-review-structure';
+export * from './model/college-admission-data-structure';

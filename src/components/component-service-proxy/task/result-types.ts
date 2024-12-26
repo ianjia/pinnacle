@@ -1,6 +1,6 @@
 // See result_types.py on AI python server side
 
-import { CombinedCollegeData, MyChanceOnCollege } from "../../../store";
+import { CombinedCollegeData } from "../../../shared";
 import { TaskType } from "./basic-types";
 
 // Define a base interface for TaskResult
@@ -48,9 +48,3 @@ export interface GetCollegeDataChanceTaskResult extends TaskResult {
     type: TaskType.GetCollegeDataChance;
     data_chance: CombinedCollegeData;
 }
-
-export interface MyChanceTaskResult extends TaskResult {
-    type: TaskType.MyChance;
-    myChance: MyChanceOnCollege;
-}
-

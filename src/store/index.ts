@@ -4,5 +4,5 @@ export * from './committee-review-slice';
 export * from './interview-slice';
 export * from './profile-slice';
 export * from './essay-workshop-slice';
-export * from './college-list-slice';
 export * from './college-preference-slice';
+export * from './college-list-slice';

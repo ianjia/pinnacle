@@ -1,27 +1,23 @@
-// File 1: CollegeListNavigationForm
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Map } from '../component-map';
 import { RootState } from '../../store';
-import { CollegeNamePair } from '../component-map'; // Ensure this type is correctly imported from your types file
+import { Map } from '../component-map';
+import { CollegeNamePair } from '../component-map';
 
 export const CollegeListNavigationForm: React.FC = () => {
-    // Get collegeList and collegeDetails from the Redux store
-    const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
-    const collegeDetails = useSelector((state: RootState) => state.collegeListWorkshop.collegeDetails);
+  const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
 
-    // Build collegeNameList by combining college name and category from collegeDetails
-    const collegeNameList: CollegeNamePair[] = collegeList.map(collegeName => {
-        const details = collegeDetails[collegeName];
-        return {
-            collegeName,
-            category: details ? details.category : undefined
-        };
-    });
+  const collegeNameList: CollegeNamePair[] = collegeList.map((collegeData) => {
+    return {
+      collegeName: collegeData.college,
+      // If collegeData.data is undefined, category becomes undefined
+      category: collegeData.data?.category,
+    };
+  });
 
-    return (
-        <div>
-            <Map collegeNameList={collegeNameList} />
-        </div>
-    );
+  return (
+    <div>
+      <Map collegeNameList={collegeNameList} />
+    </div>
+  );
 };
