@@ -1,0 +1,298 @@
+import React, { useContext, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../store';
+import {
+  collegeListWorkshopActions,
+  committeeReviewActions,
+  interviewConversationActions,
+  navigationTabActions
+} from '../../../store';
+
+import {
+  TaskType,
+  useTaskRunner,
+  collegeAdmissionDataService,
+  CollegeListBuildRequest,
+  BuildCollegeListTaskResult,
+  TaskResult,
+  GetCollegeDataChanceTaskResult,
+  CollegeDataAndChanceRequest,
+  ProgressModal
+} from '../../component-service-proxy';
+
+import { AuthContext } from '../../../auth';
+import { NavTabType, CollegePreferences, CollegeAdmissionData } from '../../../shared';
+import { getCollegeNameKey } from '../../component-map';
+
+import { ReviewDisplay } from '../../component-review-display/review-dislay';
+import { CollegeListBuildForm } from './college-list-build-form';
+import { Card } from '@fluentui/react-components';
+import { useStyles } from './college-list-build-form.styles';
+
+export const CollegeListBuildMainContainer: React.FC = () => {
+  const dispatch = useDispatch();
+  const { userId } = useContext(AuthContext);
+  const styles = useStyles();
+  
+  // Pull college list and preferences from Redux
+  const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
+  const collegePref: CollegePreferences = useSelector(
+    (state: RootState) => state.collegePreferences.collegePreferences
+  );
+  const majorPref: string = collegePref.specializedProgram.value;
+
+  // Track which college row is selected
+  const [selectedCollege, setSelectedCollege] = useState<CollegeAdmissionData | null>(null);
+
+  // State for opening the "Add college" modal
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newCollegeName, setNewCollegeName] = useState('');
+
+  // Track which (if any) task is active (so we can show the ProgressModal)
+  const [activeTask, setActiveTask] = useState<"collegeList" | "evaluation" | null>(null);
+
+  /**
+   * Task runner for building a college list:
+   */
+  const {
+    startTask: startCollegeListTask,
+    showModal: showCollegeListModal,
+    progressMessage: progressCollegeListMessage
+  } = useTaskRunner({
+    taskType: TaskType.BuildCollegeList,
+    requestData: {} as CollegeListBuildRequest,
+
+    onResult: async (data: TaskResult) => {
+      const buildResult = data as BuildCollegeListTaskResult; 
+      const newCollegeList = buildResult.college_list.map((collegeName) => ({
+        id: 0,
+        user_id: userId as number,
+        college: collegeName,
+        data: undefined,
+      }));
+
+      try {
+        // Create each new college item on the server
+        const updatedCollegeList = await Promise.all(
+          newCollegeList.map(async (collegeItem) => {
+            const returnedId = await collegeAdmissionDataService.create(collegeItem);
+            return { ...collegeItem, id: returnedId };
+          })
+        );
+        // Dispatch to Redux store
+        dispatch(collegeListWorkshopActions.setCollegeList(updatedCollegeList));
+      } catch (error) {
+        console.error('Failed to create new college items: ', error);
+      } finally {
+        setActiveTask(null);
+      }
+    },
+  });
+
+  /**
+   * Task runner for evaluating a particular college's data/chance:
+   */
+  const {
+    startTask: startEvaluationTask,
+    showModal: showEvaluationModal,
+    progressMessage: progressEvaluationMessage
+  } = useTaskRunner({
+    taskType: TaskType.GetCollegeDataChance,
+    requestData: { college_name: selectedCollege?.college, major: majorPref } as CollegeDataAndChanceRequest,
+    onResult: async (data: TaskResult) => {
+      const result = data as GetCollegeDataChanceTaskResult;
+      if (!selectedCollege) return;
+
+      // 1) Update Redux store
+      dispatch(
+        collegeListWorkshopActions.setCollegeData({
+          id: selectedCollege.id,
+          data: result.data_chance,
+        })
+      );
+
+      // 2) Update server
+      try {
+        await collegeAdmissionDataService.update({
+          ...selectedCollege,
+          data: result.data_chance,
+        });
+      } catch (err) {
+        console.error('Failed to update server:', err);
+      }
+
+      setActiveTask(null);
+    },
+  });
+
+  /** Handle building the initial college list */
+  const handleStartCollegeListTask = () => {
+    setActiveTask("collegeList");
+    startCollegeListTask();
+  };
+
+  /** Evaluate the selected college's data/chance */
+  const handleStartEvaluationTask = () => {
+    if (!selectedCollege) return;
+    setActiveTask("evaluation");
+    startEvaluationTask();
+  };
+
+  /** Jump to the Committee Review tab (only if a college is selected) */
+  const handleCommitteeReview = () => {
+    if (!selectedCollege) return;
+    dispatch(navigationTabActions.setActiveTab(NavTabType.ComitteReview));
+  };
+
+  /** When user wants to add a new college */
+  const handleAddCollege = () => {
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddCollegeDone = async () => {
+    const matchedCollegeName = getCollegeNameKey(newCollegeName.trim());
+    if (!matchedCollegeName) {
+      alert('The college name you entered is not valid. Please re-enter.');
+      return;
+    }
+
+    const newCollegeItem = {
+      id: 0,
+      user_id: userId as number,
+      college: matchedCollegeName,
+      data: undefined,
+    };
+
+    try {
+      const newId = await collegeAdmissionDataService.create(newCollegeItem);
+      dispatch(
+        collegeListWorkshopActions.addCollege({
+          ...newCollegeItem,
+          id: newId,
+        })
+      );
+      setIsAddModalOpen(false);
+      setNewCollegeName('');
+    } catch (error: any) {
+      alert(`Error creating college in server: ${error.message}`);
+    }
+  };
+
+  const handleAddCollegeCancel = () => {
+    setIsAddModalOpen(false);
+    setNewCollegeName('');
+  };
+
+  /** Delete a college by id (from the table’s row) */
+  const handleDeleteCollege = async (collegeId: number) => {
+    const foundCollege = collegeList.find((c) => c.id === collegeId);
+    if (!foundCollege) return;
+
+    try {
+      await collegeAdmissionDataService.deleteById(foundCollege.id, foundCollege.user_id);
+      dispatch(collegeListWorkshopActions.deleteCollege(foundCollege.id));
+
+      // Clear selection if we just deleted the selected college
+      if (selectedCollege?.id === collegeId) {
+        setSelectedCollege(null);
+      }
+    } catch (error: any) {
+      alert(`Error deleting college: ${error.message}`);
+    }
+  };
+
+  /** Row selection in the table */
+  const handleSelectCollege = (collegeItem: CollegeAdmissionData) => {
+    setSelectedCollege(collegeItem);
+
+    // Also set live college/major for committeeReview or interview
+    dispatch(committeeReviewActions.setLiveReviewCollege(collegeItem.college));
+    dispatch(committeeReviewActions.setLiveReviewMajor(majorPref));
+    dispatch(interviewConversationActions.setLiveConversationCollege(collegeItem.college));
+    dispatch(interviewConversationActions.setLiveConversationMajor(majorPref));
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+      {/* Progress Modal while tasks run */}
+      <ProgressModal
+        show={activeTask !== null && (showCollegeListModal || showEvaluationModal)}
+        message={
+          activeTask === 'collegeList'
+            ? progressCollegeListMessage
+            : activeTask === 'evaluation'
+            ? progressEvaluationMessage
+            : ''
+        }
+      />
+
+      {/* Top buttons: Build list, Evaluate, Committee Review */}
+      <Card className={styles.card}>
+        <h2 className={styles.header} style={{ textAlign: 'left' }}>
+            Action Panel
+        </h2>
+        <div style={{ display: 'flex', gap: '28px' }}>
+          <button className={styles.actionPanelButton} onClick={handleStartCollegeListTask} >Create Initial List</button>
+          <button className={styles.actionPanelButton} onClick={handleStartEvaluationTask} disabled={!selectedCollege}> Evaluate </button>
+          <button className={styles.actionPanelButton} onClick={handleCommitteeReview} disabled={!selectedCollege}> Committee Review </button>
+        </div>
+      </Card>
+
+      {/* The table component (formerly File 1's big DataGrid) */}
+      <CollegeListBuildForm
+        collegeList={collegeList}
+        selectedCollegeId={selectedCollege?.id}
+        onSelectCollege={handleSelectCollege}
+        onDeleteCollege={handleDeleteCollege}
+        onAddCollege={handleAddCollege}
+      />
+
+      {/* "Add College" modal */}
+      {isAddModalOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            zIndex: 9999,
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: '#ffffff',
+            padding: '20px',
+            borderRadius: '4px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.3)',
+          }}
+        >
+          <h3>Add College</h3>
+          <input
+            type="text"
+            value={newCollegeName}
+            onChange={(e) => setNewCollegeName(e.target.value)}
+            placeholder="Enter college name"
+            style={{
+              marginBottom: '10px',
+              padding: '8px',
+              fontSize: '14px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+            }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <button onClick={handleAddCollegeDone}>Done</button>
+            <button onClick={handleAddCollegeCancel}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* If a row is selected AND it has a `reason`, show it in ReviewDisplay */}
+      {selectedCollege?.data?.reason && (
+        <Card className={styles.card}>
+        <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
+            Reasons for My Chance
+        </h3>
+        <ReviewDisplay review={selectedCollege.data.reason} />
+        </Card>
+      )}
+    </div>
+  );
+};

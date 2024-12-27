@@ -1,3 +1,4 @@
+// college-list-build-form.styles.ts
 import { makeStyles } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
@@ -11,9 +12,12 @@ export const useStyles = makeStyles({
     fontWeight: 'bold',
     paddingLeft: '0px',
   },
-  subcard: {
-    marginBottom: '10px',
-    padding: '12px',
+  reviewHeader: {
+    marginTop: '10px',
+    marginBottom: '-10px',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    paddingLeft: '0px',
   },
   row: {
     height: '70px',
@@ -23,9 +27,9 @@ export const useStyles = makeStyles({
     cursor: 'pointer',
   },
   wideColumn: {
-    width: '120px', // Adjust the width as needed
+    width: '120px',
     minWidth: '100px',
-    maxWidth: '150px', // Optional to set a max width
+    maxWidth: '150px',
   },
   cell: {
     display: 'flex',
@@ -58,36 +62,16 @@ export const useStyles = makeStyles({
   addItemButton: {
     fontSize: '14px',
     color: 'gray',
+    height: '28px',
+  },
+  actionPanelButton: {
+    fontSize: '14px',
+    width: '150px',
+    height: '28px',
   },
   addItemContainer: {
     display: 'flex',
     justifyContent: 'flex-start',
     marginTop: '10px',
   },
-  modal: {
-    position: 'fixed',
-    zIndex: 9999,
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    backgroundColor: '#ffffff',
-    padding: '20px',
-    borderRadius: '4px',
-    boxShadow: '0 0 10px rgba(0,0,0,0.3)',
-  },
-  modalContent: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  modalInput: {
-    marginBottom: '10px',
-    padding: '8px',
-    fontSize: '14px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-  },
-  modalButtons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  }
 });
