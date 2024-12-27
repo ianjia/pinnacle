@@ -17,7 +17,7 @@ interface EssayWorkshopState {
 }
 
 const initialState: EssayWorkshopState = {
-    activeWorkshop: EssayWorkshopType.Brainstorming,
+    activeWorkshop: EssayWorkshopType.IdeaAndDraft,
     college: "",
     major: "No Preference",
     essayPrompt: "",

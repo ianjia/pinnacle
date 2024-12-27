@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch, essayWorkshopActions } from '../../store';
-import { EssayDraftRequest, EssayDraftTaskResult, EssayRefineRequest, EssayRefineTaskResult, ProgressModal, TaskResult, TaskType, useTaskRunner } from '../component-service-proxy';
+import { RootState, AppDispatch, essayWorkshopActions } from '../../../store';
+import { EssayDraftRequest, EssayDraftTaskResult, EssayRefineRequest, EssayRefineTaskResult, ProgressModal, TaskResult, TaskType, useTaskRunner } from '../../component-service-proxy';
 import { useSelectedInfo } from './hooks/use-selected-idea-essay';
-import { MarkdownMessageDisplay } from '../component-mark-down-display';
-import './essay-draft-panel.css';
+import { MarkdownMessageDisplay } from '../../component-mark-down-display';
+import { Card } from '@fluentui/react-components';
+import { useStyles } from './essay-draft-panel.styles';
 
 function isIdeaValid(idea: string | undefined): boolean {
-    if (idea === undefined || idea.length <= 8) { // The way to check idea string length <= 8 is temparary
+    if (idea === undefined || idea.length <= 10) { // The way to check idea string length <= 8 is temparary
         return false;
     }
 
@@ -16,6 +17,7 @@ function isIdeaValid(idea: string | undefined): boolean {
 
 export const EssayDraftPanel: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    const styles = useStyles();
 
     const {key, idea, essay} = useSelectedInfo();
     const ideas = useSelector((state: RootState) => state.essayWorkshop.ideas);
@@ -67,7 +69,9 @@ export const EssayDraftPanel: React.FC = () => {
     }
 
     return (
-        <div>
+        <Card className={styles.card}>
+            <h2 className={styles.header} style={{ textAlign: 'left' }}>Essay Draft</h2>
+
             <ProgressModal
                 show={activeTask !== null && (showDraftEssayModal || showRefineEssayModal)}
                 message={
@@ -78,23 +82,24 @@ export const EssayDraftPanel: React.FC = () => {
                     : ""
                 }
             />
-            <div className="buttons-container">
-                <button onClick={handleDraft} disabled={!key}>Draft</button>
-                <button onClick={handleRefine} disabled={!key || !ideas}>Refine</button>
-          </div>
+            <div className={styles.grid}>
+                <button className = {styles.buttonGenerate} onClick ={handleDraft} disabled={!key}>Draft</button>
+                <button  className = {styles.buttonGenerate} onClick={handleRefine} disabled={!key || !ideas}>Refine</button>
+            </div>
             {essay ? (
                     <MarkdownMessageDisplay resultMessage={essay} />
                 ) : ""
             }
             {essay && (
                 <div className="textarea-container">
-                    <div className="label-container">Refinement Feedback:</div>
+                    <div className={styles.feedbackLabel}>Refinement Feedback:</div>
                     <textarea
-                    value={textAreaValue}
-                    onChange={(e) => setTextAreaValue(e.target.value)}
+                        className={styles.feedbackTextarea}
+                        value={textAreaValue}
+                        onChange={(e) => setTextAreaValue(e.target.value)}
                     />
                 </div>
             )}
-        </div>
+        </Card>
     );
 };

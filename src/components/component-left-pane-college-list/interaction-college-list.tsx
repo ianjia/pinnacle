@@ -1,62 +1,94 @@
+/*** interaction-college-list-pane.tsx ***/
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    Accordion,
-    AccordionItem,
-    AccordionHeader,
-} from "@fluentui/react-components";
-import { Trophy24Regular } from "@fluentui/react-icons";
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  mergeClasses, // <-- import from @fluentui/react-components
+} from '@fluentui/react-components';
+import { Trophy24Regular } from '@fluentui/react-icons';
 
-import { collegeListWorkshopActions, RootState, AppDispatch } from '../../store';
+import {
+  collegeListWorkshopActions,
+  RootState,
+  AppDispatch,
+} from '../../store';
 import { CollegeListWorkshopType } from '../../shared';
-import './interaction-college-list.css';
+import { useAccordionStyles } from '../component-util';
 
 export const InteractionCollegeListPane: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const activeWorkshop = useSelector((state: RootState) => state.collegeListWorkshop.activeCollegeListWorkshop);
+  const dispatch = useDispatch<AppDispatch>();
+  const styles = useAccordionStyles();
 
-    const handleProfileSelection = (workshop: CollegeListWorkshopType) => {
-        dispatch(collegeListWorkshopActions.setActiveCollegeListWorkshop(workshop));
-    };
+  const activeWorkshop = useSelector(
+    (state: RootState) => state.collegeListWorkshop.activeCollegeListWorkshop
+  );
 
-    const isActive = (workshop: CollegeListWorkshopType) => activeWorkshop === workshop;
+  const handleProfileSelection = (workshop: CollegeListWorkshopType) => {
+    dispatch(collegeListWorkshopActions.setActiveCollegeListWorkshop(workshop));
+  };
 
-    return (
-        <div className="interaction-college-list-pane">
-            <Accordion>
-                {/* College Preferences Section */}
-                <AccordionItem value="preferences">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(CollegeListWorkshopType.Preferences) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(CollegeListWorkshopType.Preferences)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">College Preferences</span>
-                    </AccordionHeader>
-                </AccordionItem>
+  const isActive = (workshop: CollegeListWorkshopType) =>
+    activeWorkshop === workshop;
 
-                {/* Build List Section */}
-                <AccordionItem value="build-list">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(CollegeListWorkshopType.List) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(CollegeListWorkshopType.List)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Build List</span>
-                    </AccordionHeader>
-                </AccordionItem>
+  return (
+    <div className={styles.accordionContainerPane}>
+      <Accordion>
+        {/* College Preferences Section */}
+        <AccordionItem value="preferences">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(CollegeListWorkshopType.Preferences) &&
+                styles.accordionHeaderActive
+            )}
+            onClick={() =>
+              handleProfileSelection(CollegeListWorkshopType.Preferences)
+            }
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>College Preferences</span>
+          </AccordionHeader>
+        </AccordionItem>
 
-                {/* Navigation College Section */}
-                <AccordionItem value="navigation">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(CollegeListWorkshopType.Navigation) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(CollegeListWorkshopType.Navigation)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Navigation College</span>
-                    </AccordionHeader>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    );
+        {/* Build List Section */}
+        <AccordionItem value="build-list">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(CollegeListWorkshopType.List) && styles.accordionHeaderActive
+            )}
+            onClick={() => handleProfileSelection(CollegeListWorkshopType.List)}
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>Build List</span>
+          </AccordionHeader>
+        </AccordionItem>
+
+        {/* Navigation College Section */}
+        <AccordionItem value="navigation">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(CollegeListWorkshopType.Navigation) &&
+                styles.accordionHeaderActive
+            )}
+            onClick={() =>
+              handleProfileSelection(CollegeListWorkshopType.Navigation)
+            }
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>Navigation College</span>
+          </AccordionHeader>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  );
 };

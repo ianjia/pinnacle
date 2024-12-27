@@ -1,51 +1,74 @@
+/*** interaction-interview-pane.tsx ***/
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    Accordion,
-    AccordionItem,
-    AccordionHeader,
-} from "@fluentui/react-components";
-import { Trophy24Regular } from "@fluentui/react-icons";
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  mergeClasses, // <-- Import this for combining classes
+} from '@fluentui/react-components';
+import { Trophy24Regular } from '@fluentui/react-icons';
 
 import { RootState, AppDispatch, interviewConversationActions } from '../../store';
 import { InterviewWorkshopType } from '../../shared';
-import './interaction-interview.css';
+import { useAccordionStyles } from '../component-util';
 
 export const InteractionInterviewPane: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const activeWorkshop = useSelector((state: RootState) => state.conversation.activeInterviewWorkshop);
+  const dispatch = useDispatch<AppDispatch>();
+  const styles = useAccordionStyles();
 
-    const handleProfileSelection = (workshop: InterviewWorkshopType) => {
-        dispatch(interviewConversationActions.setActiveInterviewWorkshop(workshop));
-    };
+  // Redux state
+  const activeWorkshop = useSelector(
+    (state: RootState) => state.conversation.activeInterviewWorkshop
+  );
 
-    const isActive = (workshop: InterviewWorkshopType) => activeWorkshop === workshop;
+  // Handlers
+  const handleProfileSelection = (workshop: InterviewWorkshopType) => {
+    dispatch(interviewConversationActions.setActiveInterviewWorkshop(workshop));
+  };
 
-    return (
-        <div className="interaction-college-list-pane">
-            <Accordion>
-                {/* College Preferences Section */}
-                <AccordionItem value="preferences">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(InterviewWorkshopType.LiveInterview) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(InterviewWorkshopType.LiveInterview)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Conduct Interview</span>
-                    </AccordionHeader>
-                </AccordionItem>
+  const isActive = (workshop: InterviewWorkshopType) =>
+    activeWorkshop === workshop;
 
-                {/* Build List Section */}
-                <AccordionItem value="build-list">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(InterviewWorkshopType.InterviewHistory) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(InterviewWorkshopType.InterviewHistory)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Interview History</span>
-                    </AccordionHeader>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    );
+  return (
+    <div className={styles.accordionContainerPane}>
+      <Accordion>
+        {/* Live Interview Section */}
+        <AccordionItem value="preferences">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(InterviewWorkshopType.LiveInterview) &&
+                styles.accordionHeaderActive
+            )}
+            onClick={() => handleProfileSelection(InterviewWorkshopType.LiveInterview)}
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>Conduct Interview</span>
+          </AccordionHeader>
+        </AccordionItem>
+
+        {/* Interview History Section */}
+        <AccordionItem value="build-list">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(InterviewWorkshopType.InterviewHistory) &&
+                styles.accordionHeaderActive
+            )}
+            onClick={() =>
+              handleProfileSelection(InterviewWorkshopType.InterviewHistory)
+            }
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>Interview History</span>
+          </AccordionHeader>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  );
 };

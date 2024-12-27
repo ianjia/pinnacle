@@ -192,7 +192,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
               key={item.id}
               className={styles.row}
               style={{
-                backgroundColor: item.id === selectedCollegeId ? '#80d4ff' : 'white',
+                backgroundColor: item.id === selectedCollegeId ? '#e0f0ff' : 'white',
               }}
               onClick={() => onSelectCollege(item)}
             >

@@ -16,8 +16,8 @@ export enum ProfileType {
 }
 
 export enum EssayWorkshopType {
-    Brainstorming,
-    Draft,
+    IdeaAndDraft,
+    History,
 }
 
 export enum CollegeListWorkshopType {
