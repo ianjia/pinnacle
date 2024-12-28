@@ -1,4 +1,3 @@
-/*** essay-prompt.tsx ***/
 import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +8,7 @@ import {
   Input,
   Textarea,
   Button,
+  mergeClasses,
 } from '@fluentui/react-components';
 
 import { getCollegeNameKey } from '../../component-map';
@@ -138,7 +138,7 @@ export const EssayPrompt: React.FC = () => {
         <CardPreview className={styles.cardPreview}>
           <div className={styles.grid}>
             {/* College (left column) */}
-            <Field label="College" className={styles.field}>
+            <Field label="College"  className={styles.field}>
               <Input
                 className={styles.input}
                 id="collegeInput"
@@ -167,7 +167,7 @@ export const EssayPrompt: React.FC = () => {
             {/* Essay Prompt (full-width) */}
             <Field
               label="Essay Prompt"
-              className={`${styles.field} ${styles.fullWidth}`}
+              className={mergeClasses(styles.field, styles.fullWidth)}
             >
               <Textarea
                 className={styles.textarea}
@@ -183,7 +183,7 @@ export const EssayPrompt: React.FC = () => {
             {/* Additional Ask (full-width) */}
             <Field
               label="Additional College Ask (Optional)"
-              className={`${styles.field} ${styles.fullWidth}`}
+              className={mergeClasses(styles.field, styles.fullWidth)}
             >
               <Textarea
                 className={styles.textarea}

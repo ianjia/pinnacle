@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Card,
-  Field,
   Button,
+  mergeClasses,
   Table,
   TableRow,
   TableCell,
@@ -172,12 +172,12 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({
               const isSelected = selectedIdeaKey === key;
               return (
                 <TableRow
-                  key={key}
+                  as="div"
+                  role="row"         // optional for accessibility
+                  tabIndex={0}       // optional if you want tab-focus
                   onClick={() => handleRowClick(key)}
-                  className={`${
-                    isSelected ? styles.selectedRow : styles.normalRow
-                  } ${styles.rowHover}`}
-                >
+                  className={mergeClasses(styles.rowHover, isSelected && styles.selectedRow)}
+                  >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{value}</TableCell>
                   {/* Delete (trash can) button */}

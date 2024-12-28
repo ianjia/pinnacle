@@ -1,5 +1,5 @@
 import { createIncService } from "./queryinc-service-factory";
-import { AcademicCareerGoal, Activity, CollegeAdmissionData, CommitteeReview, Conversation, Course, Honor, LifeStory } from "../../../shared";
+import { AcademicCareerGoal, Activity, CollegeAdmissionData, CommitteeReview, Conversation, Course, Essay, Honor, LifeStory } from "../../../shared";
 import { ApExam } from "../../../shared";
 
 const APEXAM_END_POINT_PATH = "/api/v1/queryinc/apexam";
@@ -11,6 +11,7 @@ const ACADEMIC_CAREER_GOAL_END_POINT_PATH = "/api/v1/queryinc/careergoal";
 const CONVERSATION_END_POINT_PATH = "/api/v1/queryinc/conversation";
 const COMMITTEE_REVIEW_END_POINT_PATH = "/api/v1/queryinc/committee";
 const COLLEGE_ADMISSION_DATA_END_POINT_PATH = "/api/v1/queryinc/admission-data";
+const ESSAY_END_POINT_PATH = "/api/v1/queryinc/essay";
 
 export const apExamService = createIncService<ApExam>(APEXAM_END_POINT_PATH);
 export const courseService = createIncService<Course>(COURSE_END_POINT_PATH);
@@ -21,5 +22,7 @@ export const careerGoalService = createIncService<AcademicCareerGoal>(ACADEMIC_C
 export const conversationService = createIncService<Conversation>(CONVERSATION_END_POINT_PATH);
 export const committeeReviewService = createIncService<CommitteeReview>(COMMITTEE_REVIEW_END_POINT_PATH);
 export const collegeAdmissionDataService = createIncService<CollegeAdmissionData>(COLLEGE_ADMISSION_DATA_END_POINT_PATH);
+export const essayDataService = createIncService<Essay>(ESSAY_END_POINT_PATH);
+
 
 

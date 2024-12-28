@@ -9,7 +9,7 @@ export function useOnReviewCompleteCreator() {
   const dispatch = useDispatch();
   const { userId } = useContext(AuthContext);
 
-  const onReviewCompleteInterview = useCallback(async (): Promise<void> => {
+  const onReviewComplete = useCallback(async (): Promise<void> => {
     try {
       // 1) Get the fresh review state from the store
       const {
@@ -45,5 +45,5 @@ export function useOnReviewCompleteCreator() {
     }
   }, [dispatch, userId]);
 
-  return onReviewCompleteInterview;
+  return onReviewComplete;
 }

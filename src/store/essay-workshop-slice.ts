@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EssayWorkshopType } from '../shared';
+import { Essay, EssayWorkshopType } from '../shared';
 
 interface EssayWorkshopState {
     activeWorkshop: EssayWorkshopType;
@@ -10,10 +10,13 @@ interface EssayWorkshopState {
     selectedIdeaKey: string | undefined;  // Be noticed that it is the key, rather than the idea value itself is stored in this field
     ideaRefinementFeedback: string;
     essayRefinmentFeedback: string;
+    liveEssayId: number;  // This is to tempararily save essay id after creating its draft, so that we could identify the id after refining the essay to update db store.
+    liveEssay: string; // Yes, this is a bit dup with what is stored in essay record below. :( 
     // Here we make the key in ideas and essay the same, so that we could hook up an idea with essay, namely when using an idea to 
     // draft an essay, the key of the essay in the essay record with be the same key of that idea in ideas record
     ideas: Record<string, string>;   
     essay: Record<string, string>;
+    essayHistory: Essay[];
 }
 
 const initialState: EssayWorkshopState = {
@@ -25,8 +28,11 @@ const initialState: EssayWorkshopState = {
     selectedIdeaKey: undefined,
     ideaRefinementFeedback: "",
     essayRefinmentFeedback: "",
+    liveEssayId: 0,
+    liveEssay: "",
     ideas: {},
     essay: {},
+    essayHistory: [],
 };
 
 const essayWorkshopSlice = createSlice({
@@ -81,7 +87,38 @@ const essayWorkshopSlice = createSlice({
 
         deleteEssay(state, action: PayloadAction<string>) {
             delete state.essay[action.payload];
-        }
+        },
+
+        setEssayHistory(state, action: PayloadAction<Essay[]>) {
+            state.essayHistory = action.payload;
+        },
+      
+        deleteEssayFromHistory(state, action: PayloadAction<number>) {
+            state.essayHistory = state.essayHistory.filter(essay => essay.id != action.payload);
+        },
+    
+        addEssayToHistory(state, action: PayloadAction<Essay>) {
+            state.essayHistory.push(action.payload);
+        },       
+
+        setLiveEssayId(state, action: PayloadAction<number>) {
+            state.liveEssayId = action.payload;
+        },
+
+        setLiveEssay(state, action: PayloadAction<string>) {
+            state.liveEssay = action.payload;
+        },
+
+        setEssayFieldInHistory(
+            state,
+            action: PayloadAction<{ id: number; essay: string }>
+          ) {
+            const { id, essay } = action.payload;
+            const existingEssay = state.essayHistory.find((e) => e.id === id);
+            if (existingEssay) {
+              existingEssay.essay = essay;
+            }
+        },
     }
 });
 

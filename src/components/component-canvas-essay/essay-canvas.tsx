@@ -1,18 +1,20 @@
-import './essay-canvas.css';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { EssayBrainStormForm } from './essay-idea-draft/essay-idea-draft-main-panel';
 import { EssayWorkshopType } from '../../shared';
-import { EssayHistory } from './essay-history/essay-history';
+import { EssayHistoryMainContainer } from './essay-history/essay-history-main-container';
+import { useCanvasBackgroundStyles } from '../component-util';
 
 export const EssayCanvas: React.FC = () => {
     const activeEssayWorkShop: EssayWorkshopType = useSelector((state: RootState) => state.essayWorkshop.activeWorkshop);
 
+    const styles = useCanvasBackgroundStyles();
+
     return (
-        <div className="essay-background">
+        <div className = {styles.container}>
             {activeEssayWorkShop === EssayWorkshopType.IdeaAndDraft && <EssayBrainStormForm/>}
-            {activeEssayWorkShop === EssayWorkshopType.History && <EssayHistory/>}
+            {activeEssayWorkShop === EssayWorkshopType.History && <EssayHistoryMainContainer/>}
         </div>
     );
 };

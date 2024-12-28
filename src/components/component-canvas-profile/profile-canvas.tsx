@@ -1,4 +1,3 @@
-import './profile-canvas.css';
 import React from 'react';
 import { StudentProfileForm } from './student-profile/student-profile-form';
 import { useSelector } from 'react-redux';
@@ -8,12 +7,15 @@ import { AcademicsProfileForm } from './academics-profile/academics-profile-form
 import { ActivityProfileForm } from './activity-profile/activity-profile-form';
 import { HonorProfileForm } from './honor-profile/honor-profile-form';
 import { LifeGoalCombinedProfileSections } from './life-goals/combined-profile-section';
+import { useCanvasBackgroundStyles } from '../component-util';
 
 export const ProfileCanvas: React.FC = () => {
     const activeProfile = useSelector((state: RootState) => state.selectedProfile.activeProfile);
 
+    const styles = useCanvasBackgroundStyles();
+
     return (
-        <div className="profile-background">
+        <div className = {styles.container}>
         {activeProfile === ProfileType.Student && <StudentProfileForm />}
         {activeProfile === ProfileType.Academic && <AcademicsProfileForm />}
         {activeProfile === ProfileType.Activity && <ActivityProfileForm />}
