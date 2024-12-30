@@ -3,6 +3,7 @@ import { SERVER_URL } from "../port-url-config";
 import { ITaskRequest } from "./request-types";
 import { TaskResult } from "./result-types";
 import { api } from '../../../auth';
+import axios from 'axios';
 
 interface UseTaskRunnerParams {
   taskType: string;
@@ -79,10 +80,23 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
         eventSource.close();
         if (timeoutRef.current) clearTimeout(timeoutRef.current); // Clear timeout on error
       };
-    } catch (error) {
+    } catch (error: any) {
       setShowModal(false);
-      console.error('Error in startTask:', error);
-      alert("Could not reach server, please try again later.");
+      // First, check if it's a fetch abort error
+      if (error.name === 'AbortError') {
+        console.error('Fetch aborted:', error);
+        alert("Request took too long, please try again later.");
+        return;
+      }
+
+      // Next, check if it's an AxiosError with 429 status
+      if (axios.isAxiosError(error) && error.response?.status === 429) {
+        console.error("Rate Limit Exceeded:", error.response.data);
+        alert("Rate limit exceeded. Please wait before trying again.");
+      } else {
+        console.error('Error in startTask:', error);
+        alert("Could not reach server, please try again later.");
+      }
     }
   };
 

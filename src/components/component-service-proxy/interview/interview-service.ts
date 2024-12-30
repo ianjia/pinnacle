@@ -1,3 +1,4 @@
+import axios from "axios";
 import { api } from "../../../auth";
 import { SERVER_URL } from "../port-url-config";
 import { InterviewStartRequest } from "./request-types";
@@ -25,7 +26,12 @@ export async function getStudentProfileInStr(): Promise<string> {
         // The response data is of type InterviewStartResult
         return response.data.message;  
       } catch (error) {
-        console.error("Error starting interview:", error);
-        throw error;
+        if (axios.isAxiosError(error) && error.response?.status === 429) {
+          console.error("Rate Limit Exceeded:", error.response.data);
+          alert("You have exceeded the rate limit. Please wait before trying again.");
+        } else {
+          console.error("Error starting interview:", error);
+        }
+        throw error;  // Re-throw so caller can handle if needed
       }
 }
