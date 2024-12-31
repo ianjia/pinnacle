@@ -66,7 +66,7 @@ export const InteractionCollegeListPane: React.FC = () => {
             <span className={styles.accordionIcon}>
               <Trophy24Regular />
             </span>
-            <span className={styles.accordionTitle}>Build List</span>
+            <span className={styles.accordionTitle}>Build College List</span>
           </AccordionHeader>
         </AccordionItem>
 
@@ -85,7 +85,7 @@ export const InteractionCollegeListPane: React.FC = () => {
             <span className={styles.accordionIcon}>
               <Trophy24Regular />
             </span>
-            <span className={styles.accordionTitle}>Navigation College</span>
+            <span className={styles.accordionTitle}>College Navigation</span>
           </AccordionHeader>
         </AccordionItem>
       </Accordion>

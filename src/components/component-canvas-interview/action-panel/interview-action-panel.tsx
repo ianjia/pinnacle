@@ -75,6 +75,7 @@ export const InterviewActionPanel: React.FC = () => {
     dispatch(interviewConversationActions.setLiveConversationMajor(newMajor));
   };
 
+    
   const toggleInterviewHandler = () => {
     const matchedCollegeName = getCollegeNameKey(liveCollege);
     // Check if matchedCollegeName is not undefined/null and has length >= 3

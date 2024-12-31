@@ -51,6 +51,8 @@ export const CollegeListBuildMainContainer: React.FC = () => {
   // Track which (if any) task is active (so we can show the ProgressModal)
   const [activeTask, setActiveTask] = useState<"collegeList" | "evaluation" | null>(null);
 
+  const [showConfirmCleanUpDialog, setShowConfirmCleanUpDialog] = useState(false);
+
   /**
    * Task runner for building a college list:
    */
@@ -71,21 +73,40 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         data: undefined,
       }));
 
+
       try {
-        // Create each new college item on the server
-        const updatedCollegeList = await Promise.all(
-          newCollegeList.map(async (collegeItem) => {
-            const returnedId = await collegeAdmissionDataService.create(collegeItem);
-            return { ...collegeItem, id: returnedId };
-          })
-        );
+        // Create each new college item on the server, one by one
+        const updatedCollegeList: CollegeAdmissionData[] = [];
+      
+        for (const collegeItem of newCollegeList) {
+          const returnedId = await collegeAdmissionDataService.create(collegeItem);
+          updatedCollegeList.push({ ...collegeItem, id: returnedId });
+        }
+      
         // Dispatch to Redux store
         dispatch(collegeListWorkshopActions.setCollegeList(updatedCollegeList));
+      
       } catch (error) {
         console.error('Failed to create new college items: ', error);
       } finally {
         setActiveTask(null);
       }
+      
+    //   try {
+    //     // Create each new college item on the server
+    //     const updatedCollegeList = await Promise.all(
+    //       newCollegeList.map(async (collegeItem) => {
+    //         const returnedId = await collegeAdmissionDataService.create(collegeItem);
+    //         return { ...collegeItem, id: returnedId };
+    //       })
+    //     );
+    //     // Dispatch to Redux store
+    //     dispatch(collegeListWorkshopActions.setCollegeList(updatedCollegeList));
+    //   } catch (error) {
+    //     console.error('Failed to create new college items: ', error);
+    //   } finally {
+    //     setActiveTask(null);
+    //   }
     },
   });
 
@@ -125,10 +146,38 @@ export const CollegeListBuildMainContainer: React.FC = () => {
     },
   });
 
-  /** Handle building the initial college list */
+  /**
+   *  If the existing collegeList is not empty, show a confirmation dialog;
+   *  if user cancels, do nothing; if user confirms, delete all, then proceed.
+   */
   const handleStartCollegeListTask = () => {
-    setActiveTask("collegeList");
+    if (collegeList.length > 0) {
+      // Show the confirmation dialog if there's anything in the list
+      setShowConfirmCleanUpDialog(true);
+    } else {
+      // If the list is empty, proceed as before
+      setActiveTask('collegeList');
+      startCollegeListTask();
+    }
+  };
+
+  // Called if user clicks "Ok" to confirm clearing the list
+  const handleConfirmCleanUpOk = async () => {
+    // Delete all colleges in the current list
+    await Promise.all(
+      collegeList.map((college) => handleDeleteCollege(college.id))
+    );
+    // Proceed with the original logic
+    setActiveTask('collegeList');
     startCollegeListTask();
+    // Hide the dialog
+    setShowConfirmCleanUpDialog(false);
+  };
+
+  // Called if user clicks "Cancel" in the confirmation dialog
+  const handleConfirmCleanUpCancel = () => {
+    setShowConfirmCleanUpDialog(false);
+    // Do nothing else
   };
 
   /** Evaluate the selected college's data/chance */
@@ -227,19 +276,57 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         }
       />
 
+      {/* (NEW) Confirmation dialog for cleaning up existing colleges */}
+      {showConfirmCleanUpDialog && (
+        <div
+          style={{
+            position: 'fixed',
+            zIndex: 9999,
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: '#ffffff',
+            padding: '20px',
+            borderRadius: '4px',
+            boxShadow: '0 0 10px rgba(0,0,0,0.3)',
+          }}
+        >
+          <h3>Please be noticed...</h3>
+          <p>Continuing this task will remove all current colleges in the list.</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <button onClick={handleConfirmCleanUpOk}>Ok</button>
+            <button onClick={handleConfirmCleanUpCancel}>Cancel</button>
+          </div>
+        </div>
+      )}
+
       {/* Top buttons: Build list, Evaluate, Committee Review */}
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
             Action Panel
         </h2>
         <div style={{ display: 'flex', gap: '28px' }}>
-          <button className={styles.actionPanelButton} onClick={handleStartCollegeListTask} >Create Initial List</button>
-          <button className={styles.actionPanelButton} onClick={handleStartEvaluationTask} disabled={!selectedCollege}> Evaluate </button>
-          <button className={styles.actionPanelButton} onClick={handleCommitteeReview} disabled={!selectedCollege}> Committee Review </button>
+          <button className={styles.actionPanelButton} onClick={handleStartCollegeListTask} >
+            Create/Refresh List
+          </button>
+          <button
+            className={styles.actionPanelButton}
+            onClick={handleStartEvaluationTask}
+            disabled={!selectedCollege}
+          >
+            Evaluate
+          </button>
+          <button
+            className={styles.actionPanelButton}
+            onClick={handleCommitteeReview}
+            disabled={!selectedCollege}
+          >
+            Committee Review
+          </button>
         </div>
       </Card>
 
-      {/* The table component (formerly File 1's big DataGrid) */}
+      {/* The table component */}
       <CollegeListBuildForm
         collegeList={collegeList}
         selectedCollegeId={selectedCollege?.id}
@@ -287,10 +374,10 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       {/* If a row is selected AND it has a `reason`, show it in ReviewDisplay */}
       {selectedCollege?.data?.reason && (
         <Card className={styles.card}>
-        <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
+          <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
             Reasons for My Chance
-        </h3>
-        <ReviewDisplay review={selectedCollege.data.reason} />
+          </h3>
+          <ReviewDisplay review={selectedCollege.data.reason} />
         </Card>
       )}
     </div>

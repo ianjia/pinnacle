@@ -75,6 +75,19 @@ const conversationSlice = createSlice({
       state.liveConversationReview = undefined;
       state.liveConverstationId = 0;
     },
+
+    // This reducer receives an object with { id, review }, finds the conversation
+    // with the matching id, and updates its review property.
+    updateInterviewReviewInHistory(
+      state, 
+      action: PayloadAction<{ id: number; review: string | undefined}>
+    ) {
+      const { id, review } = action.payload;
+      const conversation = state.interviewHistoryList.find(conv => conv.id === id);
+      if (conversation) {
+        conversation.review = review;
+      }
+    },
   },
 });
 

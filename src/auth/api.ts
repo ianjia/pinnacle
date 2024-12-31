@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-import { SERVER_URL } from '../components/component-service-proxy';
+import { HTTPS_SERVER_URL, SERVER_URL } from '../components/component-service-proxy';
 
 
 export const api = axios.create({

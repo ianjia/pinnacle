@@ -33,6 +33,7 @@ export function useOnReviewCompleteCreator() {
         // though we send the whole conversation update, backend we only update the review field to DB
         await conversationService.update(conversationToSave);
         dispatch(interviewConversationActions.setActiveConversationDisplay(LiveConversationDisplayType.Review));
+        dispatch(interviewConversationActions.updateInterviewReviewInHistory({id: liveConverstationId, review: liveConversationReview}));
   
       } catch (error) {
         console.error("Error saving conversation to server:", error);
