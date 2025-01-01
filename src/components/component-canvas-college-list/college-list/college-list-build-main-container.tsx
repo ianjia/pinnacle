@@ -66,13 +66,21 @@ export const CollegeListBuildMainContainer: React.FC = () => {
 
     onResult: async (data: TaskResult) => {
       const buildResult = data as BuildCollegeListTaskResult; 
-      const newCollegeList = buildResult.college_list.map((collegeName) => ({
+      const newCollegeList = buildResult.college_list.map((college) => ({
         id: 0,
         user_id: userId as number,
-        college: collegeName,
-        data: undefined,
+        college: college.college,
+        data: {
+            admitRate: college.admitRate,
+            undergradEnroll: college.undergradEnroll,
+            annualCost: college.annualCost,
+            nationalRanking: college.nationalRanking,
+            programRanking: college.programRanking,
+            chance: college.chance,
+            category: college.category,
+            reason: college.reason,
+        },
       }));
-
 
       try {
         // Create each new college item on the server, one by one
@@ -91,22 +99,6 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       } finally {
         setActiveTask(null);
       }
-      
-    //   try {
-    //     // Create each new college item on the server
-    //     const updatedCollegeList = await Promise.all(
-    //       newCollegeList.map(async (collegeItem) => {
-    //         const returnedId = await collegeAdmissionDataService.create(collegeItem);
-    //         return { ...collegeItem, id: returnedId };
-    //       })
-    //     );
-    //     // Dispatch to Redux store
-    //     dispatch(collegeListWorkshopActions.setCollegeList(updatedCollegeList));
-    //   } catch (error) {
-    //     console.error('Failed to create new college items: ', error);
-    //   } finally {
-    //     setActiveTask(null);
-    //   }
     },
   });
 
@@ -163,13 +155,15 @@ export const CollegeListBuildMainContainer: React.FC = () => {
 
   // Called if user clicks "Ok" to confirm clearing the list
   const handleConfirmCleanUpOk = async () => {
-    // Delete all colleges in the current list
-    await Promise.all(
-      collegeList.map((college) => handleDeleteCollege(college.id))
-    );
+    // Delete all colleges in the current list (sequentially)
+    for (const college of collegeList) {
+      await handleDeleteCollege(college.id);
+    }
+    
     // Proceed with the original logic
     setActiveTask('collegeList');
     startCollegeListTask();
+  
     // Hide the dialog
     setShowConfirmCleanUpDialog(false);
   };
@@ -312,7 +306,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
           <button
             className={styles.actionPanelButton}
             onClick={handleStartEvaluationTask}
-            disabled={!selectedCollege}
+            disabled={!selectedCollege || selectedCollege.data !== undefined}
           >
             Evaluate
           </button>

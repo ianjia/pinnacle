@@ -1,6 +1,6 @@
 // See result_types.py on AI python server side
 
-import { CombinedCollegeData } from "../../../shared";
+import { CollegeElementLLMOutputSchema, CombinedCollegeData } from "../../../shared";
 import { TaskType } from "./basic-types";
 
 // Define a base interface for TaskResult
@@ -41,10 +41,11 @@ export interface EssayRefineTaskResult extends TaskResult {
 
 export interface BuildCollegeListTaskResult extends TaskResult {
     type: TaskType.BuildCollegeList;
-    college_list: string[];
+    college_list: CollegeElementLLMOutputSchema[];
 }
 
 export interface GetCollegeDataChanceTaskResult extends TaskResult {
     type: TaskType.GetCollegeDataChance;
     data_chance: CombinedCollegeData;
 }
+

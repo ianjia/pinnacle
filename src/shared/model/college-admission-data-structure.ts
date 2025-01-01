@@ -13,9 +13,22 @@ export interface CombinedCollegeData {
     reason: string;
 }
 
+export interface CollegeElementLLMOutputSchema {
+    college: string;
+    admitRate: number;
+    undergradEnroll: number;
+    annualCost: number;
+    nationalRanking: number;
+    programRanking?: number;
+    chance: number;
+    category: CollegeCategory;
+    reason: string;
+}
+
 export interface CollegeAdmissionData {
     id: number;
     user_id: number;
     college: string;
     data?: CombinedCollegeData;
   }
+
