@@ -1377,46 +1377,382 @@ export const collegeMapping: Map<string, BasicCollegeDataMapping> = new Map([
             unigo: new URL("https://www.unigo.com/colleges/st-lawrence-university")
             }    
     }],
-    ["Swarthmore College", { loc: { latitude: 39.9060, longitude: -75.3550 }, url: new URL("https://www.swarthmore.edu/") }],
-    ["Trinity College", { loc: { latitude: 41.7470, longitude: -72.6900 }, url: new URL("https://www.trincoll.edu/") }],
-    ["Georgia Institute of Technology", { loc: { latitude: 33.7756, longitude: -84.3963 }, url: new URL("https://www.gatech.edu/") }],
-    ["University of California, Davis", { loc: { latitude: 38.5382, longitude: -121.7617 }, url: new URL("https://www.ucdavis.edu/") }],
-    ["University of California, Santa Cruz", { loc: { latitude: 36.9916, longitude: -122.0583 }, url: new URL("https://www.ucsc.edu/") }],
-    ["University of California, Riverside", { loc: { latitude: 33.9737, longitude: -117.3281 }, url: new URL("https://www.ucr.edu/") }],
-    ["University of Arizona", { loc: { latitude: 32.2319, longitude: -110.9501 }, url: new URL("https://www.arizona.edu/") }],
-    ["Arizona State University", { loc: { latitude: 33.4242, longitude: -111.9281 }, url: new URL("https://www.asu.edu/") }],
-    ["Rutgers University–New Brunswick", { loc: { latitude: 40.5000, longitude: -74.4474 }, url: new URL("https://www.rutgers.edu/") }],
-    ["University of Kansas", { loc: { latitude: 38.9597, longitude: -95.2449 }, url: new URL("https://www.ku.edu/") }],
-    ["University of Nebraska–Lincoln", { loc: { latitude: 40.8200, longitude: -96.7005 }, url: new URL("https://www.unl.edu/") }],
-    ["University of Kentucky", { loc: { latitude: 38.0317, longitude: -84.5037 }, url: new URL("https://www.uky.edu/") }],
-    ["University of Cincinnati", { loc: { latitude: 39.1317, longitude: -84.5155 }, url: new URL("https://www.uc.edu/") }],
-    ["University of Illinois at Chicago", { loc: { latitude: 41.8715, longitude: -87.6498 }, url: new URL("https://www.uic.edu/") }],
-    ["University of Texas at Dallas", { loc: { latitude: 32.9858, longitude: -96.7501 }, url: new URL("https://www.utdallas.edu/") }],
-    ["Stony Brook University (SUNY)", { loc: { latitude: 40.9120, longitude: -73.1237 }, url: new URL("https://www.stonybrook.edu/") }],
-    ["University of Alabama", { loc: { latitude: 33.2098, longitude: -87.5413 }, url: new URL("https://www.ua.edu/") }],
-    ["Auburn University", { loc: { latitude: 32.6036, longitude: -85.4866 }, url: new URL("https://www.auburn.edu/") }],
-    ["George Mason University", { loc: { latitude: 38.8323, longitude: -77.3097 }, url: new URL("https://www.gmu.edu/") }],
-    ["University of Colorado Denver", { loc: { latitude: 39.7456, longitude: -105.0055 }, url: new URL("https://www.ucdenver.edu/") }],
-    ["Kansas State University", { loc: { latitude: 39.1911, longitude: -96.5805 }, url: new URL("https://www.k-state.edu/") }],
-    ["Oklahoma State University", { loc: { latitude: 36.1257, longitude: -97.0663 }, url: new URL("https://go.okstate.edu/") }],
-    ["Vassar College", { loc: { latitude: 41.6869, longitude: -73.8966 }, url: new URL("https://www.vassar.edu/") }],
-    ["Sarah Lawrence College", { loc: { latitude: 40.9350, longitude: -73.8431 }, url: new URL("https://www.sarahlawrence.edu/") }],
-    ["College of Wooster", { loc: { latitude: 40.8106, longitude: -81.9368 }, url: new URL("https://www.wooster.edu/") }],
-    ["Wheaton College (IL)", { loc: { latitude: 41.8661, longitude: -88.1070 }, url: new URL("https://www.wheaton.edu/") }],
-    ["Denison University", { loc: { latitude: 40.0748, longitude: -82.5209 }, url: new URL("https://denison.edu/") }],
-    ["Sewanee The University of the South", { loc: { latitude: 35.2037, longitude: -85.9211 }, url: new URL("https://new.sewanee.edu/") }],
-    ["Gustavus Adolphus College", { loc: { latitude: 44.3248, longitude: -93.9703 }, url: new URL("https://gustavus.edu/") }],
-    ["St. Olaf College", { loc: { latitude: 44.4599, longitude: -93.1685 }, url: new URL("https://wp.stolaf.edu/") }],
-    ["Lewis & Clark College", { loc: { latitude: 45.4500, longitude: -122.6700 }, url: new URL("https://www.lclark.edu/") }],
-    ["Hendrix College", { loc: { latitude: 35.0990, longitude: -92.4428 }, url: new URL("https://www.hendrix.edu/") }],
-    ["University of South Florida", { loc: { latitude: 28.0587, longitude: -82.4139 }, url: new URL("https://www.usf.edu/") }],
-    ["Texas Tech University", { loc: { latitude: 33.5843, longitude: -101.8783 }, url: new URL("https://www.ttu.edu/") }],
-    ["University of Houston", { loc: { latitude: 29.7199, longitude: -95.3422 }, url: new URL("https://www.uh.edu/") }],
-    ["Florida International University", { loc: { latitude: 25.7560, longitude: -80.3749 }, url: new URL("https://www.fiu.edu/") }],
-    ["Temple University", { loc: { latitude: 39.9810, longitude: -75.1555 }, url: new URL("https://www.temple.edu/") }],
-    ["Loyola University Chicago", { loc: { latitude: 41.9995, longitude: -87.6583 }, url: new URL("https://www.luc.edu/") }],
-    ["Seton Hall University", { loc: { latitude: 40.7429, longitude: -74.2465 }, url: new URL("https://www.shu.edu/") }],
-    ["University of New Hampshire", { loc: { latitude: 43.1389, longitude: -70.9331 }, url: new URL("https://www.unh.edu/") }],
-    ["University of Rhode Island", { loc: { latitude: 41.4862, longitude: -71.5290 }, url: new URL("https://www.uri.edu/") }],
-    ["University of Maine", { loc: { latitude: 44.8980, longitude: -68.6671 }, url: new URL("https://umaine.edu/") }],
+
+    ["Swarthmore College", { loc: { latitude: 39.9060, longitude: -75.3550 }, url: new URL("https://www.swarthmore.edu/"),
+        resource: {
+            admission: new URL("https://www.swarthmore.edu/admissions-aid"),
+            niche: new URL("https://www.niche.com/colleges/swarthmore-college/"),
+            appily: new URL("https://www.appily.com/colleges/swarthmore-college"),
+            unigo: new URL("https://www.unigo.com/colleges/swarthmore-college")
+            }    
+    }],
+
+    ["Trinity College", { loc: { latitude: 41.7470, longitude: -72.6900 }, url: new URL("https://www.trincoll.edu/"),
+        resource: {
+            admission: new URL("https://www.trincoll.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/trinity-college-connecticut/"),
+            appily: new URL("https://www.appily.com/colleges/trinity-college"),
+            unigo: new URL("https://www.unigo.com/colleges/trinity-college")
+            }    
+    }],
+
+    ["Georgia Institute of Technology", { loc: { latitude: 33.7756, longitude: -84.3963 }, url: new URL("https://www.gatech.edu/"),
+        resource: {
+            admission: new URL("https://admission.gatech.edu/"),
+            niche: new URL("https://www.niche.com/colleges/georgia-institute-of-technology/"),
+            appily: new URL("https://www.appily.com/colleges/georgia-institute-of-technology-main-campus"),
+            unigo: new URL("https://www.unigo.com/colleges/georgia-institute-of-technology-main-campus")
+            }    
+    }],
+
+    ["University of California, Davis", { loc: { latitude: 38.5382, longitude: -121.7617 }, url: new URL("https://www.ucdavis.edu/"),
+        resource: {
+            admission: new URL("https://www.ucdavis.edu/admissions/undergraduate"),
+            niche: new URL("https://www.niche.com/colleges/university-of-california-davis/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-california-davis"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-california-davis")
+            }    
+    }],
+
+    ["University of California, Santa Cruz", { loc: { latitude: 36.9916, longitude: -122.0583 }, url: new URL("https://www.ucsc.edu/"),
+        resource: {
+            admission: new URL("https://admissions.ucsc.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-california-santa-cruz/"),
+            appily: new URL("https://www.appily.com/colleges/uc-santa-cruz"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-california-santa-cruz")
+            }    
+    }],
+
+    ["University of California, Riverside", { loc: { latitude: 33.9737, longitude: -117.3281 }, url: new URL("https://www.ucr.edu/"),
+        resource: {
+            admission: new URL("https://admissions.ucr.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-california-riverside/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-california-riverside"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-california-riverside")
+            }    
+    }],
+
+    ["University of Arizona", { loc: { latitude: 32.2319, longitude: -110.9501 }, url: new URL("https://www.arizona.edu/"),
+        resource: {
+            admission: new URL("https://www.arizona.edu/admissions"),
+            niche: new URL("https://www.niche.com/colleges/university-of-arizona/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-arizona"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-arizona")
+            }    
+    }],
+
+    ["Arizona State University", { loc: { latitude: 33.4242, longitude: -111.9281 }, url: new URL("https://www.asu.edu/"),
+        resource: {
+            admission: new URL("https://admission.asu.edu/"),
+            niche: new URL("https://www.niche.com/colleges/arizona-state-university/"),
+            appily: new URL("https://www.appily.com/colleges/arizona-state-university-campus-immersion"),
+            unigo: new URL("https://www.unigo.com/colleges/arizona-state-university-tempe")
+            }    
+    }],
+
+    ["Rutgers University-New Brunswick", { loc: { latitude: 40.5000, longitude: -74.4474 }, url: new URL("https://www.rutgers.edu/"),
+        resource: {
+            admission: new URL("https://admissions.rutgers.edu/"),
+            niche: new URL("https://www.niche.com/colleges/rutgers-universitynew-brunswick/"),
+            appily: new URL("https://www.appily.com/colleges/rutgers-university-new-brunswick"),
+            unigo: new URL("https://www.unigo.com/colleges/rutgers-university-new-brunswick")
+            }    
+    }],
+
+    ["University of Kansas", { loc: { latitude: 38.9597, longitude: -95.2449 }, url: new URL("https://www.ku.edu/"),
+        resource: {
+            admission: new URL("https://www.ku.edu/admissions"),
+            niche: new URL("https://www.niche.com/colleges/the-university-of-kansas/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-kansas"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-kansas")
+            }    
+    }],
+
+    ["University of Nebraska-Lincoln", { loc: { latitude: 40.8200, longitude: -96.7005 }, url: new URL("https://www.unl.edu/"),
+        resource: {
+            admission: new URL("https://admissions.unl.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-nebraska-lincoln/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-nebraska-lincoln"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-nebraska-lincoln")
+            }    
+    }],
+
+    ["University of Kentucky", { loc: { latitude: 38.0317, longitude: -84.5037 }, url: new URL("https://www.uky.edu/"),
+        resource: {
+            admission: new URL("https://admission.uky.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-kentucky/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-kentucky"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-kentucky")
+            }    
+    }],
+
+    ["University of Cincinnati", { loc: { latitude: 39.1317, longitude: -84.5155 }, url: new URL("https://www.uc.edu/"),
+        resource: {
+            admission: new URL("https://www.uc.edu/admissions.html"),
+            niche: new URL("https://www.niche.com/colleges/university-of-cincinnati/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-cincinnati-main-campus"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-cincinnati-main-campus")
+            }    
+    }],
+
+    ["University of Illinois at Chicago", { loc: { latitude: 41.8715, longitude: -87.6498 }, url: new URL("https://www.uic.edu/"),
+        resource: {
+            admission: new URL("https://admissions.uic.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-illinois-chicago/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-illinois-at-chicago"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-illinois-at-chicago")
+            }    
+    }],
+
+    ["University of Texas at Dallas", { loc: { latitude: 32.9858, longitude: -96.7501 }, url: new URL("https://www.utdallas.edu/"),
+        resource: {
+            admission: new URL("https://www.utdallas.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-north-texas-at-dallas/"),
+            appily: new URL("https://www.appily.com/colleges/the-university-of-texas-at-dallas"),
+            unigo: new URL("https://www.unigo.com/colleges/the-university-of-texas-at-dallas")
+            }    
+    }],
+
+    ["Stony Brook University ", { loc: { latitude: 40.9120, longitude: -73.1237 }, url: new URL("https://www.stonybrook.edu/"),
+        resource: {
+            admission: new URL("https://www.stonybrook.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/stony-brook-university/"),
+            appily: new URL("https://www.appily.com/colleges/stony-brook-university"),
+            unigo: new URL("https://www.unigo.com/colleges/stony-brook-university")
+            }    
+    }],
+
+    ["University of Alabama", { loc: { latitude: 33.2098, longitude: -87.5413 }, url: new URL("https://www.ua.edu/"),
+        resource: {
+            admission: new URL("https://www.ua.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/the-university-of-alabama/"),
+            appily: new URL("https://www.appily.com/colleges/the-university-of-alabama"),
+            unigo: new URL("https://www.unigo.com/colleges/the-university-of-alabama")
+            }    
+    }],
+
+    ["Auburn University", { loc: { latitude: 32.6036, longitude: -85.4866 }, url: new URL("https://www.auburn.edu/"),
+        resource: {
+            admission: new URL("https://auburn.edu/admissions/index.php"),
+            niche: new URL("https://www.niche.com/colleges/auburn-university/"),
+            appily: new URL("https://www.appily.com/colleges/auburn-university"),
+            unigo: new URL("https://www.unigo.com/colleges/auburn-university")
+            }    
+    }],
+
+    ["George Mason University", { loc: { latitude: 38.8323, longitude: -77.3097 }, url: new URL("https://www.gmu.edu/"),
+        resource: {
+            admission: new URL("https://www.gmu.edu/admissions-aid"),
+            niche: new URL("https://www.niche.com/colleges/george-mason-university/"),
+            appily: new URL("https://www.appily.com/colleges/george-mason-university"),
+            unigo: new URL("https://www.unigo.com/colleges/george-mason-university")
+            }    
+    }],
+
+    ["University of Colorado Denver", { loc: { latitude: 39.7456, longitude: -105.0055 }, url: new URL("https://www.ucdenver.edu/"),
+        resource: {
+            admission: new URL("https://www.ucdenver.edu/undergraduate-admissions"),
+            niche: new URL("https://www.niche.com/colleges/university-of-colorado-denver/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-colorado-denver-anschutz-medical-campus"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-colorado-denveranschutz-medical-campus")
+            }    
+    }],
+
+    ["Kansas State University", { loc: { latitude: 39.1911, longitude: -96.5805 }, url: new URL("https://www.k-state.edu/"),
+        resource: {
+            admission: new URL("https://www.k-state.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/kansas-state-university/"),
+            appily: new URL("https://www.appily.com/colleges/kansas-state-university"),
+            unigo: new URL("https://www.unigo.com/colleges/kansas-state-university")
+            }    
+    }],
+
+    ["Oklahoma State University", { loc: { latitude: 36.1257, longitude: -97.0663 }, url: new URL("https://go.okstate.edu/"),
+        resource: {
+            admission: new URL("https://go.okstate.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/oklahoma-state-university/"),
+            appily: new URL("https://www.appily.com/colleges/oklahoma-state-university-main-campus"),
+            unigo: new URL("https://www.unigo.com/colleges/oklahoma-state-university-main-campus")
+            }    
+    }],
+
+    ["Vassar College", { loc: { latitude: 41.6869, longitude: -73.8966 }, url: new URL("https://www.vassar.edu/"),
+        resource: {
+            admission: new URL("https://www.vassar.edu/admission"),
+            niche: new URL("https://www.niche.com/colleges/vassar-college/"),
+            appily: new URL("https://www.appily.com/colleges/vassar-college"),
+            unigo: new URL("https://www.unigo.com/colleges/vassar-college")
+            }    
+    }],
+
+    ["Sarah Lawrence College", { loc: { latitude: 40.9350, longitude: -73.8431 }, url: new URL("https://www.sarahlawrence.edu/"),
+        resource: {
+            admission: new URL("https://www.sarahlawrence.edu/admission/"),
+            niche: new URL("https://www.niche.com/colleges/sarah-lawrence-college/"),
+            appily: new URL("https://www.appily.com/colleges/sarah-lawrence-college"),
+            unigo: new URL("https://www.unigo.com/colleges/sarah-lawrence-college")
+            }    
+    }],
+
+    ["College of Wooster", { loc: { latitude: 40.8106, longitude: -81.9368 }, url: new URL("https://www.wooster.edu/"),
+        resource: {
+            admission: new URL("https://wooster.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/college-of-wooster/"),
+            appily: new URL("https://www.appily.com/colleges/the-college-of-wooster"),
+            unigo: new URL("https://www.unigo.com/colleges/the-college-of-wooster")
+            }    
+    }],
+
+    ["Wheaton College (IL)", { loc: { latitude: 41.8661, longitude: -88.1070 }, url: new URL("https://www.wheaton.edu/"),
+        resource: {
+            admission: new URL("https://www.wheaton.edu/undergraduate-admissions/"),
+            niche: new URL("https://www.niche.com/colleges/wheaton-college-illinois/"),
+            appily: new URL("https://www.appily.com/colleges/wheaton-college"),
+            unigo: new URL("https://www.unigo.com/colleges/wheaton-college-wheaton")
+            }    
+    }],
+
+    ["Denison University", { loc: { latitude: 40.0748, longitude: -82.5209 }, url: new URL("https://denison.edu/"),
+        resource: {
+            admission: new URL("https://denison.edu/campus/admission"),
+            niche: new URL("https://www.niche.com/colleges/denison-university/"),
+            appily: new URL("https://www.appily.com/colleges/denison-university"),
+            unigo: new URL("https://www.unigo.com/colleges/denison-university")
+            }    
+    }],
+
+    ["Sewanee The University of the South", { loc: { latitude: 35.2037, longitude: -85.9211 }, url: new URL("https://new.sewanee.edu/"),
+        resource: {
+            admission: new URL("https://new.sewanee.edu/admission-aid/"),
+            niche: new URL("https://www.niche.com/colleges/sewanee-the-university-of-the-south/"),
+            appily: new URL("https://www.appily.com/colleges/the-university-of-the-south"),
+            unigo: new URL("https://www.unigo.com/colleges/sewanee-the-university-of-the-south")
+            }    
+    }],
+
+    ["Gustavus Adolphus College", { loc: { latitude: 44.3248, longitude: -93.9703 }, url: new URL("https://gustavus.edu/"),
+        resource: {
+            admission: new URL("https://gustavus.edu/admission/"),
+            niche: new URL("https://www.niche.com/colleges/gustavus-adolphus-college/"),
+            appily: new URL("https://www.appily.com/colleges/gustavus-adolphus-college"),
+            unigo: new URL("https://www.unigo.com/colleges/gustavus-adolphus-college")
+            }    
+    }],
+
+    ["St. Olaf College", { loc: { latitude: 44.4599, longitude: -93.1685 }, url: new URL("https://wp.stolaf.edu/"),
+        resource: {
+            admission: new URL("https://wp.stolaf.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/st-olaf-college/"),
+            appily: new URL("https://www.appily.com/colleges/st-olaf-college"),
+            unigo: new URL("https://www.unigo.com/colleges/st-olaf-college")
+            }    
+    }],
+
+    ["Lewis & Clark College", { loc: { latitude: 45.4500, longitude: -122.6700 }, url: new URL("https://www.lclark.edu/"),
+        resource: {
+            admission: new URL("https://college.lclark.edu/offices/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/lewis-and-clark-college/"),
+            appily: new URL("https://www.appily.com/colleges/lewis-clark-college"),
+            unigo: new URL("https://www.unigo.com/colleges/lewis-and-clark-college")
+            }    
+    }],
+
+    ["Hendrix College", { loc: { latitude: 35.0990, longitude: -92.4428 }, url: new URL("https://www.hendrix.edu/"),
+        resource: {
+            admission: new URL("https://www.hendrix.edu/admission/"),
+            niche: new URL("https://www.niche.com/colleges/hendrix-college/"),
+            appily: new URL("https://www.appily.com/colleges/hendrix-college"),
+            unigo: new URL("https://www.unigo.com/colleges/hendrix-college")
+            }    
+    }],
+
+    ["University of South Florida", { loc: { latitude: 28.0587, longitude: -82.4139 }, url: new URL("https://www.usf.edu/"),
+        resource: {
+            admission: new URL("https://www.usf.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-south-florida/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-south-florida"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-south-florida-main-campus")
+            }    
+    }],
+
+    ["Texas Tech University", { loc: { latitude: 33.5843, longitude: -101.8783 }, url: new URL("https://www.ttu.edu/"),
+        resource: {
+            admission: new URL("https://www.depts.ttu.edu/admissions/"),
+            niche: new URL("https://www.niche.com/colleges/texas-tech-university/"),
+            appily: new URL("https://www.appily.com/colleges/texas-tech-university"),
+            unigo: new URL("https://www.unigo.com/colleges/texas-tech-university")
+            }    
+    }],
+
+    ["University of Houston", { loc: { latitude: 29.7199, longitude: -95.3422 }, url: new URL("https://www.uh.edu/"),
+        resource: {
+            admission: new URL("https://uh.edu/undergraduate-admissions/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-houston/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-houston"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-houston")
+            }    
+    }],
+
+    ["Florida International University", { loc: { latitude: 25.7560, longitude: -80.3749 }, url: new URL("https://www.fiu.edu/"),
+        resource: {
+            admission: new URL("https://www.fiu.edu/admissions/index.html"),
+            niche: new URL("https://www.niche.com/colleges/florida-international-university/"),
+            appily: new URL("https://www.appily.com/colleges/florida-international-university"),
+            unigo: new URL("https://www.unigo.com/colleges/florida-international-university")
+            }    
+    }],
+
+    ["Temple University", { loc: { latitude: 39.9810, longitude: -75.1555 }, url: new URL("https://www.temple.edu/"),
+        resource: {
+            admission: new URL("https://www.temple.edu/admissions"),
+            niche: new URL("https://www.niche.com/colleges/temple-university/"),
+            appily: new URL("https://www.appily.com/colleges/temple-university"),
+            unigo: new URL("https://www.unigo.com/colleges/temple-university")
+            }    
+    }],
+
+    ["Loyola University Chicago", { loc: { latitude: 41.9995, longitude: -87.6583 }, url: new URL("https://www.luc.edu/"),
+        resource: {
+            admission: new URL("https://www.luc.edu/undergrad/"),
+            niche: new URL("https://www.niche.com/colleges/loyola-university-chicago/"),
+            appily: new URL("https://www.appily.com/colleges/loyola-university-chicago"),
+            unigo: new URL("https://www.unigo.com/colleges/loyola-university-chicago")
+            }    
+    }],
+
+    ["Seton Hall University", { loc: { latitude: 40.7429, longitude: -74.2465 }, url: new URL("https://www.shu.edu/"),
+        resource: {
+            admission: new URL("https://www.shu.edu/undergraduate-admissions/"),
+            niche: new URL("https://www.niche.com/colleges/seton-hall-university/"),
+            appily: new URL("https://www.appily.com/colleges/seton-hall-university"),
+            unigo: new URL("https://www.unigo.com/colleges/seton-hall-university")
+            }    
+    }],
+
+    ["University of New Hampshire", { loc: { latitude: 43.1389, longitude: -70.9331 }, url: new URL("https://www.unh.edu/"),
+        resource: {
+            admission: new URL("https://admissions.unh.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-new-hampshire/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-new-hampshire-main-campus"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-new-hampshire-main-campus")
+            }    
+    }],
+
+    ["University of Rhode Island", { loc: { latitude: 41.4862, longitude: -71.5290 }, url: new URL("https://www.uri.edu/"),
+        resource: {
+            admission: new URL("https://www.uri.edu/admission/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-rhode-island/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-rhode-island"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-rhode-island")
+            }    
+    }],
+
+    ["University of Maine", { loc: { latitude: 44.8980, longitude: -68.6671 }, url: new URL("https://umaine.edu/"),
+        resource: {
+            admission: new URL("https://go.umaine.edu/"),
+            niche: new URL("https://www.niche.com/colleges/university-of-maine/"),
+            appily: new URL("https://www.appily.com/colleges/university-of-maine"),
+            unigo: new URL("https://www.unigo.com/colleges/university-of-maine")
+            }    
+    }],
 ]);
