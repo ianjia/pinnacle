@@ -11,7 +11,7 @@ import {
   mergeClasses,
 } from '@fluentui/react-components';
 
-import { getCollegeNameKey } from '../../component-map';
+import { getCollegeNameKey } from '../../component-navigation-map';
 import { RootState, AppDispatch, essayWorkshopActions } from '../../../store';
 import {
   EssayIdeasGenerationRequest,

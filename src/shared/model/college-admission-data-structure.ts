@@ -1,6 +1,6 @@
 
 // Define the CollegeCategory type to match the Python Literal
-type CollegeCategory = 1 | 2 | 3;  // 1 means reach, 2 is target, 3 means safety
+export type CollegeCategory = 1 | 2 | 3;  // 1 means reach, 2 is target, 3 means safety
 
 export interface CombinedCollegeData {
     admitRate: number;

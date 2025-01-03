@@ -1,8 +1,7 @@
-
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Input, Button, CardPreview, Field, mergeClasses} from '@fluentui/react-components';
-import { getCollegeNameKey } from '../../component-map';
+import { getCollegeNameKey } from '../../component-navigation-map';
 import { interviewConversationActions, RootState } from '../../../store';
 import { useStyles } from './interview-action-panel.styles';
 import { DropdownCustom } from '../../component-customized-fluent-ui';

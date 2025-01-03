@@ -22,7 +22,7 @@ import {
 
 import { AuthContext } from '../../../auth';
 import { NavTabType, CollegePreferences, CollegeAdmissionData } from '../../../shared';
-import { getCollegeNameKey } from '../../component-map';
+import { getCollegeNameKey } from '../../component-navigation-map';
 
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
 import { CollegeListBuildForm } from './college-list-build-form';
