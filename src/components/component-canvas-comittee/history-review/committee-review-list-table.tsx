@@ -103,7 +103,7 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
   return (
     <Card className={styles.card}>
       <div className={styles.headerContainer}>
-        <h3 className={styles.header}>Committee Review History</h3>
+        <h3 className={styles.header}>Holistic Review History</h3>
         <Popover>
           <PopoverTrigger>
             <Button
@@ -115,7 +115,7 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
             />
           </PopoverTrigger>
           <PopoverSurface>
-            Please select a row to see details for this Committee Review.
+            Please select a row to see details for this Holistic Review.
           </PopoverSurface>
         </Popover>
       </div>

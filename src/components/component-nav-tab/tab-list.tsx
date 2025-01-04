@@ -36,7 +36,7 @@ export const TabList: React.FC = () => {
         onClick = {() => handleTabClick(NavTabType.Interview)}
       />
       <NavigationTab
-        title = 'Committe Review'
+        title = 'Holistic Review'
         isActive = {activeTab === NavTabType.ComitteReview}
         onClick = {() => handleTabClick(NavTabType.ComitteReview)}
       />

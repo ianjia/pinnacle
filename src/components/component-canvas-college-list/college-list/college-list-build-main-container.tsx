@@ -17,7 +17,8 @@ import {
   TaskResult,
   GetCollegeDataChanceTaskResult,
   CollegeDataAndChanceRequest,
-  ProgressModal
+  ProgressModal,
+  toCombinedCollegeData
 } from '../../component-service-proxy';
 
 import { AuthContext } from '../../../auth';
@@ -120,7 +121,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       dispatch(
         collegeListWorkshopActions.setCollegeData({
           id: selectedCollege.id,
-          data: result.data_chance,
+          data: toCombinedCollegeData(result.data_chance),
         })
       );
 
@@ -128,7 +129,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       try {
         await collegeAdmissionDataService.update({
           ...selectedCollege,
-          data: result.data_chance,
+          data: toCombinedCollegeData(result.data_chance),
         });
       } catch (err) {
         console.error('Failed to update server:', err);
@@ -315,7 +316,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
             onClick={handleCommitteeReview}
             disabled={!selectedCollege}
           >
-            Committee Review
+           Holistic Review
           </button>
         </div>
       </Card>

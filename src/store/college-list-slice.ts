@@ -44,29 +44,29 @@ const collegeListWorkshopSlice = createSlice({
 
     // (4) A function to set the data field of a CollegeAdmissionData in the collegeList,
     //     which CollegeAdmissionData object is determined by matching its id.
-    setCollegeData(
-        state,
-        action: PayloadAction<{ id: number; data: CombinedCollegeData }>
-      ) {
-        const { id, data } = action.payload;
-        const collegeItem = state.collegeList.find((c) => c.id === id);
-        if (collegeItem) {
-          collegeItem.data = data;
-        }
-      },
-  
-      // (5) A function to set the id field of a CollegeAdmissionData in the collegeList,
-      //     which CollegeAdmissionData object is determined by matching its college string.
-      setCollegeId(
-        state,
-        action: PayloadAction<{ college: string; newId: number }>
-      ) {
-        const { college, newId } = action.payload;
-        const collegeItem = state.collegeList.find((c) => c.college === college);
-        if (collegeItem) {
-          collegeItem.id = newId;
-        }
-      },        
+        setCollegeData(
+          state,
+          action: PayloadAction<{ id: number; data: CombinedCollegeData }>
+        ) {
+          const { id, data } = action.payload;
+          const collegeItem = state.collegeList.find((c) => c.id === id);
+          if (collegeItem) {
+            collegeItem.data = data;
+          }
+        },
+    
+        // (5) A function to set the id field of a CollegeAdmissionData in the collegeList,
+        //     which CollegeAdmissionData object is determined by matching its college string.
+        setCollegeId(
+          state,
+          action: PayloadAction<{ college: string; newId: number }>
+        ) {
+          const { college, newId } = action.payload;
+          const collegeItem = state.collegeList.find((c) => c.college === college);
+          if (collegeItem) {
+            collegeItem.id = newId;
+          }
+        },        
 
     }
 });

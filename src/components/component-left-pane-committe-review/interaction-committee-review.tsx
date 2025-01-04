@@ -31,7 +31,7 @@ export const InteractionCommitteeReviewPane: React.FC = () => {
                         onClick={() => handleProfileSelection(CommitteeReviewWorkshopType.CurrentReview)}
                     >
                         <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Conduct Committee Review</span>
+                        <span className="accordion-title">Conduct Holistic Review</span>
                     </AccordionHeader>
                 </AccordionItem>
 
@@ -42,7 +42,7 @@ export const InteractionCommitteeReviewPane: React.FC = () => {
                         onClick={() => handleProfileSelection(CommitteeReviewWorkshopType.ReviewHistory)}
                     >
                         <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Commitee Review History</span>
+                        <span className="accordion-title">Holistic Review History</span>
                     </AccordionHeader>
                 </AccordionItem>
             </Accordion>

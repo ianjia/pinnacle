@@ -46,6 +46,18 @@ export interface BuildCollegeListTaskResult extends TaskResult {
 
 export interface GetCollegeDataChanceTaskResult extends TaskResult {
     type: TaskType.GetCollegeDataChance;
-    data_chance: CombinedCollegeData;
+    data_chance: CollegeElementLLMOutputSchema;
 }
 
+export function toCombinedCollegeData(data_chance: CollegeElementLLMOutputSchema): CombinedCollegeData {
+    return { 
+            admitRate: data_chance.admitRate,
+            undergradEnroll: data_chance.undergradEnroll,
+            annualCost: data_chance.annualCost,
+            nationalRanking: data_chance.nationalRanking,
+            programRanking: data_chance.programRanking,
+            chance: data_chance.chance,
+            category: data_chance.category,
+            reason: data_chance.reason,
+        }
+}
