@@ -7,17 +7,30 @@ import {
   Switch,
   Card,
   CardPreview,
+  Button,
+  Popover,
+  PopoverTrigger,
+  PopoverSurface
 } from '@fluentui/react-components';
-import { Race, Gender, Residency_Status, Resident_State, Ranking, StudentProfile } from '../../../shared';
+import { Info24Regular } from '@fluentui/react-icons';
+import {
+  Race,
+  Gender,
+  Residency_Status,
+  Resident_State,
+  Ranking,
+  StudentProfile
+} from '../../../shared';
 import { studentService } from '../../component-service-proxy';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { useStyles } from './student-profile-form.styles';
 import { logError } from '../../../util';
+import { getCollegeNameKey } from '../../component-navigation-map';
 
 export const StudentProfileForm: React.FC = () => {
   const dispatch = useDispatch();
   
-  // Get Redux values at the beginning of the component
+  // Redux values
   const student = useSelector((state: RootState) => state.selectedProfile.studentData);
   const race = useSelector((state: RootState) => state.selectedProfile.studentData.race);
   const gender = useSelector((state: RootState) => state.selectedProfile.studentData.gender);
@@ -31,9 +44,9 @@ export const StudentProfileForm: React.FC = () => {
     (state: RootState) => state.selectedProfile.studentData.needFinancialAid
   );
 
-  // Local states for other fields
+  // Local states
   const [name, setName] = useState<string>(student.name || '');
-  const [birthDate, setBirthDate] = useState<string>(student.birthDate ||'');
+  const [birthDate, setBirthDate] = useState<string>(student.birthDate || '');
   const [school, setSchool] = useState<string>(student.school || '');
   const [alumniLegacy, setAlumniLegacy] = useState<string>(student.alumni_legacy || '');
 
@@ -47,12 +60,21 @@ export const StudentProfileForm: React.FC = () => {
       value = value === '' ? null : value;
     }
 
+    if (field === 'alumni_legacy') {
+      const matchedCollegeName = getCollegeNameKey(alumniLegacy);
+      if (!matchedCollegeName) {
+        alert('Invalid college name, please input again.');
+        setAlumniLegacy('');
+        return;
+      }
+    }
+
     try {
       dispatch(selectedProfileActions.updateStudentField({ field, value }));
       await studentService.update({ ...student, [field]: value });
     } catch (error: unknown) {
       logError(error);
-      alert('Retry'); // Replace with a dialog
+      alert('Retry');
     }
   };
 
@@ -122,6 +144,7 @@ export const StudentProfileForm: React.FC = () => {
           </div>
         </CardPreview>
       </Card>
+
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
           Extended Information
@@ -146,7 +169,30 @@ export const StudentProfileForm: React.FC = () => {
                 placeHolder="Select class ranking"
               />
             </Field>
-            <Field label="Alumni Legacy" className={styles.field}>
+
+            {/* Alumni Legacy WITH POPOVER */}
+            <Field
+              label={
+                <span className={styles.labelContainer}>
+                  <span>Alumni Legacy</span>
+                  <Popover positioning={{ position: 'after', align: 'top' }}>
+                    <PopoverTrigger>
+                      <Button
+                        icon={<Info24Regular />}
+                        appearance="subtle"
+                        size="small"
+                        aria-label="Information"
+                        className={styles.infoIcon}
+                      />
+                    </PopoverTrigger>
+                    <PopoverSurface>
+                      Please fill in one of your parent's graduation college
+                    </PopoverSurface>
+                  </Popover>
+                </span>
+              }
+              className={styles.field}
+            >
               <Input
                 className={styles.input}
                 value={alumniLegacy}
@@ -154,6 +200,7 @@ export const StudentProfileForm: React.FC = () => {
                 onBlur={(e) => handleBlur('alumni_legacy', e.target.value)}
               />
             </Field>
+
             <Field label="First Generation Student" className={styles.field}>
               <Switch
                 checked={firstGenerationStudent || false}

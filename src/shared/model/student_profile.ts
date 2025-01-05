@@ -9,7 +9,7 @@ export interface StudentProfile {
     classRank?: Ranking;
     gender?: Gender;
     birthDate?: string; // ISO date string
-    alumni_legacy?: string;  // Format would be like "University 1; University 2", as student's parents might graduate from different colleges
+    alumni_legacy?: string;  // University name which the student's parents graduated from, currently only support one name
     firstGenerationStudent?: boolean;
     needFinancialAid?: boolean;
     residenceState?: Resident_State;

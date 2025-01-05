@@ -30,4 +30,12 @@ export const useStyles = makeStyles({
     height: '36px',
     width: '80%',
   },
+  labelContainer: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px', // Spacing between label text and info button
+  },
+  infoIcon: {
+    marginLeft: '4px',
+  },
 });
