@@ -60,7 +60,7 @@ export const useStyles = makeStyles({
   addItemContainer: {
     display: 'flex',
     justifyContent: 'flex-start',
-    marginTop: '-30px',
+    marginTop: '10px',
   },
   input: {
     width: '200px',
