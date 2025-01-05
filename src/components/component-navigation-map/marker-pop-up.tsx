@@ -75,7 +75,7 @@ export const MarkerPopup: React.FC<MarkerPopupProps> = ({ data }) => {
           {/* 2. Online resources (if they exist) */}
           {resource && (
             <div>
-              <h4>Online Resources:</h4>
+              <h4>Helpful Resource:</h4>
               <ul style={{ paddingLeft: '16px' }}>
                 {/* Only render if not undefined */}
                 {resource.admission && (
