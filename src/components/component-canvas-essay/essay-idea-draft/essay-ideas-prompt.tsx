@@ -1,15 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Card,
   CardPreview,
   Field,
-  Input,
   Textarea,
   Button,
   mergeClasses,
+  Dropdown,
+  Option,
+  SelectionEvents,
+  OptionOnSelectData,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
 } from '@fluentui/react-components';
+import { Info24Regular } from '@fluentui/react-icons';
 
 import { getCollegeNameKey } from '../../component-navigation-map';
 import { RootState, AppDispatch, essayWorkshopActions } from '../../../store';
@@ -25,8 +32,11 @@ import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
 import { useStyles } from './essay-ideas-prompt.styles';
 
+/**
+ * For demonstration, we still keep this basic length check,
+ * but you can customize it as needed.
+ */
 function isPromptValid(prompt: string): boolean {
-  // For now, just check prompt length
   return prompt.length >= 10;
 }
 
@@ -44,65 +54,69 @@ export const EssayPrompt: React.FC = () => {
     (state: RootState) => state.essayWorkshop.additionalAsk
   );
 
-  // --- Local state ---
-  const [collegeInput, setCollegeInput] = useState(college);
-  const collegeInputRef = useRef<HTMLInputElement>(null);
+  const collegeList = useSelector(
+    (state: RootState) => state.collegeListWorkshop.collegeList
+  );
 
-  const [essayPromptInput, setEssayPromptInput] = useState(essay_prompt);
+  // --- Local refs for textareas (if needed) ---
   const essayPromptInputRef = useRef<HTMLTextAreaElement>(null);
-
-  const [additionalAskInput, setAdditionalAskInput] = useState(additional_ask);
   const additionalAskInputRef = useRef<HTMLTextAreaElement>(null);
 
-  // --- Sync local state with Redux store when Redux values change ---
-  useEffect(() => setCollegeInput(college), [college]);
-  useEffect(() => setEssayPromptInput(essay_prompt), [essay_prompt]);
-  useEffect(() => setAdditionalAskInput(additional_ask), [additional_ask]);
-
-  // --- Handlers ---
-  const handleCollegeBlur = () => {
-    const matchedCollegeName = getCollegeNameKey(collegeInput);
-    if (matchedCollegeName && matchedCollegeName !== college) {
-      dispatch(essayWorkshopActions.setCollege(matchedCollegeName));
-    } else if (!matchedCollegeName) {
-      alert('The college name you entered is not valid. Please re-enter.');
+  // --- Sync local textareas with Redux store when Redux values change ---
+  useEffect(() => {
+    if (essayPromptInputRef.current) {
+      essayPromptInputRef.current.value = essay_prompt;
     }
-  };
+  }, [essay_prompt]);
 
-  const handleCollegeKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      collegeInputRef.current?.blur();
+  useEffect(() => {
+    if (additionalAskInputRef.current) {
+      additionalAskInputRef.current.value = additional_ask;
     }
-  };
+  }, [additional_ask]);
 
+  // --- Handlers for textareas ---
   const handleEssayPromptBlur = () => {
-    if (isPromptValid(essayPromptInput) && essayPromptInput !== essay_prompt) {
-      dispatch(essayWorkshopActions.setEssayPrompt(essayPromptInput));
-    } else if (!isPromptValid(essayPromptInput)) {
+    const currentValue = essayPromptInputRef.current?.value || '';
+    if (isPromptValid(currentValue) && currentValue !== essay_prompt) {
+      dispatch(essayWorkshopActions.setEssayPrompt(currentValue));
+    } else if (!isPromptValid(currentValue)) {
       alert('The prompt you entered is not valid. Please re-enter.');
     }
   };
 
   const handleAdditionalAskBlur = () => {
-    if (additionalAskInput !== additional_ask) {
-      dispatch(essayWorkshopActions.setAdditionalAsk(additionalAskInput));
+    const currentValue = additionalAskInputRef.current?.value || '';
+    if (currentValue !== additional_ask) {
+      dispatch(essayWorkshopActions.setAdditionalAsk(currentValue));
     }
   };
 
-  const handleAdditionalAskKeyPress = (
-    e: React.KeyboardEvent<HTMLTextAreaElement>
-  ) => {
-    if (e.key === 'Enter') {
-      additionalAskInputRef.current?.blur();
+  /**
+   * Handle user selecting a different college in the dropdown.
+   */
+  const handleCollegeSelect = (event: SelectionEvents, data: OptionOnSelectData) => {
+    if (!data.optionValue) {
+      alert('The college name you selected is not valid. Please check.');
+      return;
     }
+    const matchedCollegeName = getCollegeNameKey(data.optionValue);
+    if (!matchedCollegeName) {
+      alert('The college name you selected is not valid. Please check.');
+      return;
+    }
+    dispatch(essayWorkshopActions.setCollege(matchedCollegeName));
+  };
+
+  /**
+   * Handler for Major changes (using custom dropdown).
+   */
+  const handleMajorSelect = (newMajor: Major) => {
+    dispatch(essayWorkshopActions.setMajor(newMajor));
   };
 
   // --- Task Runner for generating essay ideas ---
-  const {
-    startTask: startEssayIdeasTask,
-    showModal,
-    progressMessage,
-  } = useTaskRunner({
+  const { startTask: startEssayIdeasTask, showModal, progressMessage } = useTaskRunner({
     taskType: TaskType.GenerateEssayIdeas,
     requestData: {
       college,
@@ -118,8 +132,10 @@ export const EssayPrompt: React.FC = () => {
       }
     },
   });
-  
 
+  /**
+   * Start the “Generate Essay Ideas” task if the prompt is valid.
+   */
   const handleStartGenerateEssayIdeasTask = () => {
     if (isPromptValid(essay_prompt)) {
       startEssayIdeasTask();
@@ -133,32 +149,55 @@ export const EssayPrompt: React.FC = () => {
       <ProgressModal show={showModal} message={progressMessage} />
 
       <Card className={styles.card}>
-        <h2 className={styles.header} style={{ textAlign: 'left' }}>Essay Prompt</h2>
+        <h2 className={styles.header} style={{ textAlign: 'left' }}>
+          Essay Prompt
+        </h2>
 
         <CardPreview className={styles.cardPreview}>
           <div className={styles.grid}>
-            {/* College (left column) */}
-            <Field label="College"  className={styles.field}>
-              <Input
-                className={styles.input}
-                id="collegeInput"
-                ref={collegeInputRef}
-                value={collegeInput}
-                onChange={(e) => setCollegeInput(e.target.value)}
-                onBlur={handleCollegeBlur}
-                onKeyDown={handleCollegeKeyPress}
-              />
+            {/* College (left column) with popover */}
+            <Field
+              label={
+                <span className={styles.labelContainer}>
+                  <span>College</span>
+                  <Popover positioning={{ position: 'after', align: 'top' }}>
+                    <PopoverTrigger>
+                      <Button
+                        icon={<Info24Regular />}
+                        appearance="subtle"
+                        size="small"
+                        aria-label="Information"
+                        className={styles.infoIcon}
+                      />
+                    </PopoverTrigger>
+                    <PopoverSurface>
+                      Please make sure the college list was created 
+                      before selecting a college here
+                    </PopoverSurface>
+                  </Popover>
+                </span>
+              }
+              className={styles.field}
+            >
+              <Dropdown
+                placeholder="Select a college"
+                value={college}
+                onOptionSelect={handleCollegeSelect}
+                disabled={collegeList.length === 0} // disable if no colleges
+              >
+                {collegeList.map((c) => (
+                  <Option key={c.id} value={c.college}>
+                    {c.college}
+                  </Option>
+                ))}
+              </Dropdown>
             </Field>
 
             {/* Major (right column) */}
             <Field label="Major" className={styles.field}>
               <DropdownCustom
                 options={Major}
-                onOptionSelect={(e, option) =>
-                  dispatch(
-                    essayWorkshopActions.setMajor(option.optionValue as Major)
-                  )
-                }
+                onOptionSelect={(e, option) => handleMajorSelect(option.optionValue as Major)}
                 value={major}
                 placeHolder="Select a major"
               />
@@ -172,9 +211,8 @@ export const EssayPrompt: React.FC = () => {
               <Textarea
                 className={styles.textarea}
                 id="prompt"
-                value={essayPromptInput}
+                defaultValue={essay_prompt}
                 ref={essayPromptInputRef}
-                onChange={(e) => setEssayPromptInput(e.target.value)}
                 onBlur={handleEssayPromptBlur}
                 rows={3}
               />
@@ -188,11 +226,9 @@ export const EssayPrompt: React.FC = () => {
               <Textarea
                 className={styles.textarea}
                 id="additionalAsk"
-                value={additionalAskInput}
+                defaultValue={additional_ask}
                 ref={additionalAskInputRef}
-                onChange={(e) => setAdditionalAskInput(e.target.value)}
                 onBlur={handleAdditionalAskBlur}
-                onKeyDown={handleAdditionalAskKeyPress}
                 rows={3}
               />
             </Field>

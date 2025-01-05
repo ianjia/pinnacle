@@ -34,7 +34,8 @@ export interface CollegeDataAndChanceRequest extends ITaskRequest {
     major: string;  // To make it easy, if not chosen major, put it as "No Preference" instead of making it optional
 }
 
-export interface CommitteeReviewRequest extends ITaskRequest{ // For now, CommitteeReviewRequest definition is the same with CollegeDataAndChanceRequest
+export interface CommitteeReviewRequest extends ITaskRequest{
     college_name: string; 
-    major: string;  
+    major: string; 
+    my_chance: number;
 }

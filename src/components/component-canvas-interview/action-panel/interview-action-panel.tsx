@@ -1,8 +1,26 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Input, Button, CardPreview, Field, mergeClasses} from '@fluentui/react-components';
+import {
+  Card,
+  Button,
+  CardPreview,
+  Field,
+  mergeClasses,
+  Dropdown,
+  Option,
+  SelectionEvents,
+  OptionOnSelectData,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+} from '@fluentui/react-components';
+import { Info24Regular } from '@fluentui/react-icons';
+
 import { getCollegeNameKey } from '../../component-navigation-map';
-import { interviewConversationActions, RootState } from '../../../store';
+import {
+  interviewConversationActions,
+  RootState,
+} from '../../../store';
 import { useStyles } from './interview-action-panel.styles';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
@@ -10,101 +28,110 @@ import { useOnStartInterviewCreator } from './hooks/use-on-start-interview-creat
 import { useOnStopInterviewCreator } from './hooks/use-on-stop-interview-creator';
 import { useInterviewConnection } from './hooks/use-interview-connection';
 import { useOnReviewCompleteCreator } from './hooks/use-on-review-complete-creator';
-import { InterviewAnalyzeRequest, InterviewAnalyzeResult, ProgressModal, TaskResult, TaskType, useTaskRunner } from '../../component-service-proxy';
+import {
+  InterviewAnalyzeRequest,
+  InterviewAnalyzeResult,
+  ProgressModal,
+  TaskResult,
+  TaskType,
+  useTaskRunner,
+} from '../../component-service-proxy';
 
 export const InterviewActionPanel: React.FC = () => {
   const dispatch = useDispatch();
   const styles = useStyles();
 
+  // Redux state
   const liveCollege: string = useSelector(
     (state: RootState) => state.conversation.liveConversationCollege
   );
   const liveMajor: string = useSelector(
     (state: RootState) => state.conversation.liveConversationMajor
   );
-
   const liveId: number = useSelector(
     (state: RootState) => state.conversation.liveConverstationId
   );
+  const collegeList = useSelector(
+    (state: RootState) => state.collegeListWorkshop.collegeList
+  );
 
-  // Local states
-  const [collegeInput, setCollegeInput] = useState(liveCollege);
-  const collegeInputRef = useRef<HTMLInputElement>(null);
-
+  // Hooks for interview start/stop, post-review, etc.
   const onStartInterview = useOnStartInterviewCreator();
   const onStopInterview = useOnStopInterviewCreator();
   const onReviewComplete = useOnReviewCompleteCreator();
 
-  // Hook that handles all the real-time / PeerConnection logic
+  // Manages real-time / PeerConnection logic
   const { interviewActive, isProcessing, toggleInterview } = useInterviewConnection({
     onStartInterview,
-    onStopInterview, 
+    onStopInterview,
   });
 
-  const {startTask: startInterviewReviewTask, showModal, progressMessage } = useTaskRunner({
+  // Manages “AnalyzeInterview” tasks
+  const { startTask: startInterviewReviewTask, showModal, progressMessage } = useTaskRunner({
     taskType: TaskType.AnalyzeInterview,
-    requestData: {conversation_id: liveId} as InterviewAnalyzeRequest, 
+    requestData: { conversation_id: liveId } as InterviewAnalyzeRequest,
     onResult: (data: TaskResult) => {
       const review = (data as InterviewAnalyzeResult).message;
-      dispatch(interviewConversationActions.setLiveConversationReview(review))
+      dispatch(interviewConversationActions.setLiveConversationReview(review));
       onReviewComplete();
-    }
-})    
+    },
+  });
 
   /**
-   * Validate and set the college name from user input.
+   * Handle user selecting a different college in the dropdown.
    */
-  const handleCollegeBlur = () => {
-    const matchedCollegeName = getCollegeNameKey(collegeInput);
-    if (matchedCollegeName) {
-      setCollegeInput(matchedCollegeName);
-      dispatch(interviewConversationActions.setLiveConversationCollege(matchedCollegeName));
-    } else {
-      alert('The college name you entered is not valid. Please re-enter.');
+  const handleCollegeSelect = (event: SelectionEvents, data: OptionOnSelectData) => {
+    // data.optionValue can be undefined, so check it first:
+    if (!data.optionValue) {
+      alert('The college name you selected is not valid. Please check.');
+      return;
     }
+    const matchedCollegeName = getCollegeNameKey(data.optionValue);
+    if (!matchedCollegeName) {
+      alert('The college name you selected is not valid. Please check.');
+      return;
+    }
+    // Update Redux
+    dispatch(interviewConversationActions.setLiveConversationCollege(matchedCollegeName));
   };
 
-  const handleCollegeKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      collegeInputRef.current?.blur();
-    }
-  };
-
+  /**
+   * Handle changes to the Major field.
+   */
   const handleMajorChange = (newMajor: string) => {
     dispatch(interviewConversationActions.setLiveConversationMajor(newMajor));
   };
 
-    
+  /**
+   * Start/Stop Interview button handler.
+   */
   const toggleInterviewHandler = () => {
     const matchedCollegeName = getCollegeNameKey(liveCollege);
-    // Check if matchedCollegeName is not undefined/null and has length >= 3
     if (!matchedCollegeName || matchedCollegeName.length < 3) {
       alert('The college name you entered is not valid. Please re-enter.');
       return;
     }
-
-    // If valid, proceed to toggle
     toggleInterview();
   };
 
   /**
-   * For "Interview Review" button, now a local handler
+   * For "Interview Review" button, triggers the analysis task.
    */
   const handleReviewClick = async () => {
     try {
       if (liveId === 0) {
-        alert("Review could only be performed after finishing the interview.");
+        alert('Review can only be performed after finishing the interview.');
         return;
       }
       startInterviewReviewTask();
     } catch (error) {
-      console.error("Error in review flow:", error);
+      console.error('Error in review flow:', error);
     }
   };
 
   return (
     <div className={styles.container}>
-      <ProgressModal show = {showModal} message = {progressMessage}/>
+      <ProgressModal show={showModal} message={progressMessage} />
 
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
@@ -113,16 +140,41 @@ export const InterviewActionPanel: React.FC = () => {
 
         <CardPreview>
           <div className={styles.grid}>
-            {/* Field for College */}
-            <Field label="College" className={styles.field}>
-              <Input
-                className={styles.input}
-                ref={collegeInputRef}
-                value={collegeInput}
-                onChange={(e) => setCollegeInput(e.target.value)}
-                onBlur={handleCollegeBlur}
-                onKeyDown={handleCollegeKeyPress}
-              />
+            {/* Field for College (with popover on label) */}
+            <Field
+              label={
+                <span className={styles.labelContainer}>
+                  <span>College</span>
+                  <Popover positioning={{ position: 'after', align: 'top' }}>
+                    <PopoverTrigger>
+                      <Button
+                        icon={<Info24Regular />}
+                        appearance="subtle"
+                        size="small"
+                        aria-label="Information"
+                        className={styles.infoIcon}
+                      />
+                    </PopoverTrigger>
+                    <PopoverSurface>
+                      Please make sure the college list was created before selecting a college here
+                    </PopoverSurface>
+                  </Popover>
+                </span>
+              }
+              className={styles.field}
+            >
+              <Dropdown
+                placeholder="Select a college"
+                value={liveCollege}
+                onOptionSelect={handleCollegeSelect}
+                disabled={collegeList.length === 0} // Disable if no colleges
+              >
+                {collegeList.map((c) => (
+                  <Option key={c.id} value={c.college}>
+                    {c.college}
+                  </Option>
+                ))}
+              </Dropdown>
             </Field>
 
             {/* Field for Major */}
@@ -150,7 +202,7 @@ export const InterviewActionPanel: React.FC = () => {
               </Button>
             </Field>
 
-            {/* Review Button (local handler) */}
+            {/* Review Button */}
             <Field className={styles.fieldButton}>
               <Button className={styles.buttonSmall} onClick={handleReviewClick}>
                 Review
@@ -160,7 +212,7 @@ export const InterviewActionPanel: React.FC = () => {
         </CardPreview>
       </Card>
 
-      {/* isProcessing overlay */}
+      {/* “isProcessing” overlay */}
       {isProcessing && (
         <div className={styles.processingModal}>
           <div className={styles.processingDialog}>

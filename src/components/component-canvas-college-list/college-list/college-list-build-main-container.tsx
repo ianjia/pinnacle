@@ -200,6 +200,16 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       return;
     }
 
+    const existingCollege = collegeList.find(
+      (c) => c.college === matchedCollegeName
+    );
+    if (existingCollege) {
+      alert(
+        `${matchedCollegeName} already exists in college list, please try a different one`
+      );
+      return;
+    }    
+
     const newCollegeItem = {
       id: 0,
       user_id: userId as number,

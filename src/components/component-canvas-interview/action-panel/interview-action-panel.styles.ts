@@ -34,19 +34,20 @@ export const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
-    alignItems: 'flex-start', 
+    alignItems: 'flex-start',
   },
   buttonSmall: {
     width: '200px', // Adjust as needed
   },
   buttonGreen: {
     backgroundColor: 'green',
-    color: 'white', // make the text white
+    color: 'white', 
   },
   buttonRed: {
     backgroundColor: 'red',
     color: 'white',
   },
+
   // Additional overlay styling for "isProcessing"
   processingModal: {
     position: 'fixed',
@@ -65,5 +66,15 @@ export const useStyles = makeStyles({
     padding: '30px',
     borderRadius: '10px',
     textAlign: 'center',
+  },
+
+  // New additions for popover label
+  infoIcon: {
+    marginLeft: '8px',
+  },
+  labelContainer: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '1px', // spacing between "College" text and the info button
   },
 });

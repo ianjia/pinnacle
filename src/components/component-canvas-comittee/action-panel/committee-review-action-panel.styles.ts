@@ -39,4 +39,12 @@ export const useStyles = makeStyles({
   buttonSmall: {
     width: '200px', // Adjust as needed
   },
+  infoIcon: {
+    marginLeft: '8px',
+  },
+  labelContainer: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '1px', // spacing between "College" text and the info button
+  },
 });
