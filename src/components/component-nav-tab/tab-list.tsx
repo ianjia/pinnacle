@@ -21,11 +21,6 @@ export const TabList: React.FC = () => {
         onClick = {() => handleTabClick(NavTabType.Profile)}
       />      
       <NavigationTab
-        title = 'College Explorer'
-        isActive = {activeTab === NavTabType.CollegeNavigatoin}
-        onClick = {() => handleTabClick(NavTabType.CollegeNavigatoin)}
-      />
-      <NavigationTab
         title = 'College Shortlist'
         isActive = {activeTab === NavTabType.CollegeList}
         onClick = {() => handleTabClick(NavTabType.CollegeList)}
@@ -44,6 +39,11 @@ export const TabList: React.FC = () => {
         title = 'Essay Workshop'
         isActive = {activeTab === NavTabType.Essay}
         onClick = {() => handleTabClick(NavTabType.Essay)}
+      />
+      <NavigationTab
+        title = 'Term, Help & Resource'
+        isActive = {activeTab === NavTabType.CollegeNavigatoin}
+        onClick = {() => handleTabClick(NavTabType.CollegeNavigatoin)}
       />
     </div>
   );
