@@ -1,4 +1,3 @@
-// CollegeListBuildForm.tsx
 import React from 'react';
 import {
   DataGrid,
@@ -14,13 +13,18 @@ import {
   Card
 } from '@fluentui/react-components';
 
-import { Add20Regular, Delete20Regular } from '@fluentui/react-icons';
+import {
+  Add20Regular,
+  Delete20Regular,
+  ChevronUp12Regular,
+  ChevronDown12Regular
+} from '@fluentui/react-icons';
+
 import { mergeClasses } from '@fluentui/react-components';
 
 import { CollegeAdmissionData } from '../../../shared';
 import { useStyles } from './college-list-build-form.styles';
 
-// Define the props that this component needs
 interface CollegeListBuildFormProps {
   collegeList: CollegeAdmissionData[];
   selectedCollegeId?: number;
@@ -38,15 +42,113 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
 }) => {
   const styles = useStyles();
 
-  // Define the columns for DataGrid
+  // -- 1. State to track which column is sorted & direction
+  // Use a default sort on "myChance" (ascending):
+  const [sortConfig, setSortConfig] = React.useState({
+    column: 'myChance',
+    direction: 'asc',
+  });
+ 
+  // -- 2. Handler that toggles ascending/descending
+  const requestSort = (column: string) => {
+    // Don’t sort on the trash column
+    if (!column || column === 'actions') return;
+
+    let direction: 'asc' | 'desc' = 'asc';
+
+    // If the same column is clicked, toggle
+    if (sortConfig && sortConfig.column === column && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+
+    setSortConfig({ column, direction });
+  };
+
+  // -- 3. Sort the collegeList based on sortConfig
+  const sortedData = React.useMemo(() => {
+    if (!sortConfig) {
+      return collegeList;
+    }
+    const { column, direction } = sortConfig;
+    const sorted = [...collegeList];
+
+    // Simple numeric/string comparisons (tweak logic as needed):
+    sorted.sort((a, b) => {
+      let valA: string | number = '';
+      let valB: string | number = '';
+
+      switch (column) {
+        case 'collegeName':
+          valA = a.college ?? '';
+          valB = b.college ?? '';
+          return valA.localeCompare(valB);
+        case 'myChance':
+          valA = a.data?.chance ?? 0;
+          valB = b.data?.chance ?? 0;
+          return valA - valB;
+        case 'admitRate':
+          valA = a.data?.admitRate ?? 0;
+          valB = b.data?.admitRate ?? 0;
+          return valA - valB;
+        case 'undergradEnroll':
+          valA = a.data?.undergradEnroll ?? 0;
+          valB = b.data?.undergradEnroll ?? 0;
+          return valA - valB;
+        case 'annualCost':
+          valA = a.data?.annualCost ?? 0;
+          valB = b.data?.annualCost ?? 0;
+          return valA - valB;
+        case 'nationalRanking':
+          valA = a.data?.nationalRanking ?? 99999; // or Infinity
+          valB = b.data?.nationalRanking ?? 99999;
+          return valA - valB;
+        case 'programRanking':
+          valA = a.data?.programRanking ?? 99999;
+          valB = b.data?.programRanking ?? 99999;
+          return valA - valB;
+        case 'category':
+          valA = a.data?.category ?? 0;
+          valB = b.data?.category ?? 0;
+          return valA - valB;
+        default:
+          return 0;
+      }
+    });
+
+    if (direction === 'desc') {
+      sorted.reverse();
+    }
+
+    return sorted;
+  }, [collegeList, sortConfig]);
+
+  // -- 4. Helper for rendering the column header w/ optional arrow
+  const renderSortableHeaderCell = (label: string, columnId: string, extraClass?: string) => {
+    const isSorted = sortConfig?.column === columnId;
+    const isAsc = sortConfig?.direction === 'asc';
+    return (
+      <DataGridHeaderCell
+        className={mergeClasses(styles.headerCell, extraClass)}
+        onClick={() => requestSort(columnId)}
+        style={{ cursor: 'pointer' }} // indicate clickable
+      >
+        {label}
+        {isSorted && (
+          isAsc ? (
+            <ChevronUp12Regular style={{ marginLeft: 4 }} />
+          ) : (
+            <ChevronDown12Regular style={{ marginLeft: 4 }} />
+          )
+        )}
+      </DataGridHeaderCell>
+    );
+  };
+
+  // Define the columns with "renderHeaderCell" and "renderCell"
   const columns: TableColumnDefinition<CollegeAdmissionData>[] = [
     createTableColumn<CollegeAdmissionData>({
       columnId: 'collegeName',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={mergeClasses(styles.headerCell, styles.wideColumn)}>
-          College Name
-        </DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('College Name', 'collegeName', styles.wideColumn),
       renderCell: (item) => (
         <DataGridCell className={mergeClasses(styles.cell, styles.wideColumn)}>
           <TableCellLayout>{item.college}</TableCellLayout>
@@ -55,9 +157,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'myChance',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>My Chance</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('My Chance', 'myChance'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>
@@ -68,9 +168,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'admitRate',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Admit Rate</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('Admit Rate', 'admitRate'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>
@@ -81,9 +179,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'undergradEnroll',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Undergrad. Enrollment</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('Undergrad. Enrollment', 'undergradEnroll'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>
@@ -94,9 +190,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'annualCost',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Annual Cost ($)</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('Annual Cost ($)', 'annualCost'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>{item.data?.annualCost ?? ''}</TableCellLayout>
@@ -105,9 +199,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'nationalRanking',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>National Ranking</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('National Ranking', 'nationalRanking'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>{item.data?.nationalRanking ?? ''}</TableCellLayout>
@@ -116,9 +208,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'programRanking',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Major Ranking</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('Major Ranking', 'programRanking'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>{item.data?.programRanking ?? ''}</TableCellLayout>
@@ -127,9 +217,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
     }),
     createTableColumn<CollegeAdmissionData>({
       columnId: 'category',
-      renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Category</DataGridHeaderCell>
-      ),
+      renderHeaderCell: () => renderSortableHeaderCell('Category', 'category'),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
           <TableCellLayout>
@@ -144,8 +232,10 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
         </DataGridCell>
       ),
     }),
+    // Non-sortable trash-can (delete) column:
     createTableColumn<CollegeAdmissionData>({
       columnId: 'actions',
+      // No need for arrow or onClick
       renderHeaderCell: () => <DataGridHeaderCell className={styles.headerCell} />,
       renderCell: (item) => (
         <DataGridCell className={mergeClasses(styles.cell, styles.actionCell)}>
@@ -171,11 +261,15 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
         College List
       </h2>
 
+      {/* 
+        Pass the sorted data to DataGrid.
+        Note: DataGrid also supports `sortable` & `onSortChange` props,
+        but here we handle sorting ourselves via sortConfig/requestSort.
+      */}
       <DataGrid
-        items={collegeList}
+        items={sortedData}
         columns={columns}
         getRowId={(item) => String(item.id)}
-        sortable
       >
         <DataGridHeader>
           <DataGridRow className={styles.row}>
@@ -186,6 +280,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
             )}
           </DataGridRow>
         </DataGridHeader>
+
         <DataGridBody<CollegeAdmissionData>>
           {({ item }) => (
             <DataGridRow
