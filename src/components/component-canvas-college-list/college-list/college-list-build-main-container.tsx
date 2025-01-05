@@ -27,7 +27,15 @@ import { getCollegeNameKey } from '../../component-navigation-map';
 
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
 import { CollegeListBuildForm } from './college-list-build-form';
-import { Card } from '@fluentui/react-components';
+import {
+  Card,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+  Button as FluentButton
+} from '@fluentui/react-components';
+import { Info24Regular } from '@fluentui/react-icons'; // <-- NEW import
+
 import { useStyles } from './college-list-build-form.styles';
 
 export const CollegeListBuildMainContainer: React.FC = () => {
@@ -246,7 +254,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       await collegeAdmissionDataService.deleteById(foundCollege.id, foundCollege.user_id);
       dispatch(collegeListWorkshopActions.deleteCollege(foundCollege.id));
 
-      // Clear selection if we just deleted the selected college
+      // Clear selection if we just deleted the selectedCollege
       if (selectedCollege?.id === collegeId) {
         setSelectedCollege(null);
       }
@@ -308,26 +316,83 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       {/* Top buttons: Build list, Evaluate, Committee Review */}
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
-            Action Panel
+          Action Panel
         </h2>
-        <div style={{ display: 'flex', gap: '28px' }}>
-          <button className={styles.actionPanelButton} onClick={handleStartCollegeListTask} >
-            Create/Refresh List
-          </button>
-          <button
-            className={styles.actionPanelButton}
-            onClick={handleStartEvaluationTask}
-            disabled={!selectedCollege || selectedCollege.data !== undefined}
-          >
-            Evaluate
-          </button>
-          <button
-            className={styles.actionPanelButton}
-            onClick={handleCommitteeReview}
-            disabled={!selectedCollege}
-          >
-           Holistic Review
-          </button>
+
+        <div style={{ display: 'flex', gap: '50px' }}>
+          {/* Create/Refresh List + info popover */}
+          <div className={styles.buttonWithInfo}>
+            <button
+              className={styles.actionPanelButton}
+              onClick={handleStartCollegeListTask}
+            >
+              Create/Refresh List
+            </button>
+            <Popover positioning={{ position: 'after', align: 'center' }}>
+              <PopoverTrigger>
+                <FluentButton
+                  icon={<Info24Regular />}
+                  appearance="subtle"
+                  size="small"
+                  aria-label="Information on creating a recommended college list"
+                  className={styles.infoIcon}
+                />
+              </PopoverTrigger>
+              <PopoverSurface>
+                Create a recommended college list
+              </PopoverSurface>
+            </Popover>
+          </div>
+
+          {/* Evaluate + info popover */}
+          <div className={styles.buttonWithInfo}>
+            <button
+              className={styles.actionPanelButton}
+              onClick={handleStartEvaluationTask}
+              disabled={!selectedCollege || selectedCollege.data !== undefined}
+            >
+              Evaluate
+            </button>
+            <Popover positioning={{ position: 'after', align: 'center' }}>
+              <PopoverTrigger>
+                <FluentButton
+                  icon={<Info24Regular />}
+                  appearance="subtle"
+                  size="small"
+                  aria-label="Information on evaluation"
+                  className={styles.infoIcon}
+                />
+              </PopoverTrigger>
+              <PopoverSurface>
+                Please use Add an Item to create a row and then select it to evaluate
+              </PopoverSurface>
+            </Popover>
+          </div>
+
+          {/* Holistic Review + info popover */}
+          <div className={styles.buttonWithInfo}>
+            <button
+              className={styles.actionPanelButton}
+              onClick={handleCommitteeReview}
+              disabled={!selectedCollege}
+            >
+              Holistic Review
+            </button>
+            <Popover positioning={{ position: 'after', align: 'center' }}>
+              <PopoverTrigger>
+                <FluentButton
+                  icon={<Info24Regular />}
+                  appearance="subtle"
+                  size="small"
+                  aria-label="Information on holistic review"
+                  className={styles.infoIcon}
+                />
+              </PopoverTrigger>
+              <PopoverSurface>
+                Please select a row for a comprehensive review
+              </PopoverSurface>
+            </Popover>
+          </div>
         </div>
       </Card>
 

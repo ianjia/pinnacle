@@ -68,6 +68,18 @@ export const useStyles = makeStyles({
     width: '150px',
     height: '28px',
   },
+
+  buttonWithInfo: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: '6px',
+  },
+
+  infoIcon: {
+    marginLeft: '4px',
+  },
+  
   addItemContainer: {
     display: 'flex',
     justifyContent: 'flex-start',
