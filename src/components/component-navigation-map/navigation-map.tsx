@@ -48,8 +48,7 @@ export const NavigationMap: React.FC<MapProps> = ({ collegeNameList }) => {
     mapData.forEach((college) => {
       const { loc, category } = college;
 
-      // If no location or no lat/long, skip
-      if (!loc) return;
+      if (!loc) return; // no location info, skip
 
       // Decide which icon to use based on category
       let iconToUse = blueIcon;
@@ -63,8 +62,6 @@ export const NavigationMap: React.FC<MapProps> = ({ collegeNameList }) => {
 
       // Create a container to render our React popup into
       const popupContainer = L.DomUtil.create('div');
-
-      // Create a React root for this container and render <MarkerPopup> into it
       const root = createRoot(popupContainer);
       root.render(<MarkerPopup data={college} />);
 
@@ -73,22 +70,47 @@ export const NavigationMap: React.FC<MapProps> = ({ collegeNameList }) => {
         .addTo(mapRef.current!)
         .bindPopup(popupContainer, { autoClose: false });
 
-      // OPTIONAL: If you want to unmount the component when the popup closes
+      // If you want to unmount the component when the popup closes, do so below:
       // marker.on('popupclose', () => {
-      //   root.unmount(); // Unmount React component
+      //   root.unmount();
       // });
 
-      // Optionally, add "mouseover"/"mouseout" events if you want them
+      // Keep track of whether mouse is over the marker or popup
       let isMouseOverMarker = false;
       let isMouseOverPopup = false;
 
+      // We'll store a timeout ID to close the popup after a slight delay
+      let closePopupTimeout: ReturnType<typeof setTimeout> | null = null;
+
+      // A small helper to schedule the popup close Below is one common approach to make the popup less “touchy” when the mouse moves away. The basic idea is:
+      // Use a small delay before closing the popup (e.g., 500ms).
+      // If the mouse re-enters the marker or popup within that delay, cancel the close.
+      const schedulePopupClose = () => {
+        // Only schedule if there's no existing timer
+        if (closePopupTimeout) return;
+
+        closePopupTimeout = setTimeout(() => {
+          // After the delay, only close if mouse is still out
+          if (!isMouseOverMarker && !isMouseOverPopup) {
+            marker.closePopup();
+          }
+          closePopupTimeout = null;
+        }, 500); 
+      };
+
       marker.on('mouseover', () => {
-        marker.openPopup();
         isMouseOverMarker = true;
+        // If a close was scheduled, cancel it
+        if (closePopupTimeout) {
+          clearTimeout(closePopupTimeout);
+          closePopupTimeout = null;
+        }
+        marker.openPopup();
       });
 
       marker.on('mouseout', (e) => {
         const toElement = (e.originalEvent as MouseEvent).relatedTarget as HTMLElement;
+        // If mouse goes to the popup itself or the marker icon again, do nothing
         if (
           toElement &&
           (toElement.closest('.leaflet-popup') ||
@@ -97,33 +119,35 @@ export const NavigationMap: React.FC<MapProps> = ({ collegeNameList }) => {
           return;
         }
         isMouseOverMarker = false;
-        if (!isMouseOverPopup) {
-          marker.closePopup();
-        }
+        // Otherwise, start the close schedule
+        schedulePopupClose();
       });
 
       marker.on('popupopen', () => {
         const popupElement = document.querySelector('.leaflet-popup') as HTMLElement;
-        if (popupElement) {
-          popupElement.addEventListener('mouseover', () => {
-            isMouseOverPopup = true;
-          });
+        if (!popupElement) return;
 
-          popupElement.addEventListener('mouseout', (evt) => {
-            const toElem = evt.relatedTarget as HTMLElement;
-            if (
-              toElem &&
-              (toElem.closest('.leaflet-popup') ||
-                toElem.closest('.leaflet-marker-icon'))
-            ) {
-              return;
-            }
-            isMouseOverPopup = false;
-            if (!isMouseOverMarker) {
-              marker.closePopup();
-            }
-          });
-        }
+        popupElement.addEventListener('mouseover', () => {
+          isMouseOverPopup = true;
+          // Cancel any scheduled close
+          if (closePopupTimeout) {
+            clearTimeout(closePopupTimeout);
+            closePopupTimeout = null;
+          }
+        });
+
+        popupElement.addEventListener('mouseout', (evt) => {
+          const toElem = evt.relatedTarget as HTMLElement;
+          if (
+            toElem &&
+            (toElem.closest('.leaflet-popup') ||
+              toElem.closest('.leaflet-marker-icon'))
+          ) {
+            return;
+          }
+          isMouseOverPopup = false;
+          schedulePopupClose();
+        });
       });
     });
 
