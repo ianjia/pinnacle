@@ -1,33 +1,24 @@
-// File 3 (App.tsx)
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Login, ProtectedRoute, Register } from './auth';
+import { MainApp } from './components/component-main-app';
+import { Root } from './home-page/root';
 
 import './App.css';
-
-import { HomePage } from './components/component-home-page';
 
 const App: React.FC = () => {
   return (
       <div className="App">
         <Router>
           <Routes>
+            <Route path="/" element={<Root />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
-              path="/home"
+              path="/mainapp"
               element={
                 <ProtectedRoute>
-                  <HomePage />
-                </ProtectedRoute>
-              }
-            />
-            {/* Redirect to dashboard or login based on authentication */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <HomePage />
+                  <MainApp />
                 </ProtectedRoute>
               }
             />

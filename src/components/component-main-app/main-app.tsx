@@ -1,9 +1,9 @@
 import React from 'react';
 import { Canvas } from '../component-canvas';
 import { LeftPane } from '../component-left-pane';
-import './home-page.css';
+import './main-app.css';
 
-export const HomePage: React.FC = () => {
+export const MainApp: React.FC = () => {
     return (
         <div className="container">
             <div className="column">
@@ -16,4 +16,4 @@ export const HomePage: React.FC = () => {
     );
 };
 
-export default HomePage;
+export default MainApp;
