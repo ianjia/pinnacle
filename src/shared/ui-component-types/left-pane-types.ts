@@ -1,6 +1,6 @@
 export enum NavTabType {
     Profile,
-    CollegeNavigatoin,
+    TermHelpResource,
     CollegeList,
     Interview,
     ComitteReview,

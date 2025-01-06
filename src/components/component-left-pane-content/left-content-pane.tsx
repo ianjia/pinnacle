@@ -15,7 +15,7 @@ export const LeftContentPane: React.FC = () => {
     return (
         <div className="container">
           { activeTab === NavTabType.Profile && (<ProfileNavPane/>)}
-           { activeTab === NavTabType.CollegeNavigatoin && (<InteractionCollegeNav/>)}
+           { activeTab === NavTabType.TermHelpResource && (<InteractionCollegeNav/>)}
            { activeTab === NavTabType.CollegeList && (<InteractionCollegeListPane/>)}
            { activeTab === NavTabType.ComitteReview && (<InteractionCommitteeReviewPane/>)}
            { activeTab === NavTabType.Interview && (<InteractionInterviewPane/>)}

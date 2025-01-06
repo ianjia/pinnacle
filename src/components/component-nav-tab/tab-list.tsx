@@ -42,8 +42,8 @@ export const TabList: React.FC = () => {
       />
       <NavigationTab
         title = 'Term, Help & Resource'
-        isActive = {activeTab === NavTabType.CollegeNavigatoin}
-        onClick = {() => handleTabClick(NavTabType.CollegeNavigatoin)}
+        isActive = {activeTab === NavTabType.TermHelpResource}
+        onClick = {() => handleTabClick(NavTabType.TermHelpResource)}
       />
     </div>
   );

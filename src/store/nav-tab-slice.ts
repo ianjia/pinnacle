@@ -6,7 +6,7 @@ interface NavigationTabState {
 }
 
 const initialState: NavigationTabState = {
-    activeTab: NavTabType.CollegeNavigatoin,
+    activeTab: NavTabType.Profile
 };
 
 const navigationTabSlice = createSlice({
