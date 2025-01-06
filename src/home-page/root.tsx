@@ -123,15 +123,19 @@ const MiddleSection: React.FC = () => {
       {/* 2) Text Sub-section (different font) */}
       <div style={middleSectionStyles.subBox}>
         <div style={middleSectionStyles.textSection1}>
-          Pathway to Dream College
+          Pathway to Dream College -  Your Personalized AI Counselor
         </div>
       </div>
 
-      {/* 3) Text Sub-section (another different font) */}
+      {/* 3) Text Sub-section (another different font, now bullet points) */}
       <div style={middleSectionStyles.subBox}>
-        <div style={middleSectionStyles.textSection2}>
-          Your Personalized AI Counselor — Breaking new ground in guidance and strategy.
-        </div>
+        <ul style={middleSectionStyles.textSection2}>
+          <li>Build college list</li>
+          <li>Mock interview</li>
+          <li>Holistic review</li>
+          <li>Essay workshop</li>
+          <li>And more to come ...</li>
+        </ul>
       </div>
     </div>
   );
@@ -163,15 +167,19 @@ const middleSectionStyles: { [key: string]: React.CSSProperties } = {
   },
   textSection1: {
     fontFamily: 'Georgia, serif', 
-    fontSize: '50px',
+    fontSize: '45px',
     lineHeight: 1.4,
     wordWrap: 'break-word',
   },
   textSection2: {
     fontFamily: '"Open Sans", sans-serif',
-    fontSize: '38px',
+    fontSize: '20px',
     lineHeight: 1.6,
     wordWrap: 'break-word',
+    textAlign: 'left',          // left-align bullet points
+    listStylePosition: 'inside', // ensures bullets appear inside the container
+    margin: 0,
+    padding: 0,
   },
 };
 
