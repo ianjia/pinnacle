@@ -94,11 +94,11 @@ const topSectionStyles: { [key: string]: React.CSSProperties } = {
     alignItems: 'center',
   },
   logo: {
-    height: '80px',
+    height: '100px',
     marginRight: '10px',
   },
   logoText: {
-    height: '60px',
+    height: '100px',
   },
   buttonPanel: {
     display: 'flex',
