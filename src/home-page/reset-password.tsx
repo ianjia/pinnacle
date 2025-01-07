@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { api } from '../auth/api';
+import { passwordMeetsRequirements } from './utils/password-validator';
 
 export const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -23,14 +24,23 @@ export const ResetPassword: React.FC = () => {
     setError('');
     setSuccessMsg('');
 
-    // Check if the two passwords match before making the API call
+    // 1. Check if the password meets the requirement
+    if (!passwordMeetsRequirements(newPassword)) {
+      setError(
+        'Password must be at least 8 characters, include a number, and a special character.'
+      );
+      return;
+    }
+
+    // 2. Check if the two passwords match
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
+    // 3. If all validations pass, call the API
     try {
-      const response = await api.post('/reset-password', {
+      await api.post('/reset-password', {
         token: tokenFromUrl,
         newPassword,
       });
@@ -45,8 +55,12 @@ export const ResetPassword: React.FC = () => {
     return <div>Invalid token</div>;
   }
 
-  // Whether the passwords match
-  const passwordsMatch = newPassword && confirmPassword && newPassword === confirmPassword;
+  // Check if the two password fields match
+  const passwordsMatch =
+    newPassword && confirmPassword && newPassword === confirmPassword;
+
+  // Check if newPassword meets requirements
+  const newPasswordValid = passwordMeetsRequirements(newPassword);
 
   return (
     <div style={{ margin: '2rem' }}>
@@ -72,12 +86,20 @@ export const ResetPassword: React.FC = () => {
           style={{ display: 'block', marginBottom: '1rem' }}
         />
 
+        {/* Show a warning if password does not meet requirements */}
+        {newPassword && !newPasswordValid && (
+          <p style={{ color: 'red' }}>
+            Password must be at least 8 characters, include a number, and a special character.
+          </p>
+        )}
+
         {/* Show a warning if both fields are filled and do not match */}
         {newPassword && confirmPassword && !passwordsMatch && (
           <p style={{ color: 'red' }}>Passwords do not match</p>
         )}
 
-        <button type="submit" disabled={!passwordsMatch}>
+        {/* Disable the button if password is invalid or passwords don't match */}
+        <button type="submit" disabled={!newPasswordValid || !passwordsMatch}>
           Reset Password
         </button>
       </form>

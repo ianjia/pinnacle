@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../auth';
 import { useStyles } from './hooks/use-login-register-modal-styles';
+import { passwordMeetsRequirements } from './utils/password-validator';
 
 interface RegisterModalContentProps {
   onSuccess?: () => void;
@@ -20,12 +21,21 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
     setError('');
     setSuccess('');
 
-    // Check if passwords match before making the API call
+    // 1. Check if password meets requirement
+    if (!passwordMeetsRequirements(password)) {
+      setError(
+        'Password must be at least 8 characters, include a number, and a special character.'
+      );
+      return;
+    }
+
+    // 2. Check if passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
+    // 3. If validations pass, call the API
     try {
       await api.post('/register', { email, password });
       setSuccess('Registration successful!');
@@ -39,8 +49,10 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
     }
   };
 
-  // Whether the passwords match (only check if both fields have content)
+  // Whether the two passwords match
   const passwordsMatch = password && confirmPassword && password === confirmPassword;
+  // Whether the password meets the requirement
+  const passwordValid = passwordMeetsRequirements(password);
 
   return (
     <div className={styles.container}>
@@ -71,17 +83,28 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
           required
         />
 
-        {/* Show warning if both fields are filled but do not match */}
+        {/* Show warning if password doesn't meet the requirements */}
+        {password && !passwordValid && (
+          <p className={styles.error}>
+            Password must be at least 8 characters, include a number, and a special character.
+          </p>
+        )}
+
+        {/* Show warning if both fields are filled and do not match */}
         {password && confirmPassword && !passwordsMatch && (
           <p className={styles.error}>Passwords do not match</p>
         )}
 
-        {/* Display API or matching error */}
+        {/* Display error/success messages */}
         {error && <p className={styles.error}>{error}</p>}
         {success && <p className={styles.success}>{success}</p>}
 
-        {/* Disable register button if passwords do not match */}
-        <button type="submit" className={styles.button} disabled={!passwordsMatch}>
+        {/* Disable button if password doesn't meet requirements or passwords don't match */}
+        <button
+          type="submit"
+          className={styles.button}
+          disabled={!passwordValid || !passwordsMatch}
+        >
           Register
         </button>
       </form>
