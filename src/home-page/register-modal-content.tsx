@@ -60,7 +60,7 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
       <form onSubmit={handleRegister} className={styles.form}>
         <input
           type="text"
-          placeholder="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={styles.input}
