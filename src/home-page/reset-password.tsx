@@ -5,8 +5,9 @@ import { api } from '../auth/api';
 export const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
   const tokenFromUrl = searchParams.get('token') || '';
-  
+
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const navigate = useNavigate();
@@ -21,6 +22,12 @@ export const ResetPassword: React.FC = () => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
+
+    // Check if the two passwords match before making the API call
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
 
     try {
       const response = await api.post('/reset-password', {
@@ -38,6 +45,9 @@ export const ResetPassword: React.FC = () => {
     return <div>Invalid token</div>;
   }
 
+  // Whether the passwords match
+  const passwordsMatch = newPassword && confirmPassword && newPassword === confirmPassword;
+
   return (
     <div style={{ margin: '2rem' }}>
       <h2>Reset Password</h2>
@@ -51,7 +61,25 @@ export const ResetPassword: React.FC = () => {
           required
           style={{ display: 'block', marginBottom: '1rem' }}
         />
-        <button type="submit">Reset Password</button>
+
+        <label>Confirm New Password</label>
+        <input
+          type="password"
+          placeholder="Confirm your new password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          style={{ display: 'block', marginBottom: '1rem' }}
+        />
+
+        {/* Show a warning if both fields are filled and do not match */}
+        {newPassword && confirmPassword && !passwordsMatch && (
+          <p style={{ color: 'red' }}>Passwords do not match</p>
+        )}
+
+        <button type="submit" disabled={!passwordsMatch}>
+          Reset Password
+        </button>
       </form>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
