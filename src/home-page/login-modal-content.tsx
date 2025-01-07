@@ -1,33 +1,35 @@
 import React, { useContext, useEffect, useState } from 'react';
-
-import { useLoadData } from '../init';
-import { api, AuthContext } from '../auth';
 import { useNavigate } from 'react-router-dom';
+import { api, AuthContext } from '../auth';
+import { useLoadData } from '../init';
+import { useStyles } from './hooks/use-login-register-modal-styles';
+
 
 interface LoginModalContentProps {
-  onSuccess?: () => void; 
+  onSuccess?: () => void;
 }
 
 export const LoginModalContent: React.FC<LoginModalContentProps> = ({ onSuccess }) => {
+  const styles = useStyles();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const { loginUser, userId } = useContext(AuthContext);
   const loadData = useLoadData();
 
   useEffect(() => {
     if (isLoggedIn && userId != null) {
       loadData(userId);
-      // Optionally trigger callback to close modal on success
       if (onSuccess) {
         onSuccess();
       }
-      navigate('/mainapp'); // Navigate after loading data
+      navigate('/mainapp');
     }
-  }, [isLoggedIn, userId, loadData, onSuccess]);
+  }, [isLoggedIn, userId, loadData, onSuccess, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,15 +44,15 @@ export const LoginModalContent: React.FC<LoginModalContentProps> = ({ onSuccess 
   };
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <h2>Sign In</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
+          className={styles.input}
           required
         />
         <input
@@ -58,38 +60,21 @@ export const LoginModalContent: React.FC<LoginModalContentProps> = ({ onSuccess 
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
+          className={styles.input}
           required
         />
-        {error && <p style={styles.error}>{error}</p>}
-        <button type="submit" style={styles.button}>Login</button>
+        {error && <p className={styles.error}>{error}</p>}
+        <button type="submit" className={styles.button}>
+          Login
+        </button>
       </form>
+
+      {/* Forgot Password Link */}
+      <div className={styles.forgotPasswordWrapper}>
+        <button className={styles.button} onClick={() => navigate('/forgot-password')}>
+          Forgot Password?
+        </button>
+      </div>
     </div>
   );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    minWidth: '300px',
-    textAlign: 'center',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: '20px',
-  },
-  input: {
-    padding: '8px',
-    margin: '5px 0',
-    fontSize: '16px',
-  },
-  button: {
-    padding: '10px',
-    fontSize: '16px',
-    marginTop: '10px',
-    cursor: 'pointer',
-  },
-  error: {
-    color: 'red',
-  },
 };

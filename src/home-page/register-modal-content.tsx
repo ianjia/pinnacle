@@ -1,12 +1,14 @@
-// RegisterModalContent.tsx
 import React, { useState } from 'react';
 import { api } from '../auth';
+import { useStyles } from './hooks/use-login-register-modal-styles';
 
 interface RegisterModalContentProps {
   onSuccess?: () => void;
 }
 
 export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSuccess }) => {
+  const styles = useStyles();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -17,7 +19,6 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
     try {
       await api.post('/register', { email, password });
       setSuccess('Registration successful!');
-      // Optionally close modal after some time
       setTimeout(() => {
         if (onSuccess) {
           onSuccess();
@@ -29,15 +30,15 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
   };
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <h2>Sign Up</h2>
-      <form onSubmit={handleRegister} style={styles.form}>
+      <form onSubmit={handleRegister} className={styles.form}>
         <input
           type="text"
           placeholder="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
+          className={styles.input}
           required
         />
         <input
@@ -45,42 +46,15 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({ onSu
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
+          className={styles.input}
           required
         />
-        {error && <p style={styles.error}>{error}</p>}
-        {success && <p style={styles.success}>{success}</p>}
-        <button type="submit" style={styles.button}>Register</button>
+        {error && <p className={styles.error}>{error}</p>}
+        {success && <p className={styles.success}>{success}</p>}
+        <button type="submit" className={styles.button}>
+          Register
+        </button>
       </form>
     </div>
   );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    minWidth: '300px',
-    textAlign: 'center',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: '20px',
-  },
-  input: {
-    padding: '8px',
-    margin: '5px 0',
-    fontSize: '16px',
-  },
-  button: {
-    padding: '10px',
-    fontSize: '16px',
-    marginTop: '10px',
-    cursor: 'pointer',
-  },
-  error: {
-    color: 'red',
-  },
-  success: {
-    color: 'green',
-  },
 };
