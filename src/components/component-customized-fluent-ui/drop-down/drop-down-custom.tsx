@@ -27,6 +27,7 @@ export const DropdownCustom: React.FC<DropDownCustomTypes> = ({
 
     return (
         <Dropdown
+            key={value}
             className={styles.root}
             placeholder={showPlaceHolder ? placeHolderStr : undefined}
             onOptionSelect={onOptionSelect}

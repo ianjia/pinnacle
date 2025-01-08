@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, selectedProfileActions } from '../../../store';
 import {
@@ -30,7 +30,6 @@ import { getCollegeNameKey } from '../../component-navigation-map';
 export const StudentProfileForm: React.FC = () => {
   const dispatch = useDispatch();
   
-  // Redux values
   const student = useSelector((state: RootState) => state.selectedProfile.studentData);
   const race = useSelector((state: RootState) => state.selectedProfile.studentData.race);
   const gender = useSelector((state: RootState) => state.selectedProfile.studentData.gender);
@@ -49,6 +48,13 @@ export const StudentProfileForm: React.FC = () => {
   const [birthDate, setBirthDate] = useState<string>(student.birthDate || '');
   const [school, setSchool] = useState<string>(student.school || '');
   const [alumniLegacy, setAlumniLegacy] = useState<string>(student.alumni_legacy || '');
+
+  useEffect(() => {
+    setName(student.name || '');
+    setBirthDate(student.birthDate || '');
+    setSchool(student.school || '');
+    setAlumniLegacy(student.alumni_legacy || '');
+  }, [student]);  
 
   const handleBlur = async (field: keyof StudentProfile, value: any) => {
     if (field === 'birthDate') {

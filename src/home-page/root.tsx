@@ -187,7 +187,7 @@ const BottomSection: React.FC = () => {
   return (
     <div style={bottomSectionStyles.container}>
       <p>© 2025 All rights reserved.</p>
-      <p>Contact: ianjiawa@gmail.com</p>
+      <p>Contact: birdie.counselor@gmail.com</p>
     </div>
   );
 };
