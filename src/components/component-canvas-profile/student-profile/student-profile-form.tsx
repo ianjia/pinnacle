@@ -56,7 +56,7 @@ export const StudentProfileForm: React.FC = () => {
     setAlumniLegacy(student.alumni_legacy || '');
   }, [student]);  
 
-  const handleBlur = async (field: keyof StudentProfile, value: any) => {
+  const handleBlur = async (field: keyof StudentProfile, value: any) => {    
     if (field === 'birthDate') {
       const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getTime());
       if (!isValidDate) {
@@ -67,14 +67,19 @@ export const StudentProfileForm: React.FC = () => {
     }
 
     if (field === 'alumni_legacy') {
-      const matchedCollegeName = getCollegeNameKey(alumniLegacy);
-      if (!matchedCollegeName) {
-        alert('Invalid college name, please input again.');
-        setAlumniLegacy('');
-        return;
-      }
+      if (alumniLegacy.trim() !== "") {
+        const matchedCollegeName = getCollegeNameKey(alumniLegacy);
+        if (!matchedCollegeName) {
+          alert('Invalid college name, please input again.');
+          setAlumniLegacy('');
+        } else {
+          setAlumniLegacy(matchedCollegeName);
+          value = matchedCollegeName;
+        }
+     }
     }
 
+    // Following to save to database
     try {
       dispatch(selectedProfileActions.updateStudentField({ field, value }));
       await studentService.update({ ...student, [field]: value });

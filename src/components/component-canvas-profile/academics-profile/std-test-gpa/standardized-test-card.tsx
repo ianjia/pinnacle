@@ -24,18 +24,27 @@ export const StandardizedTestCard: React.FC = () => {
       try {
         // Convert the string value to a number or undefined if the field is empty
         const numericValue = value.trim() === '' ? undefined : Number(value);
-        if (isNaN(numericValue!)) {
+        if (numericValue !== undefined && isNaN(numericValue!)) {
           alert('Please enter a valid number'); // Optional validation alert
+          if (field ==='sat') {
+            setSatScore(stdTestRecord.sat?.toString() || '');
+          }
+          if (field === 'act') {
+            setActScore(stdTestRecord.act?.toString() || '');
+          }
+
           return;
         }
 
         if (numericValue !== undefined) {
             if (field === 'sat' && (numericValue < 400 || numericValue > 1600)) {
               alert('Please enter a valid SAT score between 400 and 1600.');
+              setSatScore(stdTestRecord.sat?.toString() || '');
               return;
             }
             if (field === 'act' && (numericValue < 1 || numericValue > 36)) {
               alert('Please enter a valid ACT score between 1 and 36.');
+              setActScore(stdTestRecord.act?.toString() || '');
               return;
             }
         }

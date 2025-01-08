@@ -26,14 +26,36 @@ export const GpaCard: React.FC = () => {
       try {
         // Convert the string value to a number or undefined if the field is empty
         const numericValue = value.trim() === '' ? undefined : Number(value);
-        if (isNaN(numericValue!)) {
+        if (numericValue !== undefined && isNaN(numericValue!)) {
           alert('Please enter a valid number'); // Optional validation alert
+          if (field === "ninth") {
+            setNinthGpa(gpaRecord.ninth?.toString() || '');
+          } else if (field === "tenth") {
+            setTenthGpa(gpaRecord.tenth?.toString() || '');
+          } else if (field === "eleventh") {
+            setEleventhGpa(gpaRecord.eleventh?.toString() || '');
+          } else if (field === "twelfth") {
+            setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
+          } else if (field == "overall") {
+            setOverallGpa(gpaRecord.overall?.toString() || '');
+          }
           return;
         }
 
         if (numericValue !== undefined) {
             if (numericValue < 0.0 || numericValue > 5.0) {
               alert('Please enter a valid GPA score between 0.0 and 5.0');
+              if (field === "ninth") {
+                setNinthGpa(gpaRecord.ninth?.toString() || '');
+              } else if (field === "tenth") {
+                setTenthGpa(gpaRecord.tenth?.toString() || '');
+              } else if (field === "eleventh") {
+                setEleventhGpa(gpaRecord.eleventh?.toString() || '');
+              } else if (field === "twelfth") {
+                setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
+              } else if (field == "overall") {
+                setOverallGpa(gpaRecord.overall?.toString() || '');
+              }
               return;
             }
         }
