@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../../store';
 import { useContext, useState } from 'react';
 import { Honor } from '../../../../shared';
 import { logError } from '../../../../util';
@@ -37,7 +37,12 @@ export const useHonorProfile = (): HonorProfileFormProps => {
       dispatch(selectedProfileActions.addHonor(newHonor));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to add honor');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save new honor record to backend.',
+        })
+      );
     }
   };
 
@@ -52,7 +57,12 @@ export const useHonorProfile = (): HonorProfileFormProps => {
       );
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to update honor');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save honor record update to backend.',
+        })
+      );
     }
   };
 
@@ -62,7 +72,12 @@ export const useHonorProfile = (): HonorProfileFormProps => {
       dispatch(selectedProfileActions.deleteHonor(id));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to delete honor');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to delete honor record on backend.',
+        })
+      );
     }
   };
 

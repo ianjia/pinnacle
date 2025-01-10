@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../../store';
 import { useContext, useState } from 'react';
 import { Activity } from '../../../../shared';
 import { logError } from '../../../../util';
@@ -41,7 +41,12 @@ export const useActivityProfile = () : ActivityProfileFormProps => {
       dispatch(selectedProfileActions.addActivity(newActivity));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to add activity');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save new activity to backend.',
+        })
+      );
     }
   };
 
@@ -56,7 +61,12 @@ export const useActivityProfile = () : ActivityProfileFormProps => {
       );
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to update activity');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save activity update to backend.',
+        })
+      );
     }
   };
 
@@ -66,7 +76,12 @@ export const useActivityProfile = () : ActivityProfileFormProps => {
       dispatch(selectedProfileActions.deleteActivity(id));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to delete activity');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to delete activity on backend.',
+        })
+      );
     }
   };
 

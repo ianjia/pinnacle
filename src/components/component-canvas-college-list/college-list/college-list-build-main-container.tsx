@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../store';
+import { alertDialogActions, RootState } from '../../../store';
 import {
   collegeListWorkshopActions,
   committeeReviewActions,
@@ -204,7 +204,12 @@ export const CollegeListBuildMainContainer: React.FC = () => {
   const handleAddCollegeDone = async () => {
     const matchedCollegeName = getCollegeNameKey(newCollegeName.trim());
     if (!matchedCollegeName) {
-      alert('The college name you entered is not valid. Please re-enter.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you entered is not valid. Please re-enter.',
+        })
+      );
       return;
     }
 
@@ -212,8 +217,11 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       (c) => c.college === matchedCollegeName
     );
     if (existingCollege) {
-      alert(
-        `${matchedCollegeName} already exists in college list, please try a different one`
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message:  `${matchedCollegeName} already exists in college list, please try a different one`,
+        })
       );
       return;
     }    
@@ -236,7 +244,12 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       setIsAddModalOpen(false);
       setNewCollegeName('');
     } catch (error: any) {
-      alert(`Error creating college in server: ${error.message}`);
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Saving Error',
+            message: `Error creating college on server side: ${error.message}`,
+          })
+        );
     }
   };
 
@@ -259,7 +272,12 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         setSelectedCollege(null);
       }
     } catch (error: any) {
-      alert(`Error deleting college: ${error.message}`);
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: `Error deleting college on server side: ${error.message}`,
+        })
+      );
     }
   };
 

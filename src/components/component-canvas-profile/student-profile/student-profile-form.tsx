@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../store';
 import {
   Field,
   Input,
@@ -60,7 +60,12 @@ export const StudentProfileForm: React.FC = () => {
     if (field === 'birthDate') {
       const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getTime());
       if (!isValidDate) {
-        alert('Please provide a valid date.');
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Validation Error',
+              message: 'Please provide a valid date.',
+            })
+          );
         return;
       }
       value = value === '' ? null : value;
@@ -70,7 +75,12 @@ export const StudentProfileForm: React.FC = () => {
       if (alumniLegacy.trim() !== "") {
         const matchedCollegeName = getCollegeNameKey(alumniLegacy);
         if (!matchedCollegeName) {
-          alert('Invalid college name, please input again.');
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Validation Error',
+              message: 'Invalid college name, please input again.',
+            })
+          );
           setAlumniLegacy('');
         } else {
           setAlumniLegacy(matchedCollegeName);
@@ -85,7 +95,12 @@ export const StudentProfileForm: React.FC = () => {
       await studentService.update({ ...student, [field]: value });
     } catch (error: unknown) {
       logError(error);
-      alert('Retry');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save to backend, please try again.',
+        })
+      );
     }
   };
 

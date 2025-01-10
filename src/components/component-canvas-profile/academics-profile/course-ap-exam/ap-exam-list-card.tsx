@@ -18,18 +18,26 @@ import { ApExam, Score_AP_Exam } from '../../../../shared';
 import { DropdownCustom } from '../../../component-customized-fluent-ui';
 import { useStyles } from './data-list-styles';
 import { ApExamListCardProps } from './data-list-types';
-
+import { useDispatch } from 'react-redux';
+import { alertDialogActions } from '../../../../store';
 
 const ApExamNameCell: React.FC<{
   value: string;
   onUpdate: (updatedValue: string) => void;
   className?: string;
 }> = ({ value, onUpdate, className }) => {
+  const dispatch = useDispatch();
+
   const [inputValue, setInputValue] = useState(value || '');
 
   const handleBlur = () => {
     if (inputValue.trim() === '') {
-      alert('AP Exam Name cannot be empty!');
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Validation Error',
+            message: 'AP Exam Name cannot be empty.',
+          })
+        );
     } else if (inputValue !== value) {
       onUpdate(inputValue);
     }

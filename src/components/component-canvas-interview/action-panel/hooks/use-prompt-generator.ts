@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { alertDialogActions, RootState } from "../../../../store";
 import { getStudentProfileInStr } from '../../../component-service-proxy';
+import axios from 'axios';
 
 
 function getSystemPrompt(college: string) : string {
@@ -14,6 +15,7 @@ function getSystemPrompt(college: string) : string {
 
  // Returns an async prompt function which will be called to generate prompt to be sent to OpenAI realtimie backend as session instruction.
  export function usePromptGenerator() {
+    const dispatch = useDispatch();
     const converstationCollege: string = useSelector(
       (state: RootState) => state.conversation.liveConversationCollege
     );
@@ -30,7 +32,24 @@ function getSystemPrompt(college: string) : string {
         const finalPrompt: string = system_prompt + major_info + student_profile;
         return finalPrompt;
       } catch (error) {
-        console.error('Error fetching prompt from server:', error);
+        if (axios.isAxiosError(error) && error.response?.status === 429) {
+          console.error("Rate Limit Exceeded:", error.response.data);
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Rate Limit Exceeded',
+              message: 'You have exceeded the rate limit. Please wait before trying again.',
+            })
+          );
+        } else {
+          console.error("Error starting interview:", error);
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Service Error',
+              message: 'Could not get prompt response from server side, try again.',
+            })
+          );
+        }
+
         throw error;
       }
     }, [converstationCollege, converstationMajor]); // <-- include them here

@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { interviewConversationActions } from '../../../../store';
+import { alertDialogActions, interviewConversationActions } from '../../../../store';
 import {
   getEphemeralKey,
 } from '../../../component-service-proxy';
@@ -148,7 +148,12 @@ export function useInterviewConnection({
       setInterviewActive(true);
     } catch (error) {
       console.error('Error initializing real-time connection:', error);
-      alert('An error occurred while starting the interview.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'An error occurred while starting the interview.',
+        })
+      );
       setIsProcessing(false);
     }
   }, [dispatch, prompt]);

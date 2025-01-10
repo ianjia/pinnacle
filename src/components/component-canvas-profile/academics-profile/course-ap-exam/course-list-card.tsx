@@ -18,17 +18,26 @@ import { Course, CourseType, CourseGrade, Score_IB } from '../../../../shared';
 import { DropdownCustom } from '../../../component-customized-fluent-ui';
 import { useStyles } from './data-list-styles';
 import { CourseListCardProps } from './data-list-types';
+import { useDispatch } from 'react-redux';
+import { alertDialogActions } from '../../../../store';
 
 const CourseNameCell: React.FC<{
     value: string;
     onUpdate: (updatedValue: string) => void;
     className?: string; // Accept a className prop for styling
   }> = ({ value, onUpdate, className }) => {
+    const dispatch = useDispatch();
+
     const [inputValue, setInputValue] = useState(value || '');
   
     const handleBlur = () => {
       if (inputValue.trim() === '') {
-        alert('Course Name cannot be empty!');
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Validation Error',
+              message: 'Course Exam Name cannot be empty.',
+            })
+          );
       } else if (inputValue !== value) {
         onUpdate(inputValue);
       }

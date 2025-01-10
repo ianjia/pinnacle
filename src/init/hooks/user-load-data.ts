@@ -11,6 +11,7 @@ import { useCollegePrefRecordLoader } from "./use-college-pref-record-loader";
 import { useInterviewHistoryRecordLoader } from "./use-interview-history-record-loader";
 import { useCommitteeReviewHistoryRecordLoader } from "./use-committee-review-history-record-loader";
 import { useCollegeListRecordLoader } from "./use-college-list-record-loader";
+import { useEssayRecordLoader } from "./use-essay-record-loader";
 
 export function useLoadData() {
     const { loadStudentProfile } = useStudentProfileLoader();
@@ -26,6 +27,7 @@ export function useLoadData() {
     const { loadInterviewHisotry } = useInterviewHistoryRecordLoader();
     const { loadCommitteeReviewHisotry } = useCommitteeReviewHistoryRecordLoader();
     const { loadCollegeList } = useCollegeListRecordLoader();
+    const { loadEssayRecords } = useEssayRecordLoader();
 
     // Return a callable function
     return async (userId: number): Promise<void> => {
@@ -42,5 +44,6 @@ export function useLoadData() {
         await loadInterviewHisotry(userId);
         await loadCommitteeReviewHisotry(userId);
         await loadCollegeList(userId);
+        await loadEssayRecords(userId);
     };
 }

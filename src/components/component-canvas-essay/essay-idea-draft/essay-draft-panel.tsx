@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch, essayWorkshopActions } from '../../../store';
+import { RootState, AppDispatch, essayWorkshopActions, alertDialogActions } from '../../../store';
 import { EssayDraftRequest, EssayDraftTaskResult, EssayRefineRequest, EssayRefineTaskResult, ProgressModal, TaskResult, TaskType, useTaskRunner } from '../../component-service-proxy';
 import { useSelectedInfo } from './hooks/use-selected-idea-essay';
 import { MarkdownMessageDisplay } from '../../component-mark-down-display';
@@ -61,7 +61,12 @@ export const EssayDraftPanel: React.FC = () => {
 
     const handleDraft = () => {
       if (!isIdeaValid(idea)) {   
-        alert("Please make sure an essay idea is selected");
+        dispatch(
+            alertDialogActions.showAlert({
+              title: 'Validation Error',
+              message: 'Please make sure an essay idea is selected.',
+            })
+          );
         return;
       }
       setActiveTask("draftEssay");
@@ -70,7 +75,12 @@ export const EssayDraftPanel: React.FC = () => {
 
     const handleRefine = () => {
         if (!isIdeaValid(key) || essay === undefined) {   
-            alert("Please make sure an essay idea is selected and essay draft exists");
+            dispatch(
+                alertDialogActions.showAlert({
+                  title: 'Validation Error',
+                  message: 'Please make sure an essay idea is selected and essay draft exists.',
+                })
+              );
             return;
         }
         setActiveTask("refineEssay");

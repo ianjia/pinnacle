@@ -19,7 +19,7 @@ import {
 import { Info24Regular } from '@fluentui/react-icons';
 
 import { getCollegeNameKey } from '../../component-navigation-map';
-import { RootState, AppDispatch, essayWorkshopActions } from '../../../store';
+import { RootState, AppDispatch, essayWorkshopActions, alertDialogActions } from '../../../store';
 import {
   EssayIdeasGenerationRequest,
   ProgressModal,
@@ -81,7 +81,12 @@ export const EssayPrompt: React.FC = () => {
     if (isPromptValid(currentValue) && currentValue !== essay_prompt) {
       dispatch(essayWorkshopActions.setEssayPrompt(currentValue));
     } else if (!isPromptValid(currentValue)) {
-      alert('The prompt you entered is not valid. Please re-enter.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The prompt you entered is not valid. Please re-enter.',
+        })
+      );
     }
   };
 
@@ -97,12 +102,22 @@ export const EssayPrompt: React.FC = () => {
    */
   const handleCollegeSelect = (event: SelectionEvents, data: OptionOnSelectData) => {
     if (!data.optionValue) {
-      alert('The college name you selected is not valid. Please check.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );
       return;
     }
     const matchedCollegeName = getCollegeNameKey(data.optionValue);
     if (!matchedCollegeName) {
-      alert('The college name you selected is not valid. Please check.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );
       return;
     }
     dispatch(essayWorkshopActions.setCollege(matchedCollegeName));
@@ -140,7 +155,12 @@ export const EssayPrompt: React.FC = () => {
     if (isPromptValid(essay_prompt)) {
       startEssayIdeasTask();
     } else {
-      alert('Invalid prompt, please check');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The prompt is not valid. Please re-enter.',
+        })
+      );
     }
   };
 

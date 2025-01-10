@@ -14,7 +14,7 @@ import {
 } from '@fluentui/react-components';
 import { Add16Regular, Delete16Regular } from '@fluentui/react-icons';
 
-import { essayWorkshopActions, RootState } from '../../../store';
+import { alertDialogActions, essayWorkshopActions, RootState } from '../../../store';
 import {
   EssayIdeaRefinementRequest,
   ProgressModal,
@@ -104,7 +104,12 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({
     if (selectedIdeaKey) {
       startRefineEssayIdeaTask();
     } else {
-      alert('Please select an idea');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'Please select an idea.',
+        })
+      );
     }
   };
 

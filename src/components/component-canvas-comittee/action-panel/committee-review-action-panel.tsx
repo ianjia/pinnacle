@@ -15,7 +15,7 @@ import {
 } from '@fluentui/react-components';
 import { Info24Regular } from '@fluentui/react-icons';
 import { getCollegeNameKey } from '../../component-navigation-map';
-import { committeeReviewActions, RootState } from '../../../store';
+import { alertDialogActions, committeeReviewActions, RootState } from '../../../store';
 import { useStyles } from './committee-review-action-panel.styles';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
@@ -72,14 +72,25 @@ export const CommitteeReviewActionPanel: React.FC = () => {
     event: SelectionEvents,
     data: OptionOnSelectData
   ) => {
-    // data.optionValue can be undefined, so check it first:
     if (!data.optionValue) {
-      alert('The college name you selected is not valid. Please check.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );
+
       return;
     }
     const matchedCollegeName = getCollegeNameKey(data.optionValue);
     if (!matchedCollegeName) {
-      alert('The college name you selected is not valid. Please check.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );
+
       return;
     }
     // Update Redux state
@@ -104,7 +115,13 @@ const handleReviewClick = async () => {
     // Double-check if the selected college is valid
     const matchedCollegeName = getCollegeNameKey(liveCollege);
     if (!matchedCollegeName) {
-      alert('College Name not valid, please check.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );
+
       return;
     }
 
@@ -115,14 +132,24 @@ const handleReviewClick = async () => {
 
     // If selectedCollege doesn't exist or its data is undefined, show alert
     if (!selectedCollege || !selectedCollege.data) {
-      alert('Please perform initial evaluation in Build College List panel');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'Please perform initial evaluation in Build College List panel',
+        })
+      );
       return;
     }
 
     // If everything is valid, start the review task
     startCommitteeReviewTask();
   } catch (error) {
-    console.error('Error in review flow:', error);
+    dispatch(
+      alertDialogActions.showAlert({
+        title: 'Server Side Error',
+        message: 'Error happened on server side during review',
+      })
+    );
   }
 };
 

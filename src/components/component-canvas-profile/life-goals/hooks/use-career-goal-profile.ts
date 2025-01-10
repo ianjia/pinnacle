@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../../store';
 import { useContext, useState } from 'react';
 import { AcademicCareerGoal } from '../../../../shared';
 import { logError } from '../../../../util';
@@ -26,7 +26,12 @@ export const useCareerGoalProfile = () => {
       dispatch(selectedProfileActions.addCareerGoal(newItem));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to add career goal');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save new career goal record to backend.',
+        })
+      );
     }
   };
 
@@ -41,7 +46,12 @@ export const useCareerGoalProfile = () => {
       );
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to update career goal');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save updated career goal record to backend.',
+        })
+      );
     }
   };
 
@@ -51,7 +61,12 @@ export const useCareerGoalProfile = () => {
       dispatch(selectedProfileActions.deleteCareerGoal(id));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to delete career goal');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to delete career goal record to backend.',
+        })
+      );    
     }
   };
 

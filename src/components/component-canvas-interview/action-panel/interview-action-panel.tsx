@@ -18,6 +18,7 @@ import { Info24Regular } from '@fluentui/react-icons';
 
 import { getCollegeNameKey } from '../../component-navigation-map';
 import {
+  alertDialogActions,
   interviewConversationActions,
   RootState,
 } from '../../../store';
@@ -83,12 +84,21 @@ export const InterviewActionPanel: React.FC = () => {
   const handleCollegeSelect = (event: SelectionEvents, data: OptionOnSelectData) => {
     // data.optionValue can be undefined, so check it first:
     if (!data.optionValue) {
-      alert('The college name you selected is not valid. Please check.');
-      return;
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );      return;
     }
     const matchedCollegeName = getCollegeNameKey(data.optionValue);
     if (!matchedCollegeName) {
-      alert('The college name you selected is not valid. Please check.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you selected is not valid. Please check.',
+        })
+      );
       return;
     }
     // Update Redux
@@ -108,7 +118,12 @@ export const InterviewActionPanel: React.FC = () => {
   const toggleInterviewHandler = () => {
     const matchedCollegeName = getCollegeNameKey(liveCollege);
     if (!matchedCollegeName || matchedCollegeName.length < 3) {
-      alert('The college name you entered is not valid. Please re-enter.');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The college name you entered is not valid. Please re-enter.',
+        })
+      );
       return;
     }
     toggleInterview();
@@ -120,11 +135,22 @@ export const InterviewActionPanel: React.FC = () => {
   const handleReviewClick = async () => {
     try {
       if (liveId === 0) {
-        alert('Review can only be performed after finishing the interview.');
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Validation Error',
+            message: 'Review can only be performed after finishing the interview.',
+          })
+        );
         return;
       }
       startInterviewReviewTask();
     } catch (error) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Review Error',
+          message: 'Error happend during review on server side.',
+        })
+      );
       console.error('Error in review flow:', error);
     }
   };

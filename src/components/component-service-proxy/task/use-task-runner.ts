@@ -4,6 +4,8 @@ import { ITaskRequest } from "./request-types";
 import { TaskResult } from "./result-types";
 import { api } from '../../../auth';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { alertDialogActions } from '../../../store';
 
 interface UseTaskRunnerParams {
   taskType: string;
@@ -21,6 +23,7 @@ const TIMEOUT_DURATION = 150 * 1000; // 3 minutes
 const FETCH_TIMEOUT_DURATION = 60 * 1000; // 30 seconds for fetch timeout
 
 export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunnerParams): UseTaskRunnerReturn => {
+  const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [progressMessage, setProgressMessage] = useState('Talking to server ...');
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -49,7 +52,12 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
         timeoutRef.current = setTimeout(() => {
           setShowModal(false);
           eventSource.close();
-          alert("Request timed out, please try again later.");
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Time out',
+              message: 'Request timed out, please try again later.',
+            })
+          );
         }, TIMEOUT_DURATION);
       };
 
@@ -69,7 +77,12 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
           setShowModal(false);
           eventSource.close();
           if (timeoutRef.current) clearTimeout(timeoutRef.current); // Clear timeout on failure
-          alert("Task could not be scheduled, please try again later");
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Task Schedule Failed on Server',
+              message: 'Task could not be scheduled, please try again later.',
+            })
+          );          
         }
       };
 
@@ -85,17 +98,33 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
       // First, check if it's a fetch abort error
       if (error.name === 'AbortError') {
         console.error('Fetch aborted:', error);
-        alert("Request took too long, please try again later.");
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Request Aborted on Backend',
+            message: 'Request took too long, please try again later.',
+          })
+        ); 
         return;
       }
 
       // Next, check if it's an AxiosError with 429 status
       if (axios.isAxiosError(error) && error.response?.status === 429) {
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Rate Limit Exceeded',
+            message: 'Rate limit exceeded. Please wait before trying again.',
+          })
+        ); 
+
         console.error("Rate Limit Exceeded:", error.response.data);
-        alert("Rate limit exceeded. Please wait before trying again.");
       } else {
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Could not start task on backend',
+            message: 'Could not start task on backend, please try again.',
+          })
+        ); 
         console.error('Error in startTask:', error);
-        alert("Could not reach server, please try again later.");
       }
     }
   };

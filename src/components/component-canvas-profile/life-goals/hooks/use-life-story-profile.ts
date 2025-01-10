@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../../store';
 import { useContext, useState } from 'react';
 import { LifeStory } from '../../../../shared';
 import { logError } from '../../../../util';
@@ -26,7 +26,12 @@ export const useLifeStoryProfile = () => {
       dispatch(selectedProfileActions.addLifeStory(newItem));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to add life story');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save new life story record to backend.',
+        })
+      );    
     }
   };
 
@@ -41,7 +46,12 @@ export const useLifeStoryProfile = () => {
       );
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to update life story');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to save updated life story record to backend.',
+        })
+      );    
     }
   };
 
@@ -51,7 +61,12 @@ export const useLifeStoryProfile = () => {
       dispatch(selectedProfileActions.deleteLifeStory(id));
     } catch (error: unknown) {
       logError(error);
-      alert('Failed to delete life story');
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Saving Error',
+          message: 'Failed to delete life story record on backend.',
+        })
+      ); 
     }
   };
 

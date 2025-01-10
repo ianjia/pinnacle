@@ -26,12 +26,6 @@ export async function getStudentProfileInStr(): Promise<string> {
         // The response data is of type InterviewStartResult
         return response.data.message;  
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 429) {
-          console.error("Rate Limit Exceeded:", error.response.data);
-          alert("You have exceeded the rate limit. Please wait before trying again.");
-        } else {
-          console.error("Error starting interview:", error);
-        }
-        throw error;  // Re-throw so caller can handle if needed
+        throw error; // throw, as here we do not have dispatch to call AlertDialog
       }
 }

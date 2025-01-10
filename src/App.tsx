@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ProtectedRoute } from './auth';
 import { MainApp } from './components/component-main-app';
@@ -7,8 +8,14 @@ import { Root } from './home-page/root';
 import './App.css';
 import { ForgotPassword } from './home-page/forgot-password';
 import { ResetPassword } from './home-page/reset-password';
+import { RootState } from './store';
+import { AlertDialog } from './components/component-dialog';
+import { alertDialogActions } from './store/alert-dialog-slice';
 
 const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const { isOpen, title, message } = useSelector((state: RootState) => state.alertDialg);
+
   return (
       <div className="App">
         <Router>
@@ -27,6 +34,13 @@ const App: React.FC = () => {
             />
           </Routes>
         </Router>
+
+        <AlertDialog
+          isOpen={isOpen}
+          title={title}
+          message={message}
+          onClose={() => dispatch(alertDialogActions.hideAlert())}
+        />
       </div>
   );
 };

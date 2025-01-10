@@ -6,3 +6,4 @@ export * from './profile-slice';
 export * from './essay-workshop-slice';
 export * from './college-preference-slice';
 export * from './college-list-slice';
+export * from './alert-dialog-slice';

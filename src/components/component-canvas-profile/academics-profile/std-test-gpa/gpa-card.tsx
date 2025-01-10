@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../../store';
 import {
   Field,
   Input,
@@ -27,7 +27,12 @@ export const GpaCard: React.FC = () => {
         // Convert the string value to a number or undefined if the field is empty
         const numericValue = value.trim() === '' ? undefined : Number(value);
         if (numericValue !== undefined && isNaN(numericValue!)) {
-          alert('Please enter a valid number'); // Optional validation alert
+          dispatch(
+            alertDialogActions.showAlert({
+              title: 'Validation Error',
+              message: 'Please enter a valid number.',
+            })
+          );
           if (field === "ninth") {
             setNinthGpa(gpaRecord.ninth?.toString() || '');
           } else if (field === "tenth") {
@@ -44,7 +49,12 @@ export const GpaCard: React.FC = () => {
 
         if (numericValue !== undefined) {
             if (numericValue < 0.0 || numericValue > 5.0) {
-              alert('Please enter a valid GPA score between 0.0 and 5.0');
+              dispatch(
+                alertDialogActions.showAlert({
+                  title: 'Validation Error',
+                  message: 'Please enter a valid GPA score between 0.0 and 5.0',
+                })
+              );
               if (field === "ninth") {
                 setNinthGpa(gpaRecord.ninth?.toString() || '');
               } else if (field === "tenth") {
@@ -64,7 +74,12 @@ export const GpaCard: React.FC = () => {
         await gpaService.update({ ...gpaRecord, [field]: numericValue });
       } catch (error: unknown) {
         logError(error);
-        alert('Retry'); // Replace with a dialog
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Saving Error',
+            message: 'Error happened on saving to backend',
+          })
+        );
       }
     };
   
