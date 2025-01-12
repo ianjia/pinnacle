@@ -285,7 +285,7 @@ export const EssayPrompt: React.FC = () => {
 
             {/* Additional Ask (full-width) */}
             <Field
-              label="Additional College Ask (Optional)"
+              label="Additional Information (Optional)"
               className={mergeClasses(styles.field, styles.fullWidth)}
             >
               <Textarea
