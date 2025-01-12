@@ -65,7 +65,7 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({
         college,
         major,
         prompt: essay_prompt,
-        additionalCollegeAsk: additional_ask,
+        additionalInfo: additional_ask,
         idea: ideas[selectedIdeaKey as string],
         feedback: textAreaValue,
       } as EssayIdeaRefinementRequest,

@@ -137,7 +137,7 @@ export const EssayPrompt: React.FC = () => {
       college,
       major,
       prompt: essay_prompt,
-      additionalCollegeAsk: additional_ask,
+      additionalInfo: additional_ask,
     } as EssayIdeasGenerationRequest,
     onResult: (data: TaskResult) => {
       const resultList = (data as GenerateEssayIdeasTaskResult).ideas;

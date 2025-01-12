@@ -37,7 +37,7 @@ export const EssayDraftPanel: React.FC = () => {
 
     const { startTask: startDraftEssayTask, showModal: showDraftEssayModal, progressMessage: progressDraftEssayMessage } = useTaskRunner({
         taskType: TaskType.DraftEssay,
-        requestData: { college, major, prompt: essay_prompt, additionalCollegeAsk: additional_ask, 
+        requestData: { college, major, prompt: essay_prompt, additionalInfo: additional_ask, 
                         idea: idea as string } as EssayDraftRequest, 
         onResult: (data: TaskResult) => {
             const result = (data as EssayDraftTaskResult).essay;
@@ -49,7 +49,7 @@ export const EssayDraftPanel: React.FC = () => {
 
     const { startTask: startRefineEssayTask, showModal: showRefineEssayModal, progressMessage: progressRefineEssayMessage } = useTaskRunner({
         taskType: TaskType.RefineEssay,
-        requestData: { college, major, prompt: essay_prompt, additionalCollegeAsk: additional_ask, 
+        requestData: { college, major, prompt: essay_prompt, additionalInfo: additional_ask, 
                         idea: idea as string, essay: essay, feedback: textAreaValue } as EssayRefineRequest, 
         onResult: (data: TaskResult) => {
             const result = (data as EssayRefineTaskResult).essay;

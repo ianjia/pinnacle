@@ -12,7 +12,7 @@ export interface EssayIdeasGenerationRequest extends ITaskRequest {
     college: string;
     major: string;
     prompt: string;
-    additionalCollegeAsk?: string; 
+    additionalInfo?: string; 
 }
 
 export interface EssayIdeaRefinementRequest extends EssayIdeasGenerationRequest {
