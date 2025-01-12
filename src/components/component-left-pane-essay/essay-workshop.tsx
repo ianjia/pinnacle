@@ -59,6 +59,7 @@ export const EssayWorkshopPane: React.FC = () => {
                 <ul className={styles.subItemList}>
                 {[
                     { id: 'essay-prompt-card', label: 'Essay Prompt' },
+                    { id: 'essay-prompt-analysis', label: 'Prompt Analysis' },
                     { id: 'essay-ideas-card', label: 'Essay Ideas' },
                     { id: 'essay-draft-card', label: 'Essay Draft' },
                 ].map(({ id, label }) => (

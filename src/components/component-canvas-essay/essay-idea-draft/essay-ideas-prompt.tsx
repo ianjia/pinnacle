@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -27,6 +27,7 @@ import {
   TaskResult,
   TaskType,
   useTaskRunner,
+  PromptAnalysisTaskResult,
 } from '../../component-service-proxy';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
@@ -57,6 +58,9 @@ export const EssayPrompt: React.FC = () => {
   const collegeList = useSelector(
     (state: RootState) => state.collegeListWorkshop.collegeList
   );
+
+  // Track which (if any) task is active (so we can show the ProgressModal)
+  const [activeTask, setActiveTask] = useState<"generateIdeas" | "promptAnalysis" | null>(null);
 
   // --- Local refs for textareas (if needed) ---
   const essayPromptInputRef = useRef<HTMLTextAreaElement>(null);
@@ -131,7 +135,7 @@ export const EssayPrompt: React.FC = () => {
   };
 
   // --- Task Runner for generating essay ideas ---
-  const { startTask: startEssayIdeasTask, showModal, progressMessage } = useTaskRunner({
+  const { startTask: startEssayIdeasTask, showModal: showEssayIdeasModal, progressMessage: showEssayIdeasMessage } = useTaskRunner({
     taskType: TaskType.GenerateEssayIdeas,
     requestData: {
       college,
@@ -144,7 +148,23 @@ export const EssayPrompt: React.FC = () => {
       for (const idea of resultList) {
         const ideaKey = uuidv4();
         dispatch(essayWorkshopActions.addIdea({ key: ideaKey, value: idea }));
+        setActiveTask(null);
       }
+    },
+  });
+
+  const { startTask: startPromptAnalysisTask, showModal: showPromptAnalysisModal, progressMessage: showPromptAnalysisMessage } = useTaskRunner({
+    taskType: TaskType.EssayPromptAnalysis,
+    requestData: {
+      college,
+      major,
+      prompt: essay_prompt,
+      additionalInfo: additional_ask,
+    } as EssayIdeasGenerationRequest,
+    onResult: (data: TaskResult) => {
+      const analysis = (data as PromptAnalysisTaskResult).analysis;
+      dispatch(essayWorkshopActions.setPromptAnalysis(analysis));
+      setActiveTask(null);
     },
   });
 
@@ -153,7 +173,22 @@ export const EssayPrompt: React.FC = () => {
    */
   const handleStartGenerateEssayIdeasTask = () => {
     if (isPromptValid(essay_prompt)) {
+      setActiveTask("generateIdeas");
       startEssayIdeasTask();
+    } else {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'The prompt is not valid. Please re-enter.',
+        })
+      );
+    }
+  };
+
+  const handleStartPromptAnalysisTask = () => {
+    if (isPromptValid(essay_prompt)) {
+      setActiveTask("promptAnalysis");
+      startPromptAnalysisTask();
     } else {
       dispatch(
         alertDialogActions.showAlert({
@@ -166,7 +201,17 @@ export const EssayPrompt: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <ProgressModal show={showModal} message={progressMessage} />
+      {/* Progress Modal while tasks run */}
+      <ProgressModal
+        show={activeTask !== null && ( showEssayIdeasModal|| showPromptAnalysisModal)}
+        message={
+          activeTask === 'generateIdeas'
+            ? showEssayIdeasMessage
+            : activeTask === 'promptAnalysis'
+            ? showPromptAnalysisMessage
+            : ''
+        }
+      />
 
       <Card className={styles.card}>
         <h2 className={styles.header} style={{ textAlign: 'left' }}>
@@ -244,7 +289,7 @@ export const EssayPrompt: React.FC = () => {
               className={mergeClasses(styles.field, styles.fullWidth)}
             >
               <Textarea
-                className={styles.textarea}
+                className={styles.assistanttextarea}
                 id="additionalAsk"
                 defaultValue={additional_ask}
                 ref={additionalAskInputRef}
@@ -255,14 +300,26 @@ export const EssayPrompt: React.FC = () => {
           </div>
         </CardPreview>
 
+        <div className={styles.grid}>
         <Field className={styles.buttonField}>
-          <Button
-            className={styles.buttonGenerate}
-            onClick={handleStartGenerateEssayIdeasTask}
-          >
-            Generate Essay Ideas
-          </Button>
-        </Field>
+            <Button
+              className={styles.buttonGenerate}
+              onClick={handleStartPromptAnalysisTask}
+            >
+              Analyze Prompt
+            </Button>
+          </Field>
+
+          <Field className={styles.buttonField}>
+            <Button
+              className={styles.buttonGenerate}
+              onClick={handleStartGenerateEssayIdeasTask}
+            >
+              Generate Essay Ideas
+            </Button>
+          </Field>
+        </div>
+
       </Card>
     </div>
   );

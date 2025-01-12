@@ -4,6 +4,7 @@ import { IdeasTable } from './ideas-table';
 import { EssayDraftPanel } from './essay-draft-panel';
 import { AppDispatch, essayWorkshopActions } from '../../../store';
 import { useDispatch } from 'react-redux';
+import { EssayPromptAnalysisPanel } from './essay-prompt-analysis-panel';
 
 export const EssayBrainStormForm: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -18,6 +19,9 @@ export const EssayBrainStormForm: React.FC = () => {
                 <div id = "essay-prompt-card">
                     <EssayPrompt />
                 </div>
+                <div id = "essay-prompt-analysis">
+                    <EssayPromptAnalysisPanel />
+                </div>                
                 <div id = "essay-ideas-card">
                     <IdeasTable editable = {true} selectCallback={handleSelectIdea}/>
                 </div>

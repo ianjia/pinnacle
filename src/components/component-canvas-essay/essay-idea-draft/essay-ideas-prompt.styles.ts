@@ -40,6 +40,10 @@ export const useStyles = makeStyles({
     width: '100%',
     height: '120px',
   },
+  assistanttextarea: {
+    width: '100%',
+    height: '80px',
+  },
   buttonField: {
     // Reduced spacing above the button
     marginTop: '8px',

@@ -24,6 +24,11 @@ export interface GenerateEssayIdeasTaskResult extends TaskResult {
     ideas: string[];
 }
 
+export interface PromptAnalysisTaskResult extends TaskResult {
+    type: TaskType.EssayPromptAnalysis;
+    analysis: string;
+}
+
 export interface RefineEssayIdeaTaskResult extends TaskResult {
     type: TaskType.RefineEssayIdea;
     idea: string;

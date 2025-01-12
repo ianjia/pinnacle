@@ -7,6 +7,7 @@ interface EssayWorkshopState {
     major: string;
     essayPrompt: string;
     additionalAsk: string;
+    promptAnalysis: string | undefined; 
     selectedIdeaKey: string | undefined;  // Be noticed that it is the key, rather than the idea value itself is stored in this field
     ideaRefinementFeedback: string;
     essayRefinmentFeedback: string;
@@ -25,6 +26,7 @@ const initialState: EssayWorkshopState = {
     major: "No Preference",
     essayPrompt: "",
     additionalAsk: "",
+    promptAnalysis: undefined,
     selectedIdeaKey: undefined,
     ideaRefinementFeedback: "",
     essayRefinmentFeedback: "",
@@ -58,6 +60,10 @@ const essayWorkshopSlice = createSlice({
         setAdditionalAsk(state, action: PayloadAction<string>) {
             state.additionalAsk = action.payload;
         },     
+
+        setPromptAnalysis(state, action: PayloadAction<string|undefined>) {
+            state.promptAnalysis = action.payload;
+        },
 
         setSelectedIdeaKey(state, action: PayloadAction<string>) {
             state.selectedIdeaKey = action.payload;

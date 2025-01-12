@@ -2,6 +2,7 @@
 export enum TaskType {
     CommitteReview = "CommitteReview",
     GenerateEssayIdeas = "GenerateEssayIdeas",
+    EssayPromptAnalysis = "EssayPromptAnalysis",
     RefineEssayIdea = "RefineEssayIdea",
     BuildCollegeList = "BuildCollegeList",
     GetCollegeDataChance = "GetCollegeDataChance",
