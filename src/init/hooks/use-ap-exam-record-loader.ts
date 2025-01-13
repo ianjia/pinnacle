@@ -11,9 +11,12 @@ export function useApExamListLoader() {
         try {
             // Step 1: Fetch all AP exams for the user
             const apExams: ApExam[] = await apExamService.getAllByUserId(userId);
-            const examToDelete = apExams.filter(exam => !exam.name || exam.name.trim().length === 0);
-            await Promise.all(examToDelete.map(exam => apExamService.deleteById(exam.id, userId))); // Delete all exams whose name is undefined or empty, they are invalid
+            const examsToDelete = apExams.filter(exam => !exam.name || exam.name.trim().length === 0);
 
+            // Delete in the background any course that has no valid `name`, Delete them sequentially
+            for (const exam of examsToDelete) {
+                await apExamService.deleteById(exam.id, userId);
+            }
             // Step 2: Filter exams based on the year
             const validExams = apExams.filter(exam => exam.name && exam.name.trim().length > 0);
 

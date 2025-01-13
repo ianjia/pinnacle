@@ -10,7 +10,15 @@ export function useActivityListLoader() {
     const loadActivityList = async (userId: number): Promise<void> => {
         try {
             const activities: Activity[] = await activityService.getAllByUserId(userId);
-            dispatch(selectedProfileActions.setActivityList(activities));
+
+            const activitiesToDelete = activities.filter(activity => !activity.name || activity.name.trim().length == 0);
+            for (const activity of activitiesToDelete) {
+                await activityService.deleteById(activity.id, userId);
+            }
+
+            const validActivities = activities.filter(activity => activity.name && activity.name.trim().length > 0);
+
+            dispatch(selectedProfileActions.setActivityList(validActivities));
         } catch (error: unknown) {
             logError(error);
         }

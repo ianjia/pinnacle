@@ -10,7 +10,15 @@ export function useCareerGoalListLoader() {
     const loadCareerGoalList = async (userId: number): Promise<void> => {
         try {
             const careerGoals: AcademicCareerGoal[] = await careerGoalService.getAllByUserId(userId);
-            dispatch(selectedProfileActions.setCareerGoalList(careerGoals));
+
+            const careerGoalsToDelete = careerGoals.filter(career => !career.name || career.name.trim().length == 0);
+            for (const career of careerGoalsToDelete) {
+                await careerGoalService.deleteById(career.id, userId);
+            }
+
+            const validCareerGoals = careerGoals.filter(career => career.name && career.name.trim().length > 0);
+
+            dispatch(selectedProfileActions.setCareerGoalList(validCareerGoals));
         } catch (error: unknown) {
             logError(error);
         }

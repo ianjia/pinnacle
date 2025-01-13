@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@fluentui/react-components';
 import { Add20Regular, Delete24Regular } from '@fluentui/react-icons';
 import { useStyles } from './entity-profile-form.styles';
@@ -18,7 +17,7 @@ export function EntityProfileForm<T extends BasicEntity>(props: EntityProfileFor
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.header}>{title}</h2>
+      <h2 className={styles.header} style={{ textAlign: 'left' }}>{title}</h2>
       {entityList.map((item) => (
         <div key={item.id} className={styles.itemContainer}>
           <EntityCard entity={item} onUpdateEntity={onUpdateEntity} />

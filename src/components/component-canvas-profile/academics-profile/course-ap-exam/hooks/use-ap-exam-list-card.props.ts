@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, selectedProfileActions } from '../../../../../store';
+import { alertDialogActions, RootState, selectedProfileActions } from '../../../../../store';
 import { ApExam, SchoolYear } from "../../../../../shared";
 import { ApExamListCardProps } from "../data-list-types";
 import { apExamService } from '../../../../component-service-proxy';
@@ -47,29 +47,59 @@ export function useApExamListCardProps(school_year: SchoolYear): ApExamListCardP
     title: 'AP Exam List',
     apExamList: useSelector(gradeConfig.apExamListSelector),
     onAddApExam: async () => {
-      const newApExam: ApExam = {
-        id: Date.now(),
-        user_id: userId as number,
-        name: undefined,
-        year: school_year,
-        score: undefined,
-      };
-      const id: number = await apExamService.create(newApExam);
-      newApExam.id = id;
-      dispatch(gradeConfig.addAction(newApExam));
+      try {
+        const newApExam: ApExam = {
+          id: Date.now(),
+          user_id: userId as number,
+          name: undefined,
+          year: school_year,
+          score: undefined,
+        };
+        const id: number = await apExamService.create(newApExam);
+        newApExam.id = id;
+        dispatch(gradeConfig.addAction(newApExam));
+      } catch (error) {
+        console.log("error in add AP Exam", error);
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Server Error',
+            message: 'Failed to create Ap Exam, please try again, or re-sign-in to try.',
+          })
+        );
+      }
     },
     onUpdateApExam: async (updatedApExam: ApExam) => {
-      dispatch(
-        gradeConfig.updateAction({
-          id: updatedApExam.id,
-          exam: updatedApExam,
-        })
-      );
-      await apExamService.update(updatedApExam);
+      try {
+        dispatch(
+          gradeConfig.updateAction({
+            id: updatedApExam.id,
+            exam: updatedApExam,
+          })
+        );
+        await apExamService.update(updatedApExam);
+      } catch (error) {
+        console.log("error in update AP Exam", error);
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Server Error',
+            message: 'Failed to update the AP Exam, please try again, or re-sign-in to try.',
+          })
+        );
+      }
     },
     onDeleteApExam: async (apExamId: number) => {
-      dispatch(gradeConfig.deleteAction(apExamId));
-      await apExamService.deleteById(apExamId, userId as number);
+      try {
+        dispatch(gradeConfig.deleteAction(apExamId));
+        await apExamService.deleteById(apExamId, userId as number);
+      } catch (error) {
+        console.log("error in delete AP Exam", error);
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Server Error',
+            message: 'Failed to delete the AP Exam, please try again, or re-sign-in to try.',
+          })
+        );
+      }
     },
   };
 }

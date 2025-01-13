@@ -14,10 +14,10 @@ export function useCourseListLoader() {
 
             // Delete in the background any course that has no valid `name`
             const coursesToDelete = courses.filter(course => !course.name || course.name.trim().length === 0);
-            // Wait for all delete operations to complete
-            await Promise.all(
-                coursesToDelete.map(course => courseService.deleteById(course.id, userId))
-            );
+
+            for (const course of coursesToDelete) {
+                await courseService.deleteById(course.id, userId); 
+            }
 
             // STEP 2: Filter out those invalid courses
             const validCourses = courses.filter(course => course.name && course.name.trim().length > 0);
