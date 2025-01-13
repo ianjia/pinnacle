@@ -51,7 +51,7 @@ export function useCourseListCardProps(school_year: SchoolYear): CourseListCardP
           id: Date.now(),
           user_id: userId as number,
           name: undefined,
-          year: undefined,
+          year: school_year,
           type: undefined,
           grade: undefined,
           score: undefined,

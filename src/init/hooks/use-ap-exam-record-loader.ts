@@ -11,12 +11,16 @@ export function useApExamListLoader() {
         try {
             // Step 1: Fetch all AP exams for the user
             const apExams: ApExam[] = await apExamService.getAllByUserId(userId);
+            const examToDelete = apExams.filter(exam => !exam.name || exam.name.trim().length === 0);
+            await Promise.all(examToDelete.map(exam => apExamService.deleteById(exam.id, userId))); // Delete all exams whose name is undefined or empty, they are invalid
 
             // Step 2: Filter exams based on the year
-            const ninthGradeApExams = apExams.filter(exam => exam.year === SchoolYear.NINTH);
-            const tenthGradeApExams = apExams.filter(exam => exam.year === SchoolYear.TENTH);
-            const eleventhGradeApExams = apExams.filter(exam => exam.year === SchoolYear.ELEVENTH);
-            const twelfthGradeApExams = apExams.filter(exam => exam.year === SchoolYear.TWELFTH);
+            const validExams = apExams.filter(exam => exam.name && exam.name.trim().length > 0);
+
+            const ninthGradeApExams = validExams.filter(exam => exam.year === SchoolYear.NINTH);
+            const tenthGradeApExams = validExams.filter(exam => exam.year === SchoolYear.TENTH);
+            const eleventhGradeApExams = validExams.filter(exam => exam.year === SchoolYear.ELEVENTH);
+            const twelfthGradeApExams = validExams.filter(exam => exam.year === SchoolYear.TWELFTH);
 
             // Step 3: Dispatch actions to update the Redux store
             dispatch(selectedProfileActions.setNinthGradeApExamList(ninthGradeApExams));
