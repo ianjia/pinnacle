@@ -11,7 +11,7 @@ export function useHonorListLoader() {
         try {
             const honors: Honor[] = await honorService.getAllByUserId(userId);
 
-            const honorsToDelete = honors.filter(honor => !honor.name || honor.name.trim().length == 0);
+            const honorsToDelete = honors.filter(honor => !honor.name || honor.name.trim().length === 0);
             for (const honor of honorsToDelete) {
                 await honorService.deleteById(honor.id, userId);
             }

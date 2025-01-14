@@ -52,7 +52,7 @@ function getSystemPrompt(college: string) : string {
 
         throw error;
       }
-    }, [converstationCollege, converstationMajor]); // <-- include them here
+    }, [dispatch, converstationCollege, converstationMajor]);
   
     return promptGenerator;
   }

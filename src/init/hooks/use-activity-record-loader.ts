@@ -11,7 +11,7 @@ export function useActivityListLoader() {
         try {
             const activities: Activity[] = await activityService.getAllByUserId(userId);
 
-            const activitiesToDelete = activities.filter(activity => !activity.name || activity.name.trim().length == 0);
+            const activitiesToDelete = activities.filter(activity => !activity.name || activity.name.trim().length === 0);
             for (const activity of activitiesToDelete) {
                 await activityService.deleteById(activity.id, userId);
             }

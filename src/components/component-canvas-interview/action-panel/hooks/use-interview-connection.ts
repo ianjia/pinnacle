@@ -156,7 +156,7 @@ export function useInterviewConnection({
       );
       setIsProcessing(false);
     }
-  }, [dispatch, prompt]);
+  }, [dispatch, onStartInterview, promptGenerator]);
 
   /**
    * Stop the interview (close everything).

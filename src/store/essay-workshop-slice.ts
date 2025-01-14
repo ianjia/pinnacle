@@ -100,7 +100,7 @@ const essayWorkshopSlice = createSlice({
         },
       
         deleteEssayFromHistory(state, action: PayloadAction<number>) {
-            state.essayHistory = state.essayHistory.filter(essay => essay.id != action.payload);
+            state.essayHistory = state.essayHistory.filter(essay => essay.id !== action.payload);
         },
     
         addEssayToHistory(state, action: PayloadAction<Essay>) {

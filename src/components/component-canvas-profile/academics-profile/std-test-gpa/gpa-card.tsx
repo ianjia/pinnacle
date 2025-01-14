@@ -41,7 +41,7 @@ export const GpaCard: React.FC = () => {
             setEleventhGpa(gpaRecord.eleventh?.toString() || '');
           } else if (field === "twelfth") {
             setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
-          } else if (field == "overall") {
+          } else if (field === "overall") {
             setOverallGpa(gpaRecord.overall?.toString() || '');
           }
           return;
@@ -63,7 +63,7 @@ export const GpaCard: React.FC = () => {
                 setEleventhGpa(gpaRecord.eleventh?.toString() || '');
               } else if (field === "twelfth") {
                 setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
-              } else if (field == "overall") {
+              } else if (field === "overall") {
                 setOverallGpa(gpaRecord.overall?.toString() || '');
               }
               return;

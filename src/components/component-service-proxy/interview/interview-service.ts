@@ -1,4 +1,3 @@
-import axios from "axios";
 import { api } from "../../../auth";
 import { SERVER_URL } from "../port-url-config";
 import { InterviewStartRequest } from "./request-types";

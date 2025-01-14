@@ -11,7 +11,7 @@ export function useLifeStoryListLoader() {
         try {
             const lifeStories: LifeStory[] = await lifeStoryService.getAllByUserId(userId);
 
-            const storiesToDelete = lifeStories.filter(story => !story.name || story.name.trim().length == 0);
+            const storiesToDelete = lifeStories.filter(story => !story.name || story.name.trim().length === 0);
             for (const story of storiesToDelete) {
                 await lifeStoryService.deleteById(story.id, userId);
             }

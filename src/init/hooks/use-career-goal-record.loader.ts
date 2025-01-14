@@ -11,7 +11,7 @@ export function useCareerGoalListLoader() {
         try {
             const careerGoals: AcademicCareerGoal[] = await careerGoalService.getAllByUserId(userId);
 
-            const careerGoalsToDelete = careerGoals.filter(career => !career.name || career.name.trim().length == 0);
+            const careerGoalsToDelete = careerGoals.filter(career => !career.name || career.name.trim().length === 0);
             for (const career of careerGoalsToDelete) {
                 await careerGoalService.deleteById(career.id, userId);
             }
