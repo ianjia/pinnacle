@@ -11,7 +11,7 @@ export const useLifeStoryProfile = () => {
   const { userId } = useContext(AuthContext);
 
   const lifeStoryList = useSelector((state: RootState) => state.selectedProfile.lifeStoryList);
-  const [title] = useState<string>('Life Stories');
+  const [title] = useState<string>('Life Stories & Creative Ideas');
 
   const onAddEntity = async () => {
     try {
