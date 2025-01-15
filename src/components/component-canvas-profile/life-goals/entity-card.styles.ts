@@ -32,6 +32,6 @@ export const useStyles = makeStyles({
   },
   textarea: {
     width: '100%',
-    minHeight: '80px',
+    minHeight: '180px',
   },
 });

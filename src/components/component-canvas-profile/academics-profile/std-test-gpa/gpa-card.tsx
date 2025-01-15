@@ -24,52 +24,63 @@ export const GpaCard: React.FC = () => {
 
     const handleBlur = async (field: keyof GPA, value: string) => {
       try {
-        // Convert the string value to a number or undefined if the field is empty
+        // 1) Convert the string value to a number or undefined if blank
         const numericValue = value.trim() === '' ? undefined : Number(value);
-        if (numericValue !== undefined && isNaN(numericValue!)) {
+    
+        // 2) Validate numeric
+        if (numericValue !== undefined && isNaN(numericValue)) {
           dispatch(
             alertDialogActions.showAlert({
               title: 'Validation Error',
               message: 'Please enter a valid number.',
             })
           );
-          if (field === "ninth") {
+          // Revert local state
+          if (field === 'ninth') {
             setNinthGpa(gpaRecord.ninth?.toString() || '');
-          } else if (field === "tenth") {
+          } else if (field === 'tenth') {
             setTenthGpa(gpaRecord.tenth?.toString() || '');
-          } else if (field === "eleventh") {
+          } else if (field === 'eleventh') {
             setEleventhGpa(gpaRecord.eleventh?.toString() || '');
-          } else if (field === "twelfth") {
+          } else if (field === 'twelfth') {
             setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
-          } else if (field === "overall") {
+          } else if (field === 'overall') {
             setOverallGpa(gpaRecord.overall?.toString() || '');
           }
           return;
         }
-
+    
+        // 3) Range check
         if (numericValue !== undefined) {
-            if (numericValue < 0.0 || numericValue > 5.0) {
-              dispatch(
-                alertDialogActions.showAlert({
-                  title: 'Validation Error',
-                  message: 'Please enter a valid GPA score between 0.0 and 5.0',
-                })
-              );
-              if (field === "ninth") {
-                setNinthGpa(gpaRecord.ninth?.toString() || '');
-              } else if (field === "tenth") {
-                setTenthGpa(gpaRecord.tenth?.toString() || '');
-              } else if (field === "eleventh") {
-                setEleventhGpa(gpaRecord.eleventh?.toString() || '');
-              } else if (field === "twelfth") {
-                setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
-              } else if (field === "overall") {
-                setOverallGpa(gpaRecord.overall?.toString() || '');
-              }
-              return;
+          if (numericValue < 0.0 || numericValue > 5.0) {
+            dispatch(
+              alertDialogActions.showAlert({
+                title: 'Validation Error',
+                message: 'Please enter a valid GPA score between 0.0 and 5.0',
+              })
+            );
+            // Revert local state
+            if (field === 'ninth') {
+              setNinthGpa(gpaRecord.ninth?.toString() || '');
+            } else if (field === 'tenth') {
+              setTenthGpa(gpaRecord.tenth?.toString() || '');
+            } else if (field === 'eleventh') {
+              setEleventhGpa(gpaRecord.eleventh?.toString() || '');
+            } else if (field === 'twelfth') {
+              setTwelfthGpa(gpaRecord.twelfth?.toString() || '');
+            } else if (field === 'overall') {
+              setOverallGpa(gpaRecord.overall?.toString() || '');
             }
+            return;
+          }
         }
-
+    
+        // 4) Compare to current Redux value — if no change, return early
+        if (gpaRecord[field] === numericValue) {
+          return;
+        }
+    
+        // 5) Dispatch the update + service call
         dispatch(selectedProfileActions.updateGpaField({ field, value: numericValue }));
         await gpaService.update({ ...gpaRecord, [field]: numericValue });
       } catch (error: unknown) {
@@ -82,7 +93,7 @@ export const GpaCard: React.FC = () => {
         );
       }
     };
-  
+    
     const styles = useStyles();
   
     return (

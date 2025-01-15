@@ -12,8 +12,6 @@ import { stdTestService } from '../../../component-service-proxy';
 import { useStyles } from './std-test-gpa.styles';
 import { logError } from '../../../../util';
 
-
-
 export const StandardizedTestCard: React.FC = () => {
   const dispatch = useDispatch();
   const stdTestRecord = useSelector((state: RootState) => state.selectedProfile.standardizedTest);
@@ -24,10 +22,10 @@ export const StandardizedTestCard: React.FC = () => {
 
   const handleBlur = async (field: keyof StandardizedTest, value: string) => {
     try {
-      // Convert the string value to a number or undefined if the field is empty
+      // 1) Convert the string value to a number or undefined if blank
       const numericValue = value.trim() === '' ? undefined : Number(value);
-
-      // 1. Check if it's a valid number or blank
+  
+      // 2) Validate numeric
       if (numericValue !== undefined && isNaN(numericValue)) {
         dispatch(
           alertDialogActions.showAlert({
@@ -35,8 +33,7 @@ export const StandardizedTestCard: React.FC = () => {
             message: 'Please enter a valid number.',
           })
         );
-
-        // Reset the field’s input value to the original record value
+        // Revert local state
         if (field === 'sat') {
           setSatScore(stdTestRecord.sat?.toString() || '');
         } else if (field === 'act') {
@@ -44,8 +41,8 @@ export const StandardizedTestCard: React.FC = () => {
         }
         return;
       }
-
-      // 2. Range checks for SAT
+  
+      // 3) Range checks for SAT
       if (field === 'sat' && numericValue !== undefined) {
         if (numericValue < 400 || numericValue > 1600) {
           dispatch(
@@ -58,8 +55,8 @@ export const StandardizedTestCard: React.FC = () => {
           return;
         }
       }
-
-      // 3. Range checks for ACT
+  
+      // 4) Range checks for ACT
       if (field === 'act' && numericValue !== undefined) {
         if (numericValue < 1 || numericValue > 36) {
           dispatch(
@@ -72,8 +69,13 @@ export const StandardizedTestCard: React.FC = () => {
           return;
         }
       }
-
-      // 4. Dispatch the update to Redux, then call your service
+  
+      // 5) Compare with Redux store value — if unchanged, do nothing
+      if (stdTestRecord[field] === numericValue) {
+        return;
+      }
+  
+      // 6) Otherwise, dispatch/update
       dispatch(selectedProfileActions.updateStandardizedTestField({ field, value: numericValue }));
       await stdTestService.update({ ...stdTestRecord, [field]: numericValue });
     } catch (error: unknown) {
@@ -85,7 +87,7 @@ export const StandardizedTestCard: React.FC = () => {
         })
       );
     }
-  };
+  };  
 
   const styles = useStyles();
 

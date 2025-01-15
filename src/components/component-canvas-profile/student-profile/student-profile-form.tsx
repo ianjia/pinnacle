@@ -56,23 +56,28 @@ export const StudentProfileForm: React.FC = () => {
     setAlumniLegacy(student.alumni_legacy || '');
   }, [student]);  
 
-  const handleBlur = async (field: keyof StudentProfile, value: any) => {    
+  const handleBlur = async (field: keyof StudentProfile, value: any) => {
+    let finalValue = value;
+  
+    // 1) BirthDate validation
     if (field === 'birthDate') {
       const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(new Date(value).getTime());
       if (!isValidDate) {
-          dispatch(
-            alertDialogActions.showAlert({
-              title: 'Validation Error',
-              message: 'Please provide a valid date.',
-            })
-          );
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Validation Error',
+            message: 'Please provide a valid date.',
+          })
+        );
         return;
       }
-      value = value === '' ? null : value;
+      // set empty string to null
+      finalValue = value === '' ? null : value;
     }
-
+  
+    // 2) Alumni legacy validation/matching
     if (field === 'alumni_legacy') {
-      if (alumniLegacy.trim() !== "") {
+      if (alumniLegacy.trim() !== '') {
         const matchedCollegeName = getCollegeNameKey(alumniLegacy);
         if (!matchedCollegeName) {
           dispatch(
@@ -82,17 +87,24 @@ export const StudentProfileForm: React.FC = () => {
             })
           );
           setAlumniLegacy('');
+          return; // Stop here if invalid
         } else {
           setAlumniLegacy(matchedCollegeName);
-          value = matchedCollegeName;
+          finalValue = matchedCollegeName;
         }
-     }
+      }
     }
-
-    // Following to save to database
+  
+    // 3) Compare finalValue with what's in Redux.
+    //    If they match, do nothing.
+    if (student[field] === finalValue) {
+      return;
+    }
+  
+    // 4) Otherwise, dispatch your updates
     try {
-      dispatch(selectedProfileActions.updateStudentField({ field, value }));
-      await studentService.update({ ...student, [field]: value });
+      dispatch(selectedProfileActions.updateStudentField({ field, value: finalValue }));
+      await studentService.update({ ...student, [field]: finalValue });
     } catch (error: unknown) {
       logError(error);
       dispatch(
@@ -102,7 +114,7 @@ export const StudentProfileForm: React.FC = () => {
         })
       );
     }
-  };
+  };  
 
   const styles = useStyles();
 

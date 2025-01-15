@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Field,
   Input,
   Textarea,
   Card,
-  CardPreview,
 } from '@fluentui/react-components';
 import { useStyles } from './entity-card.styles';
 
@@ -25,6 +24,13 @@ export function EntityCard<T extends BasicEntity>({ entity, onUpdateEntity }: En
   const [localEntity, setLocalEntity] = useState<T>(entity);
 
   const handleBlur = (field: keyof T, value: any) => {
+    // Compare with the prop `entity` passed in from the parent, 
+    // not with `localEntity` (because `localEntity` is already updated by onChange).
+    if (entity[field] === value) {
+      // Nothing changed compared to the parent, do nothing.
+      return;
+    }
+
     const updatedEntity = { ...localEntity, [field]: value };
     setLocalEntity(updatedEntity);
     onUpdateEntity(updatedEntity);
@@ -34,7 +40,6 @@ export function EntityCard<T extends BasicEntity>({ entity, onUpdateEntity }: En
 
   return (
     <Card className={styles.card}>
-      <CardPreview>
         <div className={styles.fieldRow}>
           <div className={styles.nameFieldContainer}>
             <Field label="Name" className={styles.field}>
@@ -57,7 +62,6 @@ export function EntityCard<T extends BasicEntity>({ entity, onUpdateEntity }: En
             />
           </Field>
         </div>
-      </CardPreview>
     </Card>
   );
 }

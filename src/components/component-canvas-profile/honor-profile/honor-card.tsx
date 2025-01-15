@@ -17,14 +17,18 @@ interface HonorCardProps {
 
 export const HonorCard: React.FC<HonorCardProps> = ({ honor, onUpdateHonor }) => {
   const [localHonor, setLocalHonor] = useState<Honor>(honor);
+  const styles = useStyles();
 
   const handleBlur = (field: keyof Honor, value: any) => {
+    // EARLY RETURN if the new value is the same as the original prop’s value
+    if (honor[field] === value) {
+      return;
+    }
+
     const updatedHonor = { ...localHonor, [field]: value };
     setLocalHonor(updatedHonor);
     onUpdateHonor(updatedHonor);
   };
-
-  const styles = useStyles();
 
   return (
     <Card className={styles.card}>
@@ -40,31 +44,42 @@ export const HonorCard: React.FC<HonorCardProps> = ({ honor, onUpdateHonor }) =>
               onBlur={(e) => handleBlur('name', e.target.value)}
             />
           </Field>
+
           <Field label="Honor Type" className={styles.field}>
             <DropdownCustom
               options={HonorType}
-              onOptionSelect={(e, option) => {
-                const newType = option.optionValue as HonorType;
-                setLocalHonor({ ...localHonor, type: newType });
-                handleBlur('type', newType);
-              }}
               value={localHonor.type}
               placeHolder="Select honor type"
+              onOptionSelect={(e, option) => {
+                const newType = option.optionValue as HonorType;
+
+                // Update local state immediately so the UI reflects the new selection
+                setLocalHonor({ ...localHonor, type: newType });
+
+                // Then run handleBlur for the final check (early return if unchanged)
+                handleBlur('type', newType);
+              }}
             />
           </Field>
+
           <Field label="Year" className={styles.field}>
             <DropdownCustom
               options={SchoolYear}
-              onOptionSelect={(e, option) => {
-                const newYear = parseInt(option.optionValue as string) as SchoolYear;
-                setLocalHonor({ ...localHonor, year: newYear });
-                handleBlur('year', newYear);
-              }}
               value={localHonor.year}
               placeHolder="Select year"
+              onOptionSelect={(e, option) => {
+                const newYear = parseInt(option.optionValue as string) as SchoolYear;
+
+                // Update local state so user sees change
+                setLocalHonor({ ...localHonor, year: newYear });
+
+                // Then do the final check
+                handleBlur('year', newYear);
+              }}
             />
           </Field>
         </div>
+
         <div className={styles.singleRow}>
           <Field label="Description" className={styles.field}>
             <Textarea

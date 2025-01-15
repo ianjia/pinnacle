@@ -79,23 +79,29 @@ export const CourseListCard: React.FC<CourseListCardProps> = ({
         ),
       }),
 
-    createTableColumn<Course>({
-      columnId: 'type',
-      compare: (a, b) => (a.type || '').localeCompare(b.type || ''),
-      renderHeaderCell: () => 'Course Type',
-      renderCell: (item) => (
-        <TableCellLayout className={styles.cell}>
-          <DropdownCustom
-            options={CourseType}
-            value={item.type}
-            onOptionSelect={(e, option) =>
-              onUpdateCourse({ ...item, type: option.optionValue as CourseType })
-            }
-            placeHolder="Select Type"
-          />
-        </TableCellLayout>
-      ),
-    }),
+      createTableColumn<Course>({
+        columnId: 'type',
+        compare: (a, b) => (a.type || '').localeCompare(b.type || ''),
+        renderHeaderCell: () => 'Course Type',
+        renderCell: (item) => (
+          <TableCellLayout className={styles.cell}>
+            <DropdownCustom
+              options={CourseType}
+              value={item.type}
+              placeHolder="Select Type"
+              onOptionSelect={(e, option) => {
+                // Early return if same value
+                if (item.type === option.optionValue) {
+                  return;
+                }
+                // Otherwise proceed to update
+                onUpdateCourse({ ...item, type: option.optionValue as CourseType });
+              }}
+            />
+          </TableCellLayout>
+        ),
+      }),
+      
     createTableColumn<Course>({
       columnId: 'gradeOrScore',
       compare: (a, b) => {
@@ -111,18 +117,30 @@ export const CourseListCard: React.FC<CourseListCardProps> = ({
             <DropdownCustom
               options={Score_IB}
               value={item.score}
-              onOptionSelect={(e, option) =>
+              onOptionSelect={(e, option) => {
+                // Convert the option value to a number
+                const numericValue = Number(option.optionValue);
+
+                // Early return if the same as current score
+                if (item.score === numericValue) {
+                  return;
+                }
                 onUpdateCourse({ ...item, score: Number(option.optionValue) })
-              }
+              }}
               placeHolder="Select Score"
             />
           ) : (
             <DropdownCustom
               options={CourseGrade}
               value={item.grade}
-              onOptionSelect={(e, option) =>
-                onUpdateCourse({ ...item, grade: option.optionValue as CourseGrade })
-              }
+              onOptionSelect={(e, option) => {
+                // Early return if the same as current grade
+                if (item.grade === option.optionValue) {
+                  return;
+                }
+            
+                onUpdateCourse({ ...item, grade: option.optionValue as CourseGrade });
+              }}
               placeHolder="Select Grade"
             />
           )}

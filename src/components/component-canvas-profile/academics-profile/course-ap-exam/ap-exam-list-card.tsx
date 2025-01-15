@@ -87,12 +87,17 @@ export const ApExamListCard: React.FC<ApExamListCardProps> = ({
           <DropdownCustom
             options={Score_AP_Exam}
             value={item.score}
-            onOptionSelect={(e, option) =>
-              onUpdateApExam({
-                ...item,
-                score: Number(option.optionValue) as Score_AP_Exam,
-              })
-            }
+            onOptionSelect={(e, option) => {
+              // Convert the chosen option to a number
+              const newScore = Number(option.optionValue) as Score_AP_Exam;
+    
+              // Early return if user selected the same value
+              if (item.score === newScore) {
+                return;
+              }
+    
+              onUpdateApExam({ ...item, score: newScore });
+            }}
             placeHolder="Select Score"
           />
         </TableCellLayout>

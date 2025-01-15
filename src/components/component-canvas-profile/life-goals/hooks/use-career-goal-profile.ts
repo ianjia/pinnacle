@@ -11,7 +11,7 @@ export const useCareerGoalProfile = () => {
   const { userId } = useContext(AuthContext);
 
   const careerGoalList = useSelector((state: RootState) => state.selectedProfile.careerGoalList);
-  const [title] = useState<string>('Academic & Career Goals');
+  const [title] = useState<string>('Academic & Career Interests and Goals');
 
   const onAddEntity = async () => {
     try {
