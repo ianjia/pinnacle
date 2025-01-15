@@ -10,6 +10,22 @@ export const api = axios.create({
   },
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      alert("Please login again");
+      // 1. Remove token from local storage or from axios defaults, normally 401 means token expired
+      localStorage.removeItem('token');
+      // 2. Hard redirect or react-router navigate
+      window.location.href = '/'; 
+      // OR handle with a custom approach
+    }
+    return Promise.reject(error);
+  }
+);
+
+
 export const initializeAuthToken = () => {
   const token = localStorage.getItem('token');
   if (token) {

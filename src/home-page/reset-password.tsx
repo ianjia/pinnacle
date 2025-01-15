@@ -45,7 +45,7 @@ export const ResetPassword: React.FC = () => {
         newPassword,
       });
       setSuccessMsg('Password has been reset successfully. You can now log in.');
-      setTimeout(() => navigate('/login'), 2000);
+      setTimeout(() => navigate('/'), 2000);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Error resetting password.');
     }
