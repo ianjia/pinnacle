@@ -144,6 +144,7 @@ export const EssayPrompt: React.FC = () => {
       additionalInfo: additional_ask,
     } as EssayIdeasGenerationRequest,
     onResult: (data: TaskResult) => {
+      essayWorkshopActions.clearIdeas();
       const resultList = (data as GenerateEssayIdeasTaskResult).ideas;
       for (const idea of resultList) {
         const ideaKey = uuidv4();

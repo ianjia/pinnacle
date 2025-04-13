@@ -86,6 +86,10 @@ const essayWorkshopSlice = createSlice({
             delete state.ideas[action.payload];
         },
 
+        clearIdeas(state) {
+            state.ideas = {};
+        },
+
         addEssay(state, action: PayloadAction<{ key: string, value: string }>) {
             const { key, value } = action.payload;
             state.essay[key] = value;
