@@ -24,7 +24,7 @@ export function useStdTestRecordLoader() {
                     // Retrieve the updated state after dispatch
                     const updatedStdTestRecord = {
                         ...stdTestRecord,
-                        id: userId, // Manually ensure the id is up-to-date
+                        user_id: userId, // Manually ensure the id is up-to-date
                     };
 
                     try {

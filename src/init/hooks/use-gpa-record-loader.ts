@@ -21,7 +21,7 @@ export function useGpaRecordLoader() {
                     // Retrieve the updated state after dispatch
                     const updatedGpaRecord = {
                         ...gpaRecord,
-                        id: userId, // Manually ensure the id is up-to-date
+                        user_id: userId, // Manually ensure the id is up-to-date
                     };
 
                     try {

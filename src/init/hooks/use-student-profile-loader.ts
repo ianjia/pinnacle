@@ -21,7 +21,7 @@ export function useStudentProfileLoader() {
                     // Retrieve the updated state after dispatch
                     const updatedStudentRecord = {
                         ...student,
-                        id: userId, // Manually ensure the id is up-to-date
+                        user_id: userId, // Manually ensure the id is up-to-date
                     };
 
                     try {
