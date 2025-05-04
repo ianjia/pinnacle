@@ -31,9 +31,10 @@ export function useLoadData() {
 
     // Return a callable function
     return async (userId: number): Promise<void> => {
+        // Need to load student profile first, as if no student profile, needs to create as other record depends on it (on database side, some other tables user user_id in stduent table as foreign key)
+        await loadStudentProfile(userId); 
         await loadGpaRecordProfile(userId);
         await loadStdTestRecordProfile(userId);
-        await loadStudentProfile(userId);
         await loadCourseList(userId);
         await loadApExamList(userId);
         await loadActivityList(userId);
