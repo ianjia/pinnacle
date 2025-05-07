@@ -123,7 +123,11 @@ const MiddleSection: React.FC = () => {
       {/* 2) Text Sub-section (different font) */}
       <div style={middleSectionStyles.subBox}>
         <div style={middleSectionStyles.textSection1}>
-          Pathway to Dream College -  Your Personalized AI Counselor
+          Plan Your College Path  -  Your Personalized AI College Guide
+
+          <div   style={{ display: 'block', marginTop: 100, fontSize: 20, color: '#666'}}>
+              Note: Advice is informational only and does not guarantee admission
+          </div>
         </div>
       </div>
 
