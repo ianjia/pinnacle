@@ -174,14 +174,15 @@ export const EssayPrompt: React.FC = () => {
   /**
    * Start the “Generate Essay Ideas” task if the prompt is valid.
    */
-  const handleStartGenerateEssayIdeasTask = () => {if (!hasBasicInfoFilled) {
-    dispatch(
-      alertDialogActions.showAlert({
-        title: 'Insuffient Information',
-        message: 'Please fill in basic information in student profile before performing the task',
-      }));
+  const handleStartGenerateEssayIdeasTask = () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
 
-      return;
+        return;
     }
 
     if (isPromptValid(essay_prompt)) {
@@ -198,11 +199,12 @@ export const EssayPrompt: React.FC = () => {
   };
 
   const handleStartPromptAnalysisTask = () => {
-    dispatch(
-      alertDialogActions.showAlert({
-        title: 'Insuffient Information',
-        message: 'Please fill in basic information in student profile before performing the task',
-      }));
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
 
       return;
     }
