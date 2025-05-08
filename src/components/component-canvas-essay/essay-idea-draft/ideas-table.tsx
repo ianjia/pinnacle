@@ -14,7 +14,7 @@ import {
 } from '@fluentui/react-components';
 import { Add16Regular, Delete16Regular } from '@fluentui/react-icons';
 
-import { alertDialogActions, essayWorkshopActions, RootState } from '../../../store';
+import { alertDialogActions, essayWorkshopActions, RootState, useBasicInfoFilled } from '../../../store';
 import {
   EssayIdeaRefinementRequest,
   ProgressModal,
@@ -56,6 +56,8 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({
   const additional_ask = useSelector(
     (state: RootState) => state.essayWorkshop.additionalAsk
   );
+
+  const hasBasicInfoFilled = useBasicInfoFilled();
 
   // Task Runner for "Refine" button
   const { startTask: startRefineEssayIdeaTask, showModal, progressMessage } =
@@ -101,6 +103,16 @@ export const IdeasTable: React.FC<IdeasTableProps> = ({
 
   // Refine
   const handleRefine = () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
+
+      return;
+    }
+
     if (selectedIdeaKey) {
       startRefineEssayIdeaTask();
     } else {

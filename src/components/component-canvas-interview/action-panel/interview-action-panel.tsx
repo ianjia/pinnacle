@@ -21,6 +21,7 @@ import {
   alertDialogActions,
   interviewConversationActions,
   RootState,
+  useBasicInfoFilled,
 } from '../../../store';
 import { useStyles } from './interview-action-panel.styles';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
@@ -56,6 +57,8 @@ export const InterviewActionPanel: React.FC = () => {
     (state: RootState) => state.collegeListWorkshop.collegeList
   );
 
+  const hasBasicInfoFilled = useBasicInfoFilled();
+
   // Hooks for interview start/stop, post-review, etc.
   const onStartInterview = useOnStartInterviewCreator();
   const onStopInterview = useOnStopInterviewCreator();
@@ -89,7 +92,8 @@ export const InterviewActionPanel: React.FC = () => {
           title: 'Validation Error',
           message: 'The college name you selected is not valid. Please check.',
         })
-      );      return;
+      );      
+      return;
     }
     const matchedCollegeName = getCollegeNameKey(data.optionValue);
     if (!matchedCollegeName) {
@@ -116,6 +120,16 @@ export const InterviewActionPanel: React.FC = () => {
    * Start/Stop Interview button handler.
    */
   const toggleInterviewHandler = () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
+
+      return;
+    }
+
     const matchedCollegeName = getCollegeNameKey(liveCollege);
     if (!matchedCollegeName || matchedCollegeName.length < 3) {
       dispatch(
@@ -133,6 +147,16 @@ export const InterviewActionPanel: React.FC = () => {
    * For "Interview Review" button, triggers the analysis task.
    */
   const handleReviewClick = async () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
+
+      return;
+    }
+
     try {
       if (liveId === 0) {
         dispatch(

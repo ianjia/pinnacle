@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch, essayWorkshopActions, alertDialogActions } from '../../../store';
+import { RootState, AppDispatch, essayWorkshopActions, alertDialogActions, useBasicInfoFilled } from '../../../store';
 import { EssayDraftRequest, EssayDraftTaskResult, EssayRefineRequest, EssayRefineTaskResult, ProgressModal, TaskResult, TaskType, useTaskRunner } from '../../component-service-proxy';
 import { useSelectedInfo } from './hooks/use-selected-idea-essay';
 import { MarkdownMessageDisplay } from '../../component-mark-down-display';
@@ -35,6 +35,8 @@ export const EssayDraftPanel: React.FC = () => {
 
     const [activeTask, setActiveTask] = useState<"draftEssay" | "refineEssay" | null>(null);
 
+    const hasBasicInfoFilled = useBasicInfoFilled();
+
     const { startTask: startDraftEssayTask, showModal: showDraftEssayModal, progressMessage: progressDraftEssayMessage } = useTaskRunner({
         taskType: TaskType.DraftEssay,
         requestData: { college, major, prompt: essay_prompt, additionalInfo: additional_ask, 
@@ -60,6 +62,16 @@ export const EssayDraftPanel: React.FC = () => {
     });
 
     const handleDraft = () => {
+        if (!hasBasicInfoFilled) {
+            dispatch(
+                alertDialogActions.showAlert({
+                title: 'Insuffient Information',
+                message: 'Please fill in basic information in student profile before performing the task',
+                }));
+        
+            return;
+        }      
+
       if (!isIdeaValid(idea)) {   
         dispatch(
             alertDialogActions.showAlert({
@@ -74,6 +86,16 @@ export const EssayDraftPanel: React.FC = () => {
     };
 
     const handleRefine = () => {
+        if (!hasBasicInfoFilled) {
+            dispatch(
+                alertDialogActions.showAlert({
+                title: 'Insuffient Information',
+                message: 'Please fill in basic information in student profile before performing the task',
+                }));
+        
+            return;
+        }    
+
         if (!isIdeaValid(key) || essay === undefined) {   
             dispatch(
                 alertDialogActions.showAlert({

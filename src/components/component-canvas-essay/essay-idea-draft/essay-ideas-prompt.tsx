@@ -19,7 +19,7 @@ import {
 import { Info24Regular } from '@fluentui/react-icons';
 
 import { getCollegeNameKey } from '../../component-navigation-map';
-import { RootState, AppDispatch, essayWorkshopActions, alertDialogActions } from '../../../store';
+import { RootState, AppDispatch, essayWorkshopActions, alertDialogActions, useBasicInfoFilled } from '../../../store';
 import {
   EssayIdeasGenerationRequest,
   ProgressModal,
@@ -65,6 +65,8 @@ export const EssayPrompt: React.FC = () => {
   // --- Local refs for textareas (if needed) ---
   const essayPromptInputRef = useRef<HTMLTextAreaElement>(null);
   const additionalAskInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const hasBasicInfoFilled = useBasicInfoFilled();
 
   // --- Sync local textareas with Redux store when Redux values change ---
   useEffect(() => {
@@ -172,7 +174,16 @@ export const EssayPrompt: React.FC = () => {
   /**
    * Start the “Generate Essay Ideas” task if the prompt is valid.
    */
-  const handleStartGenerateEssayIdeasTask = () => {
+  const handleStartGenerateEssayIdeasTask = () => {if (!hasBasicInfoFilled) {
+    dispatch(
+      alertDialogActions.showAlert({
+        title: 'Insuffient Information',
+        message: 'Please fill in basic information in student profile before performing the task',
+      }));
+
+      return;
+    }
+
     if (isPromptValid(essay_prompt)) {
       setActiveTask("generateIdeas");
       startEssayIdeasTask();
@@ -187,6 +198,15 @@ export const EssayPrompt: React.FC = () => {
   };
 
   const handleStartPromptAnalysisTask = () => {
+    dispatch(
+      alertDialogActions.showAlert({
+        title: 'Insuffient Information',
+        message: 'Please fill in basic information in student profile before performing the task',
+      }));
+
+      return;
+    }
+
     if (isPromptValid(essay_prompt)) {
       setActiveTask("promptAnalysis");
       startPromptAnalysisTask();

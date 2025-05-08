@@ -15,7 +15,7 @@ import {
 } from '@fluentui/react-components';
 import { Info24Regular } from '@fluentui/react-icons';
 import { getCollegeNameKey } from '../../component-navigation-map';
-import { alertDialogActions, committeeReviewActions, RootState } from '../../../store';
+import { alertDialogActions, committeeReviewActions, RootState, useBasicInfoFilled } from '../../../store';
 import { useStyles } from './committee-review-action-panel.styles';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
@@ -44,6 +44,8 @@ export const CommitteeReviewActionPanel: React.FC = () => {
   const collegeList = useSelector(
     (state: RootState) => state.collegeListWorkshop.collegeList
   );
+
+  const hasBasicInfoFilled = useBasicInfoFilled();
 
   const myChance = collegeList.find((c) => c.college === liveCollege)?.data?.chance;
  
@@ -111,6 +113,16 @@ export const CommitteeReviewActionPanel: React.FC = () => {
  * For "Review" button: Validate and start the review task.
  */
 const handleReviewClick = async () => {
+  if (!hasBasicInfoFilled) {
+    dispatch(
+      alertDialogActions.showAlert({
+        title: 'Insuffient Information',
+        message: 'Please fill in basic information in student profile before performing the task',
+      }));
+
+    return;
+  }
+
   try {
     // Double-check if the selected college is valid
     const matchedCollegeName = getCollegeNameKey(liveCollege);

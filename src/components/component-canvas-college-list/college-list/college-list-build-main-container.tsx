@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { alertDialogActions, RootState } from '../../../store';
+import { alertDialogActions, RootState, useBasicInfoFilled } from '../../../store';
 import {
   collegeListWorkshopActions,
   committeeReviewActions,
@@ -61,6 +61,8 @@ export const CollegeListBuildMainContainer: React.FC = () => {
   const [activeTask, setActiveTask] = useState<"collegeList" | "evaluation" | null>(null);
 
   const [showConfirmCleanUpDialog, setShowConfirmCleanUpDialog] = useState(false);
+
+  const hasBasicInfoFilled = useBasicInfoFilled();
 
   /**
    * Task runner for building a college list:
@@ -152,6 +154,16 @@ export const CollegeListBuildMainContainer: React.FC = () => {
    *  if user cancels, do nothing; if user confirms, delete all, then proceed.
    */
   const handleStartCollegeListTask = () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
+
+      return;
+    }
+
     if (collegeList.length > 0) {
       // Show the confirmation dialog if there's anything in the list
       setShowConfirmCleanUpDialog(true);
@@ -185,7 +197,20 @@ export const CollegeListBuildMainContainer: React.FC = () => {
 
   /** Evaluate the selected college's data/chance */
   const handleStartEvaluationTask = () => {
-    if (!selectedCollege) return;
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message: 'Please fill in basic information in student profile before performing the task',
+        }));
+
+      return;
+    }
+
+    if (!selectedCollege) {
+       return 
+    };
+
     setActiveTask("evaluation");
     startEvaluationTask();
   };
