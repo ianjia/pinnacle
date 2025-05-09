@@ -38,4 +38,5 @@ export interface CommitteeReviewRequest extends ITaskRequest{
     college_name: string; 
     major: string; 
     my_chance: number;
+    essay: string;
 }

@@ -17,7 +17,7 @@ export const useStyles = makeStyles({
     paddingLeft: '0px',
   },
   grid: {
-    display: 'grid !important', // Force priority
+    display: 'grid !important',
     gridTemplateColumns: 'repeat(2, 1fr) !important',
     gap: '16px !important',
   },
@@ -26,18 +26,25 @@ export const useStyles = makeStyles({
     flexDirection: 'column',
     gap: '4px',
   },
-  input: {
-    height: '36px',
-    width: '80%',
+  /* NEW – full-width text-area field */
+  textAreaField: {
+    gridColumn: '1 / -1',              // span both columns
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  textarea: {
+    minHeight: '240px',
+    width: '100%',
   },
   fieldButton: {
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
-    alignItems: 'flex-start', 
+    alignItems: 'flex-start',
   },
   buttonSmall: {
-    width: '200px', // Adjust as needed
+    width: '200px',
   },
   infoIcon: {
     marginLeft: '8px',
@@ -45,6 +52,6 @@ export const useStyles = makeStyles({
   labelContainer: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '1px', // spacing between "College" text and the info button
+    gap: '1px',
   },
 });

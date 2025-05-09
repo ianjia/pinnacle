@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Card,
@@ -11,11 +11,22 @@ import {
   OptionOnSelectData,
   Popover,
   PopoverSurface,
-  PopoverTrigger
+  PopoverTrigger,
+  Textarea,
+  Dialog,
+  DialogSurface,
+  DialogBody,
+  DialogTitle,
+  DialogActions,
 } from '@fluentui/react-components';
 import { Info24Regular } from '@fluentui/react-icons';
 import { getCollegeNameKey } from '../../component-navigation-map';
-import { alertDialogActions, committeeReviewActions, RootState, useBasicInfoFilled } from '../../../store';
+import {
+  alertDialogActions,
+  committeeReviewActions,
+  RootState,
+  useBasicInfoFilled,
+} from '../../../store';
 import { useStyles } from './committee-review-action-panel.styles';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
@@ -34,31 +45,29 @@ export const CommitteeReviewActionPanel: React.FC = () => {
   const dispatch = useDispatch();
   const styles = useStyles();
 
-  const liveCollege: string = useSelector(
-    (state: RootState) => state.committeeReview.liveReviewCollege
-  );
-  const liveMajor: string = useSelector(
-    (state: RootState) => state.committeeReview.liveReviewMajor
-  );
+  const [essayContent, setEssayContent] = useState<string>('');
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const collegeList = useSelector(
-    (state: RootState) => state.collegeListWorkshop.collegeList
-  );
+  const liveCollege = useSelector((s: RootState) => s.committeeReview.liveReviewCollege);
+  const liveMajor   = useSelector((s: RootState) => s.committeeReview.liveReviewMajor);
+  const collegeList = useSelector((s: RootState) => s.collegeListWorkshop.collegeList);
 
   const hasBasicInfoFilled = useBasicInfoFilled();
+  const myChance =
+    collegeList.find((c) => c.college === liveCollege)?.data?.chance ?? 0;
 
-  const myChance = collegeList.find((c) => c.college === liveCollege)?.data?.chance;
- 
-  // Custom hook for post-review logic
   const onReviewComplete = useOnReviewCompleteCreator();
-
-  // Task runner hook
-  const { startTask: startCommitteeReviewTask, showModal, progressMessage } = useTaskRunner({
+  const {
+    startTask: startCommitteeReviewTask,
+    showModal,
+    progressMessage,
+  } = useTaskRunner({
     taskType: TaskType.CommitteReview,
     requestData: {
       college_name: liveCollege,
       major: liveMajor,
-      my_chance: myChance ?? 0,
+      my_chance: myChance,
+      essay: essayContent,              
     } as CommitteeReviewRequest,
     onResult: (data: TaskResult) => {
       const review = (data as CommitteeReviewTaskResult).review;
@@ -67,83 +76,55 @@ export const CommitteeReviewActionPanel: React.FC = () => {
     },
   });
 
-  /**
-   * Handle user selecting a different college in the dropdown.
-   */
-  const handleCollegeSelect = (
-    event: SelectionEvents,
-    data: OptionOnSelectData
-  ) => {
-    if (!data.optionValue) {
+  /** -------------------- Handlers ---------------------------------- */
+  const handleCollegeSelect = (_: SelectionEvents, data: OptionOnSelectData) => {
+    const key = data.optionValue && getCollegeNameKey(data.optionValue);
+    if (!key) {
       dispatch(
         alertDialogActions.showAlert({
           title: 'Validation Error',
           message: 'The college name you selected is not valid. Please check.',
         })
       );
-
       return;
     }
-    const matchedCollegeName = getCollegeNameKey(data.optionValue);
-    if (!matchedCollegeName) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you selected is not valid. Please check.',
-        })
-      );
-
-      return;
-    }
-    // Update Redux state
-    dispatch(committeeReviewActions.setLiveReviewCollege(matchedCollegeName));
+    dispatch(committeeReviewActions.setLiveReviewCollege(key));
   };
 
-  /**
-   * Handle changes to the Major field.
-   */
-  const handleMajorChange = (newMajor: string) => {
+  const handleMajorChange = (newMajor: string) =>
     dispatch(committeeReviewActions.setLiveReviewMajor(newMajor));
+
+  const performReviewTask = () => {
+    /* All validations already passed at this point */
+    startCommitteeReviewTask();
   };
 
-  /**
-   * For "Review" button: Validate and start the review task.
-   */
-/**
- * For "Review" button: Validate and start the review task.
- */
-const handleReviewClick = async () => {
-  if (!hasBasicInfoFilled) {
-    dispatch(
-      alertDialogActions.showAlert({
-        title: 'Insuffient Information',
-        message: 'Please fill in basic information in student profile before performing the task',
-      }));
+  const handleReviewClick = () => {
+    /* Basic profile / college-list validations */
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insuffient Information',
+          message:
+            'Please fill in basic information in student profile before performing the task',
+        })
+      );
+      return;
+    }
 
-    return;
-  }
-
-  try {
-    // Double-check if the selected college is valid
-    const matchedCollegeName = getCollegeNameKey(liveCollege);
-    if (!matchedCollegeName) {
+    const key = getCollegeNameKey(liveCollege);
+    if (!key) {
       dispatch(
         alertDialogActions.showAlert({
           title: 'Validation Error',
           message: 'The college name you selected is not valid. Please check.',
         })
       );
-
       return;
     }
 
-    // Find the college in the redux collegeList
-    const selectedCollege = collegeList.find(
-      (c) => c.college === matchedCollegeName
-    );
-
-    // If selectedCollege doesn't exist or its data is undefined, show alert
-    if (!selectedCollege || !selectedCollege.data) {
+    const selectedCollege = collegeList.find((c) => c.college === key);
+    if (!selectedCollege?.data) {
       dispatch(
         alertDialogActions.showAlert({
           title: 'Validation Error',
@@ -153,30 +134,58 @@ const handleReviewClick = async () => {
       return;
     }
 
-    // If everything is valid, start the review task
-    startCommitteeReviewTask();
-  } catch (error) {
-    dispatch(
-      alertDialogActions.showAlert({
-        title: 'Server Side Error',
-        message: 'Error happened on server side during review',
-      })
-    );
-  }
-};
+    /* Essay empty? → Ask for confirmation, else run immediately. */
+    if (essayContent.trim() === '') {
+      setConfirmDialogOpen(true);
+    } else {
+      performReviewTask();
+    }
+  };
 
+  /** ----------------------- JSX ------------------------------------ */
   return (
     <div className={styles.container}>
+      {/* Progress-modal shown during async task */}
       <ProgressModal show={showModal} message={progressMessage} />
 
+      {/* Empty-essay confirmation dialog */}
+      <Dialog
+        modalType="modal"
+        open={confirmDialogOpen}
+        onOpenChange={(_, data) => setConfirmDialogOpen(data.open)}
+      >
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>Essay text area is empty</DialogTitle>
+            <p>
+              You haven&rsquo;t pasted any essays. Do you still want to proceed with
+              the review?
+            </p>
+            <DialogActions>
+              <Button appearance="secondary" onClick={() => setConfirmDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                appearance="primary"
+                onClick={() => {
+                  setConfirmDialogOpen(false);
+                  performReviewTask();
+                }}
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
+
+      {/* Main action card */}
       <Card className={styles.card}>
-        <h2 className={styles.header} style={{ textAlign: 'left' }}>
-          Action Panel
-        </h2>
+        <h2 className={styles.header}>Action Panel</h2>
 
         <CardPreview>
           <div className={styles.grid}>
-            {/* Field for College */}
+            {/* College field ------------------------------------------------ */}
             <Field
               label={
                 <span className={styles.labelContainer}>
@@ -192,7 +201,8 @@ const handleReviewClick = async () => {
                       />
                     </PopoverTrigger>
                     <PopoverSurface>
-                      Please make sure the college list was created before selecting a college here
+                      Please make sure the college list was created before selecting
+                      a college here.
                     </PopoverSurface>
                   </Popover>
                 </span>
@@ -203,7 +213,7 @@ const handleReviewClick = async () => {
                 placeholder="Select a college"
                 value={liveCollege}
                 onOptionSelect={handleCollegeSelect}
-                disabled={collegeList.length === 0} // Disable if no colleges
+                disabled={collegeList.length === 0}
               >
                 {collegeList.map((c) => (
                   <Option key={c.id} value={c.college}>
@@ -212,7 +222,8 @@ const handleReviewClick = async () => {
                 ))}
               </Dropdown>
             </Field>
-            {/* Field for Major (existing custom Dropdown) */}
+
+            {/* Major field -------------------------------------------------- */}
             <Field label="Major" className={styles.field}>
               <DropdownCustom
                 options={Major}
@@ -224,7 +235,40 @@ const handleReviewClick = async () => {
               />
             </Field>
 
-            {/* Review Button */}
+            {/* NEW – Essay text area (spans full width) ------------------- */}
+            <Field
+              className={styles.textAreaField}
+              label={
+                <span className={styles.labelContainer}>
+                  <span>My Essays</span>
+                  <Popover positioning={{ position: 'after', align: 'top' }}>
+                    <PopoverTrigger>
+                      <Button
+                        icon={<Info24Regular />}
+                        appearance="subtle"
+                        size="small"
+                        aria-label="Essay information"
+                        className={styles.infoIcon}
+                      />
+                    </PopoverTrigger>
+                    <PopoverSurface>
+                      Please paste all your application essays (personal statement,
+                      supplement essays, etc.) below.
+                    </PopoverSurface>
+                  </Popover>
+                </span>
+              }
+            >
+              <Textarea
+                resize="vertical"
+                value={essayContent}
+                onChange={(_, data) => setEssayContent(data.value)}
+                placeholder="Paste your essays here…"
+                className={styles.textarea}
+              />
+            </Field>
+
+            {/* Review button ---------------------------------------------- */}
             <Field className={styles.fieldButton}>
               <Button className={styles.buttonSmall} onClick={handleReviewClick}>
                 Review
