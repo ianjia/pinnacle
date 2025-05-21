@@ -1,194 +1,225 @@
-import { useRef, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { alertDialogActions, interviewConversationActions } from '../../../../store';
-import {
-  getEphemeralKey,
-} from '../../../component-service-proxy';
-import { usePromptGenerator } from './use-prompt-generator';
-
-interface UseInterviewConnectionProps {
-  onStartInterview: () => void;
-  onStopInterview: () => Promise<void>;
-}
-
-export function useInterviewConnection({
-  onStartInterview,
-  onStopInterview,
-}: UseInterviewConnectionProps) {
-  const dispatch = useDispatch();
-
-  const [interviewActive, setInterviewActive] = useState<boolean>(false);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-
-  // WebRTC references
-  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const dataChannelRef = useRef<RTCDataChannel | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-
-  const promptGenerator = usePromptGenerator();
-
-  /**
-   * Start the interview, mainly the setup through WebRTC with OpenAI realtime service.
-   */
-  const startInterview = useCallback(async () => {
-    try {
-      setIsProcessing(true);
-
-      // 1) Prepare the prompt with student info
-      const prompt: string = await promptGenerator();
-
-      // 2) Retrieve ephemeral key from server
-      const EPHEMERAL_KEY = await getEphemeralKey();
-
-      // 3) Create the PeerConnection
-      const peerConnection = new RTCPeerConnection();
-      peerConnectionRef.current = peerConnection;
-
-      // 4) Create an audio element for remote audio
-      const audioEl = document.createElement('audio');
-      audioEl.autoplay = true;
-      audioRef.current = audioEl;
-
-      peerConnection.ontrack = (e) => {
-        audioEl.srcObject = e.streams[0];
-      };
-
-      // 5) Get local audio track
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStreamRef.current = mediaStream;
-      peerConnection.addTrack(mediaStream.getTracks()[0]);
-
-      // 6) Create DataChannel
-      const dataChannel = peerConnection.createDataChannel('oai-events');
-      dataChannelRef.current = dataChannel;
-
-      dataChannel.addEventListener('message', (e) => {
-        const serverEvent = JSON.parse(e.data);
-
-        // Session created => set up instructions
-        if (serverEvent.type === 'session.created') {
-          const event = {
-            type: 'session.update',
-            session: {
-              instructions: prompt,
-              input_audio_transcription: { model: 'whisper-1' },
-              turn_detection: {
-                type: 'server_vad',
-                silence_duration_ms: 1200,
-              },
-            },
-          };
-          dataChannel.send(JSON.stringify(event));
-
-          // Start conversation from server side
-          const initResponseEvent = {
-            type: 'response.create',
-          };
-          dataChannel.send(JSON.stringify(initResponseEvent));
-        }
-        // When server sends a final transcript for the interviewer
-        else if (
-          serverEvent.type === 'response.done' &&
-          serverEvent?.response?.output?.[0]?.content?.[0]?.transcript
-        ) {
-          const transcript = serverEvent.response.output[0].content[0].transcript;
-          dispatch(
-            interviewConversationActions.addLiveConversationMessage({
-              role: 'interviewer',
-              content: transcript,
-            })
-          );
-        }
-        // When server sends a transcript of the interviewee’s spoken words
-        else if (
-          serverEvent.type === 'conversation.item.input_audio_transcription.completed' &&
-          serverEvent.transcript
-        ) {
-          dispatch(
-            interviewConversationActions.addLiveConversationMessage({
-              role: 'interviewee',
-              content: serverEvent.transcript,
-            })
-          );
-        }
-      });
-
-      // 7) Create offer & set local description
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-
-      // 8) Send offer to OpenAI’s Realtime endpoint
-      const baseUrl = 'https://api.openai.com/v1/realtime';
-      const model = 'gpt-4o-mini-preview-preview-2024-12-17';
-
-      const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
-        method: 'POST',
-        body: offer.sdp,
-        headers: {
-          Authorization: `Bearer ${EPHEMERAL_KEY}`,
-          'Content-Type': 'application/sdp',
-        },
-      });
-
-      // 9) Set remote description
-      const answer: RTCSessionDescriptionInit = {
-        type: 'answer',
-        sdp: await sdpResponse.text(),
-      };
-      await peerConnection.setRemoteDescription(answer);
-
-      // 10) DataChannel open event
-      dataChannel.onopen = () => {
-        console.log('Data channel is open');
-      };
-
-      onStartInterview();
-      setIsProcessing(false);
-      setInterviewActive(true);
-    } catch (error) {
-      console.error('Error initializing real-time connection:', error);
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'An error occurred while starting the interview.',
-        })
-      );
-      setIsProcessing(false);
-    }
-  }, [dispatch, onStartInterview, promptGenerator]);
-
-  /**
-   * Stop the interview (close everything).
-   */
-  const stopInterview = useCallback(async () => {
-    peerConnectionRef.current?.close();
-    peerConnectionRef.current = null;
-    dataChannelRef.current = null;
-
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      mediaStreamRef.current = null;
-    }
-
-    setInterviewActive(false);
-    await onStopInterview();
-  }, [onStopInterview]);
-
-  /**
-   * Toggle between start/stop interview.
-   */
-  const toggleInterview = useCallback(async () => {
-    if (interviewActive) {
-      await stopInterview();
-    } else {
-      await startInterview();
-    }
-  }, [interviewActive, startInterview, stopInterview]);
-
-  return {
-    interviewActive,
-    isProcessing,
-    toggleInterview,
-  };
-}
+   import { useRef, useState, useCallback } from 'react';
+   import { useDispatch } from 'react-redux';
+   import {
+     alertDialogActions,
+     interviewConversationActions,
+   } from '../../../../store';
+   import {
+     createInterviewSession,
+     InterviewSessionInfo,
+     reportInterviewDuration,
+   } from '../../../component-service-proxy';
+   import { usePromptGenerator } from './use-prompt-generator';
+   
+   interface UseInterviewConnectionProps {
+     onStartInterview: () => void;
+     onStopInterview: () => Promise<void>;
+   }
+   
+   export function useInterviewConnection({
+     onStartInterview,
+     onStopInterview,
+   }: UseInterviewConnectionProps) {
+     const dispatch = useDispatch();
+   
+     const [interviewActive, setInterviewActive] = useState(false);
+     const [isProcessing, setIsProcessing] = useState(false);
+   
+     /* ───── bookkeeping refs ──────────────────────────────── */
+     const startTimeRef      = useRef<number | null>(null);
+     const sessionIdRef      = useRef<string | null>(null);
+     const limitTimerRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
+     const countdownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+   
+     /* ───── WebRTC refs ───────────────────────────────────── */
+     const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+     const dataChannelRef    = useRef<RTCDataChannel | null>(null);
+     const audioRef          = useRef<HTMLAudioElement | null>(null);
+     const mediaStreamRef    = useRef<MediaStream | null>(null);
+   
+     const promptGenerator = usePromptGenerator();
+   
+     /* -------------------------------------------------------
+        Stop interview (cleanup + duration report)
+        ------------------------------------------------------- */
+     const stopInterview = useCallback(async () => {
+       /* clear any running timers */
+       if (limitTimerRef.current)     clearTimeout(limitTimerRef.current);
+       if (countdownTimerRef.current) clearTimeout(countdownTimerRef.current);
+       limitTimerRef.current = countdownTimerRef.current = null;
+   
+       /* close PeerConnection */
+       peerConnectionRef.current?.close();
+       peerConnectionRef.current = null;
+       dataChannelRef.current    = null;
+   
+       /* stop local mic */
+       if (mediaStreamRef.current) {
+         mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+         mediaStreamRef.current = null;
+       }
+   
+       /* record duration → server */
+       if (startTimeRef.current && sessionIdRef.current) {
+         const durationMs = Date.now() - startTimeRef.current;
+         try {
+           await reportInterviewDuration({
+             sessionId: sessionIdRef.current,
+             durationMs,
+           });
+         } catch (err) {
+           console.error('[Interview] failed to report duration', err);
+         }
+       }
+   
+       setInterviewActive(false);
+       await onStopInterview();
+     }, [onStopInterview]);
+   
+     /* -------------------------------------------------------
+        Start interview (creates session + timers)
+        ------------------------------------------------------- */
+     const startInterview = useCallback(async () => {
+       try {
+         setIsProcessing(true);
+   
+         /* 1 ) build tailored prompt */
+         const prompt = await promptGenerator();
+   
+         /* 2 ) ask server for session + time budget */
+         const {
+           sessionId,
+           ephemeralKey,
+           allowedSeconds,
+           countdownSeconds,
+         }: InterviewSessionInfo = await createInterviewSession();
+   
+         sessionIdRef.current = sessionId;
+         startTimeRef.current = Date.now();
+   
+         /* 3 ) WebRTC setup */
+         const pc = new RTCPeerConnection();
+         peerConnectionRef.current = pc;
+   
+         const audioEl = document.createElement('audio');
+         audioEl.autoplay = true;
+         audioRef.current = audioEl;
+         pc.ontrack = (e) => (audioEl.srcObject = e.streams[0]);
+   
+         const mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+         mediaStreamRef.current = mic;
+         pc.addTrack(mic.getTracks()[0]);
+   
+         /* 4 ) data channel */
+         const dc = pc.createDataChannel('oai-events');
+         dataChannelRef.current = dc;
+   
+         dc.addEventListener('message', (ev) => {
+           const evt = JSON.parse(ev.data);
+   
+           if (evt.type === 'session.created') {
+             dc.send(
+               JSON.stringify({
+                 type: 'session.update',
+                 session: {
+                   instructions: prompt,
+                   input_audio_transcription: { model: 'whisper-1' },
+                   turn_detection: {
+                     type: 'server_vad',
+                     silence_duration_ms: 1200,
+                   },
+                 },
+               }),
+             );
+             dc.send(JSON.stringify({ type: 'response.create' }));
+           } else if (
+             evt.type === 'response.done' &&
+             evt?.response?.output?.[0]?.content?.[0]?.transcript
+           ) {
+             dispatch(
+               interviewConversationActions.addLiveConversationMessage({
+                 role: 'interviewer',
+                 content: evt.response.output[0].content[0].transcript,
+               }),
+             );
+           } else if (
+             evt.type ===
+               'conversation.item.input_audio_transcription.completed' &&
+             evt.transcript
+           ) {
+             dispatch(
+               interviewConversationActions.addLiveConversationMessage({
+                 role: 'interviewee',
+                 content: evt.transcript,
+               }),
+             );
+           }
+         });
+   
+         /* 5 ) SDP exchange */
+         const offer = await pc.createOffer();
+         await pc.setLocalDescription(offer);
+   
+         const baseUrl = 'https://api.openai.com/v1/realtime';
+         const model   = 'gpt-4o-mini-preview-preview-2024-12-17';
+   
+         const sdpResp = await fetch(`${baseUrl}?model=${model}`, {
+           method: 'POST',
+           body: offer.sdp,
+           headers: {
+             Authorization: `Bearer ${ephemeralKey}`,
+             'Content-Type': 'application/sdp',
+           },
+         });
+   
+         await pc.setRemoteDescription({
+           type: 'answer',
+           sdp: await sdpResp.text(),
+         });
+   
+         /* 6 ) timers: countdown + hard stop */
+         if (countdownSeconds < allowedSeconds) {
+           countdownTimerRef.current = setTimeout(() => {
+             dispatch(
+               alertDialogActions.showAlert({
+                 title: 'Time notice',
+                 message: `The interview will end in ${countdownSeconds} seconds.`,
+               }),
+             );
+           }, (allowedSeconds - countdownSeconds) * 1000);
+         }
+   
+         limitTimerRef.current = setTimeout(async () => {
+           dispatch(
+             alertDialogActions.showAlert({
+               title: 'Time up',
+               message: 'Your time budget for this interview is over.',
+             }),
+           );
+           await stopInterview();          // graceful end
+         }, allowedSeconds * 1000);
+   
+         /* 7 ) done */
+         onStartInterview();
+         setIsProcessing(false);
+         setInterviewActive(true);
+       } catch (err) {
+         console.error('[Interview] start error', err);
+         dispatch(
+           alertDialogActions.showAlert({
+             title: 'Start Interview Error',
+             message: 'An error occurred while starting the interview.',
+           }),
+         );
+         setIsProcessing(false);
+       }
+     }, [dispatch, promptGenerator, stopInterview, onStartInterview]);
+   
+     /* ------------------------------------------------------- */
+     const toggleInterview = useCallback(async () => {
+       interviewActive ? await stopInterview() : await startInterview();
+     }, [interviewActive, startInterview, stopInterview]);
+   
+     return { interviewActive, isProcessing, toggleInterview };
+   }
+   

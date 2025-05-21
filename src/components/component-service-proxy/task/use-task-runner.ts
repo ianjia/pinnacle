@@ -107,6 +107,24 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
         return;
       }
 
+      const code = error.response.headers['x-error-code'] as string | undefined;
+
+      switch (code) {
+        case 'INSUFFICIENT_CREDITS':
+          dispatch(alertDialogActions.showAlert({
+            title: 'Insufficient Credits',
+            message: 'You do not have enough credits to run this task. Please top up and try again.',
+          }));
+          return;
+    
+        case 'WALLET_NOT_FOUND':
+          dispatch(alertDialogActions.showAlert({
+            title: 'Wallet Not Found',
+            message: 'We could not locate your credit wallet. Please contact support.',
+          }));
+          return;
+      }
+
       // Next, check if it's an AxiosError with 429 status
       if (axios.isAxiosError(error) && error.response?.status === 429) {
         dispatch(
@@ -117,6 +135,8 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
         ); 
 
         console.error("Rate Limit Exceeded:", error.response.data);
+
+        return;
       } else {
         dispatch(
           alertDialogActions.showAlert({
@@ -125,6 +145,8 @@ export const useTaskRunner = ({ taskType, requestData, onResult }: UseTaskRunner
           })
         ); 
         console.error('Error in startTask:', error);
+
+        return;
       }
     }
   };

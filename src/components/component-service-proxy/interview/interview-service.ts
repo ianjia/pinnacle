@@ -1,25 +1,35 @@
 import { api } from "../../../auth";
 import { SERVER_URL } from "../port-url-config";
-import { InterviewStartRequest } from "./request-types";
+import { InterviewDurationPayload, InterviewStartPayload } from "./request-types";
 
-export async function getEphemeralKey(): Promise<string> {
-    try {
-        const tokenResponse = await api.get(`${SERVER_URL}/api/v1/interview/session`);
-        const ephemeralKey = tokenResponse.data.client_secret.value;
+export interface InterviewSessionInfo {
+  sessionId: string;       // the “id” field
+  ephemeralKey: string;    // client_secret.value
+  allowedSeconds: number;    
+  countdownSeconds: number;   
+}
 
-        return ephemeralKey;
-    } catch (error) {
-        console.error("Error getting ephemera key for interview:", error);
-        throw error;
-    }
+export async function createInterviewSession(): Promise<InterviewSessionInfo> {
+        const { data } = await api.get(`${SERVER_URL}/api/v1/interview/session`);
+  // ––– defensive checks –––
+  if (
+    !data?.sessionId ||
+    !data?.ephemeralKey ||
+    typeof data.allowedSeconds !== 'number' ||
+    typeof data.countdownSeconds !== 'number'
+  ) {
+    throw new Error('Malformed response from /interview/session');
   }
+
+  return data;         // ← the hook now receives {sessionId, ephemeralKey, allowedSeconds, countdownSeconds}
+}
 
 export async function getStudentProfileInStr(): Promise<string> {
     try {
         const response = await api.post(
           `${SERVER_URL}/api/v1/interview/start`,
           {
-          } as InterviewStartRequest
+          } as InterviewStartPayload
         );
         
         // The response data is of type InterviewStartResult
@@ -27,4 +37,15 @@ export async function getStudentProfileInStr(): Promise<string> {
       } catch (error) {
         throw error; // throw, as here we do not have dispatch to call AlertDialog
       }
+}
+
+export async function reportInterviewDuration(
+  payload: InterviewDurationPayload
+): Promise<void> {
+  try {
+    await api.post(`${SERVER_URL}/api/v1/interview/duration`, payload);
+  } catch (error) {
+    console.error("Error reporting interview duration:", error);
+    // swallow – the interview itself is already over
+  }
 }
