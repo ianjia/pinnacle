@@ -10,19 +10,25 @@ export interface InterviewSessionInfo {
 }
 
 export async function createInterviewSession(): Promise<InterviewSessionInfo> {
+    try {
         const { data } = await api.get(`${SERVER_URL}/api/v1/interview/session`);
-  // ––– defensive checks –––
-  if (
-    !data?.sessionId ||
-    !data?.ephemeralKey ||
-    typeof data.allowedSeconds !== 'number' ||
-    typeof data.countdownSeconds !== 'number'
-  ) {
-    throw new Error('Malformed response from /interview/session');
-  }
+        
+        if (
+          !data?.sessionId ||
+          !data?.ephemeralKey ||
+          typeof data.allowedSeconds !== 'number' ||
+          typeof data.countdownSeconds !== 'number'
+        ) {
+          throw new Error('Malformed response from /interview/session');
+        }
 
-  return data;         // ← the hook now receives {sessionId, ephemeralKey, allowedSeconds, countdownSeconds}
-}
+        return data;
+
+    } catch (error) {
+      console.error("Error creating interview session:", error);
+      throw error;
+    }
+  }
 
 export async function getStudentProfileInStr(): Promise<string> {
     try {
