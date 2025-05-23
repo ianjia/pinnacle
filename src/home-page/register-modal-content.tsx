@@ -99,7 +99,7 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({
         <form onSubmit={handleRegister} className={styles.form}>
           <input
             type="text"
-            placeholder="Email"
+            placeholder="Email (Use real email, in case you need to reset password)"
             value={email}
             onChange={e => setEmail(e.target.value)}
             className={styles.input}
