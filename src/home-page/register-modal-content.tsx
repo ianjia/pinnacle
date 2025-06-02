@@ -8,7 +8,6 @@ import {
   DialogActions,
   Button,
   Checkbox,
-  Text,
 } from '@fluentui/react-components';
 import { api } from '../auth';
 import { useStyles } from './hooks/use-login-register-modal-styles';

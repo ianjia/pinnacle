@@ -248,7 +248,7 @@ const selectedProfileSlice = createSlice({
             }
         },
         deleteActivity(state, action: PayloadAction<number>) {
-            state.activityList = state.activityList.filter(activity => activity.id != action.payload);
+            state.activityList = state.activityList.filter(activity => activity.id !== action.payload);
         },
 
         // Honor List reducers
@@ -265,7 +265,7 @@ const selectedProfileSlice = createSlice({
             }
         },
         deleteHonor(state, action: PayloadAction<number>) {
-            state.honorList = state.honorList.filter(honor => honor.id != action.payload);
+            state.honorList = state.honorList.filter(honor => honor.id !== action.payload);
         },
 
         // Life story List reducers
@@ -282,7 +282,7 @@ const selectedProfileSlice = createSlice({
             }
         },
         deleteLifeStory(state, action: PayloadAction<number>) {
-            state.lifeStoryList = state.lifeStoryList.filter(lifeStory => lifeStory.id != action.payload);
+            state.lifeStoryList = state.lifeStoryList.filter(lifeStory => lifeStory.id !== action.payload);
         },
 
         // Career goal  List reducers
@@ -299,7 +299,7 @@ const selectedProfileSlice = createSlice({
             }
         },
         deleteCareerGoal(state, action: PayloadAction<number>) {
-            state.careerGoalList = state.careerGoalList.filter(careerGoal => careerGoal.id != action.payload);
+            state.careerGoalList = state.careerGoalList.filter(careerGoal => careerGoal.id !== action.payload);
         }
     }
 });

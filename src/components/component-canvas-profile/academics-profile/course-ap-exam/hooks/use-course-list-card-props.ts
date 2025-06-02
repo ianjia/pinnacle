@@ -5,6 +5,7 @@ import { CourseListCardProps } from "../data-list-types";
 import { useContext } from 'react';
 import { AuthContext } from '../../../../../auth';
 import { courseService } from '../../../../component-service-proxy';
+import { logToServer } from '../../../../../logger/logger';
 
 export function useCourseListCardProps(school_year: SchoolYear): CourseListCardProps {
     const dispatch = useDispatch();
@@ -98,7 +99,7 @@ export function useCourseListCardProps(school_year: SchoolYear): CourseListCardP
           await courseService.deleteById(courseId, userId as number);
         } 
         catch (error) {
-          console.log("error in deleteCourse", error);
+          logToServer('error', { message: "error in deleteCourse", error: error })
           dispatch(
             alertDialogActions.showAlert({
               title: 'Server Error',

@@ -34,8 +34,7 @@ import {
   PopoverTrigger,
   Button as FluentButton
 } from '@fluentui/react-components';
-import { Info24Regular } from '@fluentui/react-icons'; // <-- NEW import
-
+import { Info24Regular } from '@fluentui/react-icons';
 import { useStyles } from './college-list-build-form.styles';
 
 export const CollegeListBuildMainContainer: React.FC = () => {
@@ -176,17 +175,27 @@ export const CollegeListBuildMainContainer: React.FC = () => {
 
   // Called if user clicks "Ok" to confirm clearing the list
   const handleConfirmCleanUpOk = async () => {
+    setShowConfirmCleanUpDialog(false); // hide confirmation dialog
     // Delete all colleges in the current list (sequentially)
+    
     for (const college of collegeList) {
-      await handleDeleteCollege(college.id);
+      try {
+        await handleDeleteCollege(college.id);
+      } catch(error) {
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Saving Error',
+            message: `Error deleting college on server side, please try again, please refresh browser tab and re-login if it still does not work}`,
+          })
+        );
+        return; // do nothing
+      }
     }
     
     // Proceed with the original logic
     setActiveTask('collegeList');
     startCollegeListTask();
   
-    // Hide the dialog
-    setShowConfirmCleanUpDialog(false);
   };
 
   // Called if user clicks "Cancel" in the confirmation dialog
@@ -283,6 +292,19 @@ export const CollegeListBuildMainContainer: React.FC = () => {
     setNewCollegeName('');
   };
 
+  const handleDeleteSingleCollege = async (collegeId: number) => {
+    try {
+      await handleDeleteCollege(collegeId)
+    } catch (e) {
+        dispatch(
+          alertDialogActions.showAlert({
+            title: 'Saving Error',
+            message: `Error deleting college on server side, please try again, please refresh browser tab and re-login if it still does not work}`,
+          })
+        );
+    }
+  };
+
   /** Delete a college by id (from the table’s row) */
   const handleDeleteCollege = async (collegeId: number) => {
     const foundCollege = collegeList.find((c) => c.id === collegeId);
@@ -297,12 +319,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         setSelectedCollege(null);
       }
     } catch (error: any) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Saving Error',
-          message: `Error deleting college on server side: ${error.message}`,
-        })
-      );
+      throw (error)
     }
   };
 
@@ -444,7 +461,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         collegeList={collegeList}
         selectedCollegeId={selectedCollege?.id}
         onSelectCollege={handleSelectCollege}
-        onDeleteCollege={handleDeleteCollege}
+        onDeleteCollege={handleDeleteSingleCollege}
         onAddCollege={handleAddCollege}
       />
 

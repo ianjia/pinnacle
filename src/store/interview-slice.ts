@@ -40,7 +40,7 @@ const conversationSlice = createSlice({
     },
 
     deleteInterviewFromHistory(state, action: PayloadAction<number>) {
-      state.interviewHistoryList = state.interviewHistoryList.filter(interview => interview.id != action.payload);
+      state.interviewHistoryList = state.interviewHistoryList.filter(interview => interview.id !== action.payload);
       if (action.payload === state.liveConverstationId) {
         conversationSlice.caseReducers.resetLiveConversation(state);
       }

@@ -35,7 +35,7 @@ const committeeReviewSlice = createSlice({
       },
   
       deleteReviewFromHistory(state, action: PayloadAction<number>) {
-        state.committeeReviewHistory = state.committeeReviewHistory.filter(review => review.id != action.payload);
+        state.committeeReviewHistory = state.committeeReviewHistory.filter(review => review.id !== action.payload);
         if (action.payload === state.liveReviewId) {
             committeeReviewSlice.caseReducers.resetLiveReview(state);
         }

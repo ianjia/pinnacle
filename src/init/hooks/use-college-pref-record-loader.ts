@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { collegePreferencesActions, RootState, selectedProfileActions } from "../../store";
+import { collegePreferencesActions, RootState } from "../../store";
 import axios from 'axios';
 import { logError } from '../../util';
 import { NO_RECORD_FOUND } from '../../shared';
