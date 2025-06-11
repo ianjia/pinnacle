@@ -10,7 +10,10 @@ export const ConversationDisplay: React.FC<ConversationDisplayProps> = ({ conver
   // Auto-scroll to bottom whenever the conversation updates
   useEffect(() => {
     if (conversationEndRef.current) {
-      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        conversationEndRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',  // <- prevents the document from jumping
+      });    
     }
   }, [conversation]);
 

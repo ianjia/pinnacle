@@ -1,26 +1,28 @@
 import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
+  /* Outer wrapper – fills the space the parent gives it */
   conversationContainer: {
-    // Make the container flexible if needed
     display: 'flex',
     flexDirection: 'column',
-    height: '100%', // ensure it can expand to a certain height, or set a fixed height if preferred
+    height: '100%',
+    overflow: 'hidden',          // ▶ keeps any extra scrollbars out of sight
   },
+
+  /* Scrollable message area */
   conversationBox: {
-    backgroundColor: tokens.colorNeutralBackground1, // or another theme token
+    flex: 1,                     // ▶ take up remaining height
+    overflowY: 'auto',           // ▶ **makes this div scroll instead of page**
+    backgroundColor: tokens.colorNeutralBackground1,
     padding: '30px',
     borderRadius: '5px',
   },
-  conversationItem: {
-    marginBottom: '15px',
-  },
-  left: {
-    textAlign: 'left',
-  },
-  right: {
-    textAlign: 'right',
-  },
+
+  /* Message bubbles -------------------------------------------------- */
+  conversationItem: { marginBottom: '15px' },
+  left:            { textAlign: 'left'  },
+  right:           { textAlign: 'right' },
+
   message: {
     display: 'inline-block',
     padding: '10px 15px',
@@ -29,10 +31,6 @@ export const useStyles = makeStyles({
     wordWrap: 'break-word',
     color: '#212529',
   },
-  interviewer: {
-    backgroundColor: '#e9ecef',
-  },
-  you: {
-    backgroundColor: '#d1ecf1',
-  },
+  interviewer: { backgroundColor: '#e9ecef' },
+  you:         { backgroundColor: '#d1ecf1' },
 });
