@@ -5,6 +5,7 @@ import { EssayBrainStormForm } from './essay-idea-draft/essay-idea-draft-main-pa
 import { EssayWorkshopType } from '../../shared';
 import { EssayHistoryMainContainer } from './essay-history/essay-history-main-container';
 import { useCanvasBackgroundStyles } from '../component-util';
+import { LifeGoalCombinedProfileSections } from './life-goals/combined-profile-section';
 
 export const EssayCanvas: React.FC = () => {
     const activeEssayWorkShop: EssayWorkshopType = useSelector((state: RootState) => state.essayWorkshop.activeWorkshop);
@@ -15,6 +16,7 @@ export const EssayCanvas: React.FC = () => {
         <div className = {styles.container}>
             {activeEssayWorkShop === EssayWorkshopType.IdeaAndDraft && <EssayBrainStormForm/>}
             {activeEssayWorkShop === EssayWorkshopType.History && <EssayHistoryMainContainer/>}
+            {activeEssayWorkShop === EssayWorkshopType.LifeGoals && <LifeGoalCombinedProfileSections/>}
         </div>
     );
 };

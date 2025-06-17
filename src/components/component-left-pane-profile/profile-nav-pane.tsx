@@ -127,22 +127,6 @@ export const ProfileNavPane: React.FC = () => {
             <span className={styles.accordionTitle}>Honors & Awards</span>
           </AccordionHeader>
         </AccordionItem>
-
-        {/* Life & Goals Section */}
-        <AccordionItem value="lifegoal">
-          <AccordionHeader
-            className={mergeClasses(
-              styles.accordionHeader,
-              isActive(ProfileType.LifeGoals) && styles.accordionHeaderActive
-            )}
-            onClick={() => handleProfileSelection(ProfileType.LifeGoals)}
-          >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
-            </span>
-            <span className={styles.accordionTitle}>Life & Goals</span>
-          </AccordionHeader>
-        </AccordionItem>
       </Accordion>
     </div>
   );

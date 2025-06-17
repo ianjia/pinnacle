@@ -65,7 +65,7 @@ export const useStyles = makeStyles({
   },
   actionPanelButton: {
     fontSize: '14px',
-    width: '150px',
+    width: '200px',
     height: '28px',
   },
 

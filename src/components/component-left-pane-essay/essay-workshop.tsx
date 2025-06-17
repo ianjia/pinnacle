@@ -23,7 +23,7 @@ export const EssayWorkshopPane: React.FC = () => {
 
     const [activeSubItem, setActiveSubItem] = useState<string | null>(null);
   
-    const handleProfileSelection = (workshop: EssayWorkshopType) => {
+    const handleEssayWorkshopTyeSelection = (workshop: EssayWorkshopType) => {
       dispatch(essayWorkshopActions.setEssayWorkshop(workshop));
     };
   
@@ -40,6 +40,20 @@ export const EssayWorkshopPane: React.FC = () => {
     return (
       <div className={styles.accordionContainerPane}>
         <Accordion>
+        <AccordionItem value="lifegoal">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(EssayWorkshopType.LifeGoals) && styles.accordionHeaderActive
+            )}
+            onClick={() => handleEssayWorkshopTyeSelection(EssayWorkshopType.LifeGoals)}
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>Life & Goals</span>
+          </AccordionHeader>
+        </AccordionItem>       
           {/* Section 1 */}
           <AccordionItem value="preferences">
             <AccordionHeader
@@ -47,7 +61,7 @@ export const EssayWorkshopPane: React.FC = () => {
                 styles.accordionHeader,
                 isActive(EssayWorkshopType.IdeaAndDraft) && styles.accordionHeaderActive
               )}
-              onClick={() => handleProfileSelection(EssayWorkshopType.IdeaAndDraft)}
+              onClick={() => handleEssayWorkshopTyeSelection(EssayWorkshopType.IdeaAndDraft)}
             >
               <span className={styles.accordionIcon}>
                 <Trophy24Regular />
@@ -86,7 +100,7 @@ export const EssayWorkshopPane: React.FC = () => {
                 styles.accordionHeader,
                 isActive(EssayWorkshopType.History) && styles.accordionHeaderActive
               )}
-              onClick={() => handleProfileSelection(EssayWorkshopType.History)}
+              onClick={() => handleEssayWorkshopTyeSelection(EssayWorkshopType.History)}
             >
               <span className={styles.accordionIcon}>
                 <Trophy24Regular />

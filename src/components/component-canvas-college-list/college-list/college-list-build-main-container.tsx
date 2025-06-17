@@ -386,7 +386,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
               className={styles.actionPanelButton}
               onClick={handleStartCollegeListTask}
             >
-              Create/Refresh List
+              Build College List
             </button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
@@ -411,7 +411,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
               onClick={handleStartEvaluationTask}
               disabled={!selectedCollege || selectedCollege.data !== undefined}
             >
-              Evaluate
+              Evaluate a College
             </button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
@@ -436,7 +436,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
               onClick={handleCommitteeReview}
               disabled={!selectedCollege}
             >
-              Holistic Review
+              Holistic Review on a College
             </button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
@@ -455,6 +455,17 @@ export const CollegeListBuildMainContainer: React.FC = () => {
           </div>
         </div>
       </Card>
+
+
+      {/* If a row is selected AND it has a `reason`, show it in ReviewDisplay */}
+      {selectedCollege?.data?.reason && (
+        <Card className={styles.card}>
+          <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
+            Explanation for My Chance
+          </h3>
+          <ReviewDisplay review={selectedCollege.data.reason} />
+        </Card>
+      )}
 
       {/* The table component */}
       <CollegeListBuildForm
@@ -499,16 +510,6 @@ export const CollegeListBuildMainContainer: React.FC = () => {
             <button onClick={handleAddCollegeCancel}>Cancel</button>
           </div>
         </div>
-      )}
-
-      {/* If a row is selected AND it has a `reason`, show it in ReviewDisplay */}
-      {selectedCollege?.data?.reason && (
-        <Card className={styles.card}>
-          <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
-            Reasons for My Chance
-          </h3>
-          <ReviewDisplay review={selectedCollege.data.reason} />
-        </Card>
       )}
     </div>
   );

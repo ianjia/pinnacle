@@ -261,6 +261,16 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
         College List
       </h2>
 
+      <div className={styles.addItemContainer}>
+        <Button
+          icon={<Add20Regular />}
+          onClick={onAddCollege}
+          className={styles.addItemButton}
+        >
+          Add an Item
+        </Button>
+      </div>
+
       {/* 
         Pass the sorted data to DataGrid.
         Note: DataGrid also supports `sortable` & `onSortChange` props,
@@ -299,15 +309,6 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
         </DataGridBody>
       </DataGrid>
 
-      <div className={styles.addItemContainer}>
-        <Button
-          icon={<Add20Regular />}
-          onClick={onAddCollege}
-          className={styles.addItemButton}
-        >
-          Add an Item
-        </Button>
-      </div>
     </Card>
   );
 };
