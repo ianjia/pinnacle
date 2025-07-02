@@ -13,7 +13,6 @@ export interface InterviewAnalyzeResult extends TaskResult {
     message: string;
 }
 
-// Specific TaskResult interfaces for each type
 export interface CommitteeReviewTaskResult extends TaskResult {
     type: TaskType.CommitteReview;
     review: string;
@@ -47,6 +46,11 @@ export interface EssayRefineTaskResult extends TaskResult {
 export interface BuildCollegeListTaskResult extends TaskResult {
     type: TaskType.BuildCollegeList;
     college_list: CollegeElementLLMOutputSchema[];
+}
+
+export interface CompareCollegeTaskResult extends TaskResult {
+    type: TaskType.CompareCollege;
+    review: string;
 }
 
 export interface GetCollegeDataChanceTaskResult extends TaskResult {

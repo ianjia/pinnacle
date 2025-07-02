@@ -88,6 +88,25 @@ export const InteractionCollegeListPane: React.FC = () => {
             <span className={styles.accordionTitle}>College Navigation</span>
           </AccordionHeader>
         </AccordionItem>
+
+        {/* Navigation College Section */}
+        <AccordionItem value="compare">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(CollegeListWorkshopType.Compare) &&
+                styles.accordionHeaderActive
+            )}
+            onClick={() =>
+              handleProfileSelection(CollegeListWorkshopType.Compare)
+            }
+          >
+            <span className={styles.accordionIcon}>
+              <Trophy24Regular />
+            </span>
+            <span className={styles.accordionTitle}>College Comparison</span>
+          </AccordionHeader>
+        </AccordionItem>
       </Accordion>
     </div>
   );

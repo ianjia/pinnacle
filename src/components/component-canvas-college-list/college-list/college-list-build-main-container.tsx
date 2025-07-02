@@ -436,7 +436,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
               onClick={handleCommitteeReview}
               disabled={!selectedCollege}
             >
-              Holistic Review on a College
+              Holistic Review on My Chance
             </button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
@@ -461,7 +461,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
       {selectedCollege?.data?.reason && (
         <Card className={styles.card}>
           <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
-            Explanation for My Chance
+            My fit with this college
           </h3>
           <ReviewDisplay review={selectedCollege.data.reason} />
         </Card>

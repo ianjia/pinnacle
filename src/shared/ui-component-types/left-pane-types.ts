@@ -24,6 +24,7 @@ export enum CollegeListWorkshopType {
     Preferences,
     List,
     Navigation,
+    Compare,
 }
 
 export enum InterviewWorkshopType {

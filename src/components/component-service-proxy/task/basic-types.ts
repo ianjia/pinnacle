@@ -9,7 +9,8 @@ export enum TaskType {
     MyChance = "MyChance",
     DraftEssay = "DraftEssay",
     RefineEssay = "RefineEssay",
-    AnalyzeInterview = "AnalyzeInterview"
+    AnalyzeInterview = "AnalyzeInterview",
+    CompareCollege = "CompareCollege",
 }
 
 
