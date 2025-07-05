@@ -150,7 +150,7 @@ export const ProfileNavPane: React.FC = () => {
                 isActive(ProfileType.Activity) && styles.accordionTitleActive
               )}
             >
-              Extracurricular Activities
+              Enrichment / Activities
             </span>
           </AccordionHeader>
         </AccordionItem>

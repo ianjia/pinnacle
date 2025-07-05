@@ -5,6 +5,6 @@ export const useLeftContentPaneStyles = makeStyles({
     margin: 0,
     padding: tokens.spacingHorizontalM,  // consistent internal gap
     height: '100%',
-    overflowY: 'auto',
+    // overflowY: 'auto',
   },
 });

@@ -1,35 +1,32 @@
 import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useMainLayoutStyles = makeStyles({
-  /* ------------- outer container ------------------------------------ */
+  /* ---------- outer container ---------- */
   container: {
     display: 'flex',
     width: '100%',
-
-    /* large base padding → spacingHorizontalL = “24px” by default */
+    height: '100vh',                      // fills the viewport
     padding: tokens.spacingHorizontalL,
   },
 
-  /* ------------- shared column styles ------------------------------- */
+  /* ---------- shared column styles ----- */
   column: {
-    /* internal spacing */
+    display: 'flex',                      // let children stack vertically
+    flexDirection: 'column',
+    minHeight: 0,                         // enable scrolling inside children
     padding: '8px',
-
-    /* subtle outline that adapts to light / dark theme */
     border: `1px solid ${tokens.colorNeutralStroke2}`,
-
-    /* neutral surface */
     backgroundColor: tokens.colorNeutralBackground1,
   },
 
-  /* ------------- specialisations ------------------------------------ */
+  /* ---------- specialisations ---------- */
   leftColumn: {
     flexBasis: '400px',
     flexShrink: 0,
-    flexGrow: 0,   // fixed-width sidebar,
+    flexGrow: 0,                          // fixed-width sidebar
   },
 
   rightColumn: {
-    flexGrow: 1,   // fill remaining space
+    flexGrow: 1,                          // fills remaining space
   },
 });

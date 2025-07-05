@@ -13,17 +13,19 @@ export const useTabListStyles = makeStyles({
 
   tabList: {
     flexGrow: 1,
+    overflowX: 'hidden',            // guarantee no horizontal bar
+    overflowY: 'auto',
+    minHeight: 0,
     gap: tokens.spacingVerticalL,
 
     '& .fui-Tab': {
-      paddingInlineStart: tokens.spacingHorizontalM,  
-      paddingInlineEnd: tokens.spacingHorizontalL,     
+      paddingInlineStart: tokens.spacingHorizontalM,
+      paddingInlineEnd:   tokens.spacingHorizontalL,
     },
   },
 
   logoutButton: {
-    alignSelf: 'stretch',
-    width: '90%',
+    alignSelf: 'center',
+    width: '80%',
   },
 });
-
