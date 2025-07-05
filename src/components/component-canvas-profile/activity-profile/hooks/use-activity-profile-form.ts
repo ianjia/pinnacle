@@ -7,7 +7,6 @@ import { activityService } from '../../../component-service-proxy';
 import { AuthContext } from '../../../../auth';
 
 export interface ActivityProfileFormProps {
-    title: string;
     activityList: Activity[];
     onAddActivity: () => void;
     onUpdateActivity: (activity: Activity) => void;
@@ -21,8 +20,6 @@ export const useActivityProfile = () : ActivityProfileFormProps => {
   const activityList = useSelector(
     (state: RootState) => state.selectedProfile.activityList
   );
-
-  const [title] = useState<string>('Activities');
 
   const onAddActivity = async () => {
     try {
@@ -86,7 +83,6 @@ export const useActivityProfile = () : ActivityProfileFormProps => {
   };
 
   return {
-    title,
     activityList,
     onAddActivity,
     onUpdateActivity,

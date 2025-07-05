@@ -1,51 +1,104 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-    Accordion,
-    AccordionItem,
-    AccordionHeader,
-} from "@fluentui/react-components";
-import { Trophy24Regular } from "@fluentui/react-icons";
+  Accordion,
+  AccordionItem,
+  AccordionHeader,
+  mergeClasses,
+} from '@fluentui/react-components';
+import {
+  ClipboardCheckmark24Regular,  // Conduct review
+  History24Regular,              // Review history
+} from '@fluentui/react-icons';
 
-import { RootState, AppDispatch, committeeReviewActions } from '../../store';
+import {
+  RootState,
+  AppDispatch,
+  committeeReviewActions,
+} from '../../store';
 import { CommitteeReviewWorkshopType } from '../../shared';
-import './interaction-committee-review.css';
+import { useAccordionStyles } from '../component-util';
 
 export const InteractionCommitteeReviewPane: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const activeWorkshop = useSelector((state: RootState) => state.committeeReview.activeCommitteeReviewWorkshop);
+  const dispatch = useDispatch<AppDispatch>();
+  const styles = useAccordionStyles();
 
-    const handleProfileSelection = (workshop: CommitteeReviewWorkshopType) => {
-        dispatch(committeeReviewActions.setActiveCommitteeReviewWorkshop(workshop));
-    };
+  const activeWorkshop = useSelector(
+    (state: RootState) => state.committeeReview.activeCommitteeReviewWorkshop,
+  );
 
-    const isActive = (workshop: CommitteeReviewWorkshopType) => activeWorkshop === workshop;
+  const handleSelect = (w: CommitteeReviewWorkshopType) =>
+    dispatch(committeeReviewActions.setActiveCommitteeReviewWorkshop(w));
 
-    return (
-        <div className="interaction-college-list-pane">
-            <Accordion>
-                {/* College Preferences Section */}
-                <AccordionItem value="preferences">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(CommitteeReviewWorkshopType.CurrentReview) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(CommitteeReviewWorkshopType.CurrentReview)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Conduct Holistic Review</span>
-                    </AccordionHeader>
-                </AccordionItem>
+  const isActive = (w: CommitteeReviewWorkshopType) => activeWorkshop === w;
 
-                {/* Build List Section */}
-                <AccordionItem value="build-list">
-                    <AccordionHeader
-                        className={`accordion-header ${isActive(CommitteeReviewWorkshopType.ReviewHistory) ? 'active' : ''}`}
-                        onClick={() => handleProfileSelection(CommitteeReviewWorkshopType.ReviewHistory)}
-                    >
-                        <span className="accordion-icon"><Trophy24Regular /></span>
-                        <span className="accordion-title">Holistic Review History</span>
-                    </AccordionHeader>
-                </AccordionItem>
-            </Accordion>
-        </div>
-    );
+  return (
+    <div className={styles.accordionContainerPane}>
+      <Accordion>
+        {/* Conduct holistic review */}
+        <AccordionItem value="current-review">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(CommitteeReviewWorkshopType.CurrentReview) &&
+                styles.accordionHeaderActive,
+            )}
+            onClick={() => handleSelect(CommitteeReviewWorkshopType.CurrentReview)}
+          >
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(CommitteeReviewWorkshopType.CurrentReview) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <ClipboardCheckmark24Regular />
+            </span>
+
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(CommitteeReviewWorkshopType.CurrentReview) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              Conduct Holistic Review
+            </span>
+          </AccordionHeader>
+        </AccordionItem>
+
+        {/* Holistic review history */}
+        <AccordionItem value="review-history">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(CommitteeReviewWorkshopType.ReviewHistory) &&
+                styles.accordionHeaderActive,
+            )}
+            onClick={() => handleSelect(CommitteeReviewWorkshopType.ReviewHistory)}
+          >
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(CommitteeReviewWorkshopType.ReviewHistory) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <History24Regular />
+            </span>
+
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(CommitteeReviewWorkshopType.ReviewHistory) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              Holistic Review History
+            </span>
+          </AccordionHeader>
+        </AccordionItem>
+      </Accordion>
+    </div>
+  );
 };

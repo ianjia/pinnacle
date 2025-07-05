@@ -4,111 +4,151 @@ import {
   Accordion,
   AccordionItem,
   AccordionHeader,
-  mergeClasses,
   AccordionPanel,
+  mergeClasses,
 } from '@fluentui/react-components';
-import { Trophy24Regular } from '@fluentui/react-icons';
+import {
+  Target24Regular,
+  Compose24Regular,
+  History24Regular,
+} from '@fluentui/react-icons';
 
 import { RootState, AppDispatch, essayWorkshopActions } from '../../store';
 import { EssayWorkshopType } from '../../shared';
-import { useAccordionStyles } from '../component-util'; // This is your makeStyles import
+import { useAccordionStyles } from '../component-util';
 
 export const EssayWorkshopPane: React.FC = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const styles = useAccordionStyles();
-  
-    const activeWorkshop = useSelector(
-      (state: RootState) => state.essayWorkshop.activeWorkshop
-    );
+  const dispatch = useDispatch<AppDispatch>();
+  const styles = useAccordionStyles();
 
-    const [activeSubItem, setActiveSubItem] = useState<string | null>(null);
-  
-    const handleEssayWorkshopTyeSelection = (workshop: EssayWorkshopType) => {
-      dispatch(essayWorkshopActions.setEssayWorkshop(workshop));
-    };
-  
-    const scrollToSection = (id: string) => {
-        const section = document.getElementById(id);
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-        setActiveSubItem(id); // Mark this sub-item as active
-    };
+  const activeWorkshop = useSelector(
+    (state: RootState) => state.essayWorkshop.activeWorkshop,
+  );
+  const [activeSubItem, setActiveSubItem] = useState<string | null>(null);
 
-    const isActive = (workshop: EssayWorkshopType) => activeWorkshop === workshop;
-  
-    return (
-      <div className={styles.accordionContainerPane}>
-        <Accordion>
-        <AccordionItem value="lifegoal">
+  const handleSelect = (w: EssayWorkshopType) =>
+    dispatch(essayWorkshopActions.setEssayWorkshop(w));
+
+  const isActive = (w: EssayWorkshopType) => activeWorkshop === w;
+
+  const scrollToSection = (id: string) => {
+    const section = document.getElementById(id);
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveSubItem(id);
+  };
+
+  return (
+    <div className={styles.accordionContainerPane}>
+      <Accordion>
+
+        {/* Life & Goals */}
+        <AccordionItem value="life-goals">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
-              isActive(EssayWorkshopType.LifeGoals) && styles.accordionHeaderActive
+              isActive(EssayWorkshopType.LifeGoals) && styles.accordionHeaderActive,
             )}
-            onClick={() => handleEssayWorkshopTyeSelection(EssayWorkshopType.LifeGoals)}
+            onClick={() => handleSelect(EssayWorkshopType.LifeGoals)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(EssayWorkshopType.LifeGoals) && styles.accordionIconActive,
+              )}
+            >
+              <Target24Regular />
             </span>
-            <span className={styles.accordionTitle}>Life & Goals</span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(EssayWorkshopType.LifeGoals) && styles.accordionTitleActive,
+              )}
+            >
+              Life&nbsp;&amp;&nbsp;Goals
+            </span>
           </AccordionHeader>
-        </AccordionItem>       
-          {/* Section 1 */}
-          <AccordionItem value="preferences">
-            <AccordionHeader
+        </AccordionItem>
+
+        {/* Essay Ideas & Draft */}
+        <AccordionItem value="ideas-draft">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(EssayWorkshopType.IdeaAndDraft) && styles.accordionHeaderActive,
+            )}
+            onClick={() => handleSelect(EssayWorkshopType.IdeaAndDraft)}
+          >
+            <span
               className={mergeClasses(
-                styles.accordionHeader,
-                isActive(EssayWorkshopType.IdeaAndDraft) && styles.accordionHeaderActive
+                styles.accordionIcon,
+                isActive(EssayWorkshopType.IdeaAndDraft) && styles.accordionIconActive,
               )}
-              onClick={() => handleEssayWorkshopTyeSelection(EssayWorkshopType.IdeaAndDraft)}
             >
-              <span className={styles.accordionIcon}>
-                <Trophy24Regular />
-              </span>
-              <span className={styles.accordionTitle}>Essay Ideas & Draft</span>
-            </AccordionHeader>
-        
-            <AccordionPanel>
-                <ul className={styles.subItemList}>
-                {[
-                    { id: 'essay-prompt-card', label: 'Essay Prompt' },
-                    { id: 'essay-prompt-analysis', label: 'Prompt Analysis' },
-                    { id: 'essay-ideas-card', label: 'Essay Ideas' },
-                    { id: 'essay-draft-card', label: 'Essay Draft' },
-                ].map(({ id, label }) => (
-                    <li key={id} className={styles.subItemListItem}>
-                    <button
-                        className={mergeClasses(
-                        styles.subItemButton,
-                        activeSubItem === id && styles.subItemButtonActive
-                        )}
-                        onClick={() => scrollToSection(id)}
-                    >
-                        {label}
-                    </button>
-                    </li>
-                ))}
-                </ul>
+              <Compose24Regular />
+            </span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(EssayWorkshopType.IdeaAndDraft) && styles.accordionTitleActive,
+              )}
+            >
+              Essay Ideas&nbsp;&amp;&nbsp;Draft
+            </span>
+          </AccordionHeader>
+
+          <AccordionPanel>
+            <ul className={styles.subItemList}>
+              {[
+                { id: 'essay-prompt-card', label: 'Essay Prompt' },
+                { id: 'essay-prompt-analysis', label: 'Prompt Analysis' },
+                { id: 'essay-ideas-card', label: 'Essay Ideas' },
+                { id: 'essay-draft-card', label: 'Essay Draft' },
+              ].map(({ id, label }) => (
+                <li key={id} className={styles.subItemListItem}>
+                  <button
+                    className={mergeClasses(
+                      styles.subItemButton,
+                      activeSubItem === id && styles.subItemButtonActive,
+                    )}
+                    onClick={() => scrollToSection(id)}
+                  >
+                    {label}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </AccordionPanel>
-          </AccordionItem>
-  
-          {/* Section 2 */}
-          <AccordionItem value="build-list">
-            <AccordionHeader
+        </AccordionItem>
+
+        {/* Essay History */}
+        <AccordionItem value="history">
+          <AccordionHeader
+            className={mergeClasses(
+              styles.accordionHeader,
+              isActive(EssayWorkshopType.History) && styles.accordionHeaderActive,
+            )}
+            onClick={() => handleSelect(EssayWorkshopType.History)}
+          >
+            <span
               className={mergeClasses(
-                styles.accordionHeader,
-                isActive(EssayWorkshopType.History) && styles.accordionHeaderActive
+                styles.accordionIcon,
+                isActive(EssayWorkshopType.History) && styles.accordionIconActive,
               )}
-              onClick={() => handleEssayWorkshopTyeSelection(EssayWorkshopType.History)}
             >
-              <span className={styles.accordionIcon}>
-                <Trophy24Regular />
-              </span>
-              <span className={styles.accordionTitle}>Essay History</span>
-            </AccordionHeader>
-          </AccordionItem>
-        </Accordion>
-      </div>
-    );
-  };
+              <History24Regular />
+            </span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(EssayWorkshopType.History) && styles.accordionTitleActive,
+              )}
+            >
+              Essay History
+            </span>
+          </AccordionHeader>
+        </AccordionItem>
+
+      </Accordion>
+    </div>
+  );
+};

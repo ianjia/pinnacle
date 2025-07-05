@@ -9,7 +9,6 @@ export const ActivityProfileForm: React.FC = () => {
   const styles = useStyles();
 
   const {
-    title,
     activityList,
     onAddActivity,
     onUpdateActivity,
@@ -18,7 +17,6 @@ export const ActivityProfileForm: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.header}>{title}</h2>
       {activityList.map((activity) => (
         <div key={activity.id} className={styles.activityContainer}>
           <ActivityCard activity={activity} onUpdateActivity={onUpdateActivity} />
@@ -30,11 +28,13 @@ export const ActivityProfileForm: React.FC = () => {
           />
         </div>
       ))}
+
       <Button 
-       icon={<Add20Regular />}
-       className={styles.addButton} onClick={onAddActivity}>
-        Add Activity
+        icon={<Add20Regular />}
+        className={styles.addButton} onClick={onAddActivity}>
+          Add Activity
       </Button>
+
     </div>
   );
 };

@@ -7,7 +7,6 @@ import { honorService } from '../../../component-service-proxy';
 import { AuthContext } from '../../../../auth';
 
 interface HonorProfileFormProps {
-  title: string;
   honorList: Honor[];
   onAddHonor: () => void;
   onUpdateHonor: (honor: Honor) => void;
@@ -20,7 +19,6 @@ export const useHonorProfile = (): HonorProfileFormProps => {
 
   const honorList = useSelector((state: RootState) => state.selectedProfile.honorList);
 
-  const [title] = useState<string>('Honors');
 
   const onAddHonor = async () => {
     try {
@@ -82,7 +80,6 @@ export const useHonorProfile = (): HonorProfileFormProps => {
   };
 
   return {
-    title,
     honorList,
     onAddHonor,
     onUpdateHonor,

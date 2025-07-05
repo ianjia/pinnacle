@@ -5,9 +5,14 @@ import {
   Accordion,
   AccordionItem,
   AccordionHeader,
-  mergeClasses, // <-- import from @fluentui/react-components
+  mergeClasses,
 } from '@fluentui/react-components';
-import { Trophy24Regular } from '@fluentui/react-icons';
+import {
+  Settings24Regular,
+  ClipboardBulletListLtrRegular,
+  Map24Regular,
+  DataBarHorizontal24Regular,
+} from '@fluentui/react-icons';
 
 import {
   collegeListWorkshopActions,
@@ -22,89 +27,138 @@ export const InteractionCollegeListPane: React.FC = () => {
   const styles = useAccordionStyles();
 
   const activeWorkshop = useSelector(
-    (state: RootState) => state.collegeListWorkshop.activeCollegeListWorkshop
+    (state: RootState) => state.collegeListWorkshop.activeCollegeListWorkshop,
   );
 
-  const handleProfileSelection = (workshop: CollegeListWorkshopType) => {
-    dispatch(collegeListWorkshopActions.setActiveCollegeListWorkshop(workshop));
-  };
+  const handleSelect = (w: CollegeListWorkshopType) =>
+    dispatch(collegeListWorkshopActions.setActiveCollegeListWorkshop(w));
 
-  const isActive = (workshop: CollegeListWorkshopType) =>
-    activeWorkshop === workshop;
+  const isActive = (w: CollegeListWorkshopType) => activeWorkshop === w;
 
   return (
     <div className={styles.accordionContainerPane}>
       <Accordion>
-        {/* College Preferences Section */}
+        {/* College Preferences */}
         <AccordionItem value="preferences">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
               isActive(CollegeListWorkshopType.Preferences) &&
-                styles.accordionHeaderActive
+                styles.accordionHeaderActive,
             )}
-            onClick={() =>
-              handleProfileSelection(CollegeListWorkshopType.Preferences)
-            }
+            onClick={() => handleSelect(CollegeListWorkshopType.Preferences)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(CollegeListWorkshopType.Preferences) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <Settings24Regular />
             </span>
-            <span className={styles.accordionTitle}>College Preferences</span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(CollegeListWorkshopType.Preferences) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              College Preferences
+            </span>
           </AccordionHeader>
         </AccordionItem>
 
-        {/* Build List Section */}
+        {/* Build College List */}
         <AccordionItem value="build-list">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
-              isActive(CollegeListWorkshopType.List) && styles.accordionHeaderActive
+              isActive(CollegeListWorkshopType.List) &&
+                styles.accordionHeaderActive,
             )}
-            onClick={() => handleProfileSelection(CollegeListWorkshopType.List)}
+            onClick={() => handleSelect(CollegeListWorkshopType.List)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(CollegeListWorkshopType.List) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <ClipboardBulletListLtrRegular />
             </span>
-            <span className={styles.accordionTitle}>Build College List</span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(CollegeListWorkshopType.List) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              Build College List
+            </span>
           </AccordionHeader>
         </AccordionItem>
 
-        {/* Navigation College Section */}
+        {/* College Navigation */}
         <AccordionItem value="navigation">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
               isActive(CollegeListWorkshopType.Navigation) &&
-                styles.accordionHeaderActive
+                styles.accordionHeaderActive,
             )}
-            onClick={() =>
-              handleProfileSelection(CollegeListWorkshopType.Navigation)
-            }
+            onClick={() => handleSelect(CollegeListWorkshopType.Navigation)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(CollegeListWorkshopType.Navigation) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <Map24Regular />
             </span>
-            <span className={styles.accordionTitle}>College Navigation</span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(CollegeListWorkshopType.Navigation) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              College Navigation
+            </span>
           </AccordionHeader>
         </AccordionItem>
 
-        {/* Navigation College Section */}
+        {/* College Comparison */}
         <AccordionItem value="compare">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
               isActive(CollegeListWorkshopType.Compare) &&
-                styles.accordionHeaderActive
+                styles.accordionHeaderActive,
             )}
-            onClick={() =>
-              handleProfileSelection(CollegeListWorkshopType.Compare)
-            }
+            onClick={() => handleSelect(CollegeListWorkshopType.Compare)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(CollegeListWorkshopType.Compare) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <DataBarHorizontal24Regular />
             </span>
-            <span className={styles.accordionTitle}>College Comparison</span>
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(CollegeListWorkshopType.Compare) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              College Comparison
+            </span>
           </AccordionHeader>
         </AccordionItem>
       </Accordion>

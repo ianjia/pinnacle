@@ -1,15 +1,21 @@
-/*** interaction-interview-pane.tsx ***/
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Accordion,
   AccordionItem,
   AccordionHeader,
-  mergeClasses, // <-- Import this for combining classes
+  mergeClasses,
 } from '@fluentui/react-components';
-import { Trophy24Regular } from '@fluentui/react-icons';
+import {
+  PersonFeedback24Regular,   // Conduct Interview
+  History24Regular,          // Interview History
+} from '@fluentui/react-icons';
 
-import { RootState, AppDispatch, interviewConversationActions } from '../../store';
+import {
+  RootState,
+  AppDispatch,
+  interviewConversationActions,
+} from '../../store';
 import { InterviewWorkshopType } from '../../shared';
 import { useAccordionStyles } from '../component-util';
 
@@ -19,53 +25,78 @@ export const InteractionInterviewPane: React.FC = () => {
 
   // Redux state
   const activeWorkshop = useSelector(
-    (state: RootState) => state.conversation.activeInterviewWorkshop
+    (state: RootState) => state.conversation.activeInterviewWorkshop,
   );
 
-  // Handlers
-  const handleProfileSelection = (workshop: InterviewWorkshopType) => {
-    dispatch(interviewConversationActions.setActiveInterviewWorkshop(workshop));
-  };
+  const handleSelect = (w: InterviewWorkshopType) =>
+    dispatch(interviewConversationActions.setActiveInterviewWorkshop(w));
 
-  const isActive = (workshop: InterviewWorkshopType) =>
-    activeWorkshop === workshop;
+  const isActive = (w: InterviewWorkshopType) => activeWorkshop === w;
 
   return (
     <div className={styles.accordionContainerPane}>
       <Accordion>
-        {/* Live Interview Section */}
-        <AccordionItem value="preferences">
+        {/* Conduct Interview */}
+        <AccordionItem value="live">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
               isActive(InterviewWorkshopType.LiveInterview) &&
-                styles.accordionHeaderActive
+                styles.accordionHeaderActive,
             )}
-            onClick={() => handleProfileSelection(InterviewWorkshopType.LiveInterview)}
+            onClick={() => handleSelect(InterviewWorkshopType.LiveInterview)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(InterviewWorkshopType.LiveInterview) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <PersonFeedback24Regular />
             </span>
-            <span className={styles.accordionTitle}>Conduct Interview</span>
+
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(InterviewWorkshopType.LiveInterview) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              Conduct Interview
+            </span>
           </AccordionHeader>
         </AccordionItem>
 
-        {/* Interview History Section */}
-        <AccordionItem value="build-list">
+        {/* Interview History */}
+        <AccordionItem value="history">
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
               isActive(InterviewWorkshopType.InterviewHistory) &&
-                styles.accordionHeaderActive
+                styles.accordionHeaderActive,
             )}
-            onClick={() =>
-              handleProfileSelection(InterviewWorkshopType.InterviewHistory)
-            }
+            onClick={() => handleSelect(InterviewWorkshopType.InterviewHistory)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(InterviewWorkshopType.InterviewHistory) &&
+                  styles.accordionIconActive,
+              )}
+            >
+              <History24Regular />
             </span>
-            <span className={styles.accordionTitle}>Interview History</span>
+
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(InterviewWorkshopType.InterviewHistory) &&
+                  styles.accordionTitleActive,
+              )}
+            >
+              Interview History
+            </span>
           </AccordionHeader>
         </AccordionItem>
       </Accordion>

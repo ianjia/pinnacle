@@ -8,3 +8,4 @@ export * from './college-preference-slice';
 export * from './college-list-slice';
 export * from './alert-dialog-slice';
 export * from './check-info-status';
+export * from './help-resource-slice';

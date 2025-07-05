@@ -41,3 +41,11 @@ export enum CommitteeReviewWorkshopType {
     CurrentReview,
     ReviewHistory,
 }
+
+export enum HelpResourceTermType {
+    Help,
+    Resource,
+    Terms,
+    About,
+}
+

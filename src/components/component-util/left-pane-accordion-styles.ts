@@ -1,77 +1,101 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useAccordionStyles = makeStyles({
+  /* ───────── container ───────── */
   accordionContainerPane: {
-    width: '250px',
-    padding: '16px',
+    width: '240px',
+    padding: `${tokens.spacingVerticalM} ${tokens.spacingHorizontalM}`,
     overflowY: 'auto',
+    backgroundColor: tokens.colorNeutralBackground1,
   },
-  
-  // Accordion
+
+  /* ───────── header (neutral) ───────── */
   accordionHeader: {
+    display: 'flex',
     alignItems: 'center',
-    gap: '10px',
-    fontSize: '16px',
-    fontWeight: 'bold',
+    gap: tokens.spacingHorizontalS,
+    fontSize: tokens.fontSizeBase400,
+    fontWeight: tokens.fontWeightRegular,
     cursor: 'pointer',
-    display: 'flex', // ensures flex layout
+    color: tokens.colorNeutralForeground1,
+    borderRadius: tokens.borderRadiusMedium,
+
+    '& .fui-AccordionHeader__content': {
+      display: 'flex',
+      alignItems: 'center',
+      gap: tokens.spacingHorizontalS,
+    },
+
+    ':hover': { backgroundColor: tokens.colorNeutralBackground1Hover },
+    ':focus': {
+      outline: `2px solid ${tokens.colorStrokeFocus2}`,
+      outlineOffset: '2px',
+    },
   },
 
+  /* ───────── header (active) ───────── */
   accordionHeaderActive: {
-    color: '#0078d4',
+    '& .fui-AccordionHeader__content': {
+      fontWeight: tokens.fontWeightSemibold,
+    },
+    '& .fui-AccordionHeader__expandIcon': {
+      color: tokens.colorBrandForeground1,
+    },
   },
 
-  accordionTitle: {
-    flexGrow: 1,
-  },
-
+  /* ───────── custom icon span ───────── */
   accordionIcon: {
     display: 'flex',
     alignItems: 'center',
+    color: 'inherit',
+    marginInlineEnd: tokens.spacingHorizontalS,
   },
+  accordionIconActive: { color: tokens.colorBrandForeground1 },
 
-  // Sub-items
+  /* ───────── title slot ───────── */
+  accordionTitle: { flexGrow: 1 },
+  accordionTitleActive: { fontWeight: tokens.fontWeightSemibold },
+
+  /* ───────── sub-items ───────── */
   subItemList: {
     listStyleType: 'none',
-    padding: '0',
-    margin: '0 0 0 30px', // Increased indent for sub-items
-  },
-  subItemListItem: {
-    marginBottom: '0px', // Spacing for list items
-  },
+    margin: 0,
 
-  // Button (with :hover and ::before pseudo-classes)
+    /* ▼ moved panel further right (≈ 28 + 12 = 40 px) */
+    paddingLeft: `calc(${tokens.spacingHorizontalXXXL} + ${tokens.spacingHorizontalM})`,
+  },
+  subItemListItem: { marginBottom: tokens.spacingVerticalXXS },
+
   subItemButton: {
+    border: 0,
     background: 'none',
-    border: 'none',
-    fontSize: '14px',
-    color: '#333',
+    fontSize: tokens.fontSizeBase300,
+    color: tokens.colorNeutralForeground2,
     textAlign: 'left',
     cursor: 'pointer',
-    padding: '0px 0',
     width: '100%',
-    display: 'inline-block',
-    transition: 'color 0.3s ease',
-    marginLeft: '10px', // Additional indent for button text
+    padding: 0,
+    transition: 'text-decoration .2s',
 
-    // Pseudo-element for arrow
     '::before': {
-      content: '">"', // or "\\003E" for the unicode character
-      marginRight: '10px',
+      content: '">"',
+      marginInlineEnd: tokens.spacingHorizontalM, // arrow–label gap
       fontWeight: 'bold',
+      color: tokens.colorNeutralForeground2,      // arrow neutral by default
     },
 
-    // Pseudo-class for hover
-    ':hover': {
-      color: '#0078d4',
-      textDecoration: 'underline',
+    /* hover matches main headers: underline only */
+    ':hover': { textDecoration: 'underline' },
+    ':focus': {
+      outline: `2px solid ${tokens.colorStrokeFocus2}`,
+      outlineOffset: '1px',
     },
   },
 
-  // Active state for subItemButton
+  /* selected sub-item: bold label + brand arrow */
   subItemButtonActive: {
-    color: '#0078d4',
-    fontWeight: 'bold',
-    textDecoration: 'none', // Remove underline for active state
+    fontWeight: tokens.fontWeightSemibold,
+    textDecoration: 'none',
+    '&::before': { color: tokens.colorBrandForeground1 },
   },
 });

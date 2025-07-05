@@ -5,9 +5,9 @@ import {
   AccordionItem,
   AccordionHeader,
   AccordionPanel,
-  mergeClasses, // <-- import from @fluentui/react-components
+  mergeClasses,
 } from '@fluentui/react-components';
-import { Trophy24Regular } from '@fluentui/react-icons';
+import { BookOpen24Regular, ContactCard24Regular, PeopleCommunity24Regular, Ribbon24Regular } from '@fluentui/react-icons';
 
 import { selectedProfileActions, RootState, AppDispatch } from '../../store';
 import { ProfileType } from '../../shared';
@@ -41,34 +41,63 @@ export const ProfileNavPane: React.FC = () => {
       <Accordion>
         {/* Student Section */}
         <AccordionItem value="student">
-          <AccordionHeader
+        <AccordionHeader
+          className={mergeClasses(
+            styles.accordionHeader,
+            isActive(ProfileType.Student) && styles.accordionHeaderActive   // icon + arrow tint
+          )}
+          onClick={() => handleProfileSelection(ProfileType.Student)}
+        >
+          <span
             className={mergeClasses(
-              styles.accordionHeader,
-              isActive(ProfileType.Student) && styles.accordionHeaderActive
+              styles.accordionIcon,
+              isActive(ProfileType.Student) && styles.accordionIconActive    // icon colour
             )}
-            onClick={() => handleProfileSelection(ProfileType.Student)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
-            </span>
-            <span className={styles.accordionTitle}>Student Information</span>
-          </AccordionHeader>
+            <ContactCard24Regular />
+          </span>
+
+          {/* 🔹 apply bold class only when this item is active */}
+          <span
+            className={mergeClasses(
+              styles.accordionTitle,
+              isActive(ProfileType.Student) && styles.accordionTitleActive
+            )}
+          >
+            Student Information
+          </span>
+        </AccordionHeader>
+
         </AccordionItem>
 
         {/* Academics Section */}
         <AccordionItem value="academics">
-          <AccordionHeader
+        <AccordionHeader
+          className={mergeClasses(
+            styles.accordionHeader,
+            isActive(ProfileType.Academic) && styles.accordionHeaderActive   // icon + arrow tint
+          )}
+          onClick={() => handleProfileSelection(ProfileType.Academic)}
+        >
+          <span
             className={mergeClasses(
-              styles.accordionHeader,
-              isActive(ProfileType.Academic) && styles.accordionHeaderActive
+              styles.accordionIcon,
+              isActive(ProfileType.Academic) && styles.accordionIconActive    // icon colour
             )}
-            onClick={() => handleProfileSelection(ProfileType.Academic)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
-            </span>
-            <span className={styles.accordionTitle}>School Academics</span>
-          </AccordionHeader>
+            <BookOpen24Regular />
+          </span>
+
+          {/* 🔹 apply bold class only when this item is active */}
+          <span
+            className={mergeClasses(
+              styles.accordionTitle,
+              isActive(ProfileType.Academic) && styles.accordionTitleActive
+            )}
+          >
+            School Academics
+          </span>
+        </AccordionHeader>
 
           <AccordionPanel>
             <ul className={styles.subItemList}>
@@ -101,14 +130,28 @@ export const ProfileNavPane: React.FC = () => {
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
-              isActive(ProfileType.Activity) && styles.accordionHeaderActive
+              isActive(ProfileType.Activity) && styles.accordionHeaderActive   // icon + arrow tint
             )}
             onClick={() => handleProfileSelection(ProfileType.Activity)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(ProfileType.Activity) && styles.accordionIconActive    // icon colour
+              )}
+            >
+              <PeopleCommunity24Regular />
             </span>
-            <span className={styles.accordionTitle}>Activities</span>
+
+            {/* 🔹 apply bold class only when this item is active */}
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(ProfileType.Activity) && styles.accordionTitleActive
+              )}
+            >
+              Extracurricular Activities
+            </span>
           </AccordionHeader>
         </AccordionItem>
 
@@ -117,14 +160,28 @@ export const ProfileNavPane: React.FC = () => {
           <AccordionHeader
             className={mergeClasses(
               styles.accordionHeader,
-              isActive(ProfileType.Honor) && styles.accordionHeaderActive
+              isActive(ProfileType.Honor) && styles.accordionHeaderActive   // icon + arrow tint
             )}
             onClick={() => handleProfileSelection(ProfileType.Honor)}
           >
-            <span className={styles.accordionIcon}>
-              <Trophy24Regular />
+            <span
+              className={mergeClasses(
+                styles.accordionIcon,
+                isActive(ProfileType.Honor) && styles.accordionIconActive    // icon colour
+              )}
+            >
+              <Ribbon24Regular />
             </span>
-            <span className={styles.accordionTitle}>Honors & Awards</span>
+
+            {/* 🔹 apply bold class only when this item is active */}
+            <span
+              className={mergeClasses(
+                styles.accordionTitle,
+                isActive(ProfileType.Honor) && styles.accordionTitleActive
+              )}
+            >
+              Honors / Awards
+            </span>
           </AccordionHeader>
         </AccordionItem>
       </Accordion>

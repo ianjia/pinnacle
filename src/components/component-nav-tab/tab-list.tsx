@@ -1,77 +1,99 @@
-import React, { useContext } from 'react';
+import {
+  PersonRegular,
+  HatGraduationRegular,
+  PersonFeedbackRegular,
+  ClipboardCheckmarkRegular,
+  ComposeRegular,
+  QuestionCircleRegular,
+} from '@fluentui/react-icons';
+
+import React from 'react';
+import {
+  TabList,
+  Tab,
+  SelectTabData,
+  SelectTabEvent,
+  Button,
+} from '@fluentui/react-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../store';
-import { navigationTabActions } from '../../store';
+import { RootState, AppDispatch, navigationTabActions } from '../../store';
 import { NavTabType } from '../../shared';
-import { NavigationTab } from './navigation-tab';
 import { AuthContext } from '../../auth/auth-context';
+import { useTabListStyles } from './hooks/use-tab-list-styles';
 
-export const TabList: React.FC = () => {
+export const LeftPaneTabList: React.FC = () => {
+  const styles = useTabListStyles();
   const dispatch = useDispatch<AppDispatch>();
-  const activeTab = useSelector(
-    (state: RootState) => state.navigationTab.activeTab
+  const active = useSelector(
+    (state: RootState) => state.navigationTab.activeTab,
   );
+  const { logout } = React.useContext(AuthContext);
 
-  /* ── log-out comes from AuthContext ── */
-  const { logout } = useContext(AuthContext);
-
-  const handleTabClick = (type: NavTabType) => {
-    dispatch(navigationTabActions.setActiveTab(type));
+  const onSelect = (_ev: SelectTabEvent, data: SelectTabData) => {
+    dispatch(navigationTabActions.setActiveTab(data.value as NavTabType));
   };
 
   return (
-    <div
-      className="tab-list"
-      style={{ display: 'flex', alignItems: 'center', gap: 8 }}
-    >
-      {/* ───────────────  Log-out button  ─────────────── */}
-      <button
-        onClick={logout}
-        style={{
-          marginTop: 22,
-          marginBottom: 22,
-          padding: '6px 12px',
-          cursor: 'pointer',
-          borderRadius: 4,
-          border: '1px solid #ccc',
-          background: '#fff',
-          fontWeight: 500,
-        }}
-      >
-        Log out
-      </button>
+    <aside className={styles.rail}>
 
-      {/* ───────────────  Navigation tabs  ─────────────── */}
-      <NavigationTab
-        title="Student Profile"
-        isActive={activeTab === NavTabType.Profile}
-        onClick={() => handleTabClick(NavTabType.Profile)}
-      />
-      <NavigationTab
-        title="College Shortlist"
-        isActive={activeTab === NavTabType.CollegeList}
-        onClick={() => handleTabClick(NavTabType.CollegeList)}
-      />
-      <NavigationTab
-        title="Mock Interview"
-        isActive={activeTab === NavTabType.Interview}
-        onClick={() => handleTabClick(NavTabType.Interview)}
-      />
-      <NavigationTab
-        title="Holistic Review"
-        isActive={activeTab === NavTabType.ComitteReview}
-        onClick={() => handleTabClick(NavTabType.ComitteReview)}
-      />
-      <NavigationTab
-        title="Essay Workshop"
-        isActive={activeTab === NavTabType.Essay}
-        onClick={() => handleTabClick(NavTabType.Essay)}
-      />
-      <NavigationTab
-        title="Term, Help & Resource"
-        isActive={activeTab === NavTabType.TermHelpResource}
-        onClick={() => handleTabClick(NavTabType.TermHelpResource)}
-      />
-    </div>
+
+      <TabList
+        className={styles.tabList}
+        selectedValue={active}
+        onTabSelect={onSelect}
+        vertical
+      >
+        <Tab
+          icon={<PersonRegular />}
+          value={NavTabType.Profile}
+        >
+          Student Profile
+        </Tab>
+
+        <Tab
+          icon={<HatGraduationRegular />}
+          value={NavTabType.CollegeList}
+        >
+          College Shortlist
+        </Tab>
+
+        <Tab
+          icon={<PersonFeedbackRegular />}
+          value={NavTabType.Interview}
+        >
+          Mock Interview
+        </Tab>
+
+        <Tab
+          icon={<ClipboardCheckmarkRegular />}
+          value={NavTabType.ComitteReview}
+        >
+          Holistic Review
+        </Tab>
+
+        <Tab
+          icon={<ComposeRegular />}
+          value={NavTabType.Essay}
+        >
+          Essay Workshop
+        </Tab>
+
+        <Tab
+          icon={<QuestionCircleRegular />}
+          value={NavTabType.TermHelpResource}
+        >
+          Help / Resource
+        </Tab>
+      </TabList>
+
+      <Button
+        appearance="secondary"
+        size="medium"
+        onClick={logout}
+        className={styles.logoutButton}
+      >
+        Log Out
+      </Button>
+    </aside>
   );
 };

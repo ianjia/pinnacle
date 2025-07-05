@@ -40,8 +40,6 @@ export const CollegePreferenceForm: React.FC = () => {
 
   return (
     <div className="college-preference-form">
-      <h2>College Preferences</h2>
-
       {/* Section 1: Prestige and Academic Focus */}
       <PreferenceSectionCard title="1. Prestige and Academic Focus">
         {/* Prestige */}

@@ -4,16 +4,12 @@ import { RootState } from '../../store';
 import { EssayBrainStormForm } from './essay-idea-draft/essay-idea-draft-main-panel';
 import { EssayWorkshopType } from '../../shared';
 import { EssayHistoryMainContainer } from './essay-history/essay-history-main-container';
-import { useCanvasBackgroundStyles } from '../component-util';
 import { LifeGoalCombinedProfileSections } from './life-goals/combined-profile-section';
 
 export const EssayCanvas: React.FC = () => {
     const activeEssayWorkShop: EssayWorkshopType = useSelector((state: RootState) => state.essayWorkshop.activeWorkshop);
-
-    const styles = useCanvasBackgroundStyles();
-
     return (
-        <div className = {styles.container}>
+        <div>
             {activeEssayWorkShop === EssayWorkshopType.IdeaAndDraft && <EssayBrainStormForm/>}
             {activeEssayWorkShop === EssayWorkshopType.History && <EssayHistoryMainContainer/>}
             {activeEssayWorkShop === EssayWorkshopType.LifeGoals && <LifeGoalCombinedProfileSections/>}

@@ -9,7 +9,6 @@ export const HonorProfileForm: React.FC = () => {
   const styles = useStyles();
 
   const {
-    title,
     honorList,
     onAddHonor,
     onUpdateHonor,
@@ -18,7 +17,6 @@ export const HonorProfileForm: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.header}>{title}</h2>
       {honorList.map((honor) => (
         <div key={honor.id} className={styles.honorContainer}>
           <HonorCard honor={honor} onUpdateHonor={onUpdateHonor} />
@@ -30,6 +28,7 @@ export const HonorProfileForm: React.FC = () => {
           />
         </div>
       ))}
+
       <Button
         icon={<Add20Regular />}
         className={styles.addButton}

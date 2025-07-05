@@ -21,6 +21,7 @@ export const useStyles = makeStyles({
   },
   addButton: {
     marginTop: '16px',
+    marginBottom: '32px',
     fontSize: '14px',
     color: 'gray',    
   },

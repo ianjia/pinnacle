@@ -13,7 +13,11 @@ import { AlertDialog } from './components/component-dialog';
 import { alertDialogActions } from './store/alert-dialog-slice';
 import { AdminPage } from './home-page/admin-page';
 
-const App: React.FC = () => {
+type AppProps = {
+  toggleTheme: () => void;
+};
+
+const App: React.FC<AppProps> = ({ toggleTheme }) => {
   const dispatch = useDispatch();
   const { isOpen, title, message } = useSelector((state: RootState) => state.alertDialg);
 
