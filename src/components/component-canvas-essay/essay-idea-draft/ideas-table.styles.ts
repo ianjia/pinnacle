@@ -1,90 +1,64 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from '@fluentui/react-components';
 
-export const useStyles = makeStyles({
-    card: {
-      padding: '16px',
-      margin: '16px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-    },
-    header: {
-      marginBottom: '32px',
-      fontSize: '1.5rem',
-      fontWeight: 'bold',
-    },
-    tableContainer: {
-      // If you want a scrollable area, you can set a max-height and overflow here
-      // maxHeight: '400px',
-      // overflowY: 'auto',
-    },
-    headerRow: {
-      backgroundColor: '#f3f2f1',
-    },
-    selectedRow: {
-      backgroundColor: '#e0f0ff',
-    },
-    normalRow: {
-      backgroundColor: 'white',
-    },
-    rowHover: {
-      cursor: 'pointer',
-    },
-    actionsCell: {
-      textAlign: 'right',
-    },
-    buttonRow: {
-      // Button row (Add button) below the table
-      display: 'flex',
-      justifyContent: 'flex-start',
-    },
-    feedbackContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-    },
-    feedbackLabel: {
-      fontWeight: 'bold',
-    },
-    feedbackTextarea: {
-      width: '100%',
-      minHeight: '50px',
-    },
-    refineButtonContainer: {
-      // Container to hold the "Refine" button if needed
-      display: 'flex',
-      justifyContent: 'flex-start',
-      marginTop: '8px',
-      gap: '8px',
-    },
-    modalContainer: {
-      // Customize your modal overlay container
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 999,
-    },
-    modalContent: {
-      backgroundColor: 'white',
-      padding: '24px',
-      borderRadius: '8px',
-      minWidth: '300px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-    },
-    textAreaInput: {
-        width: '100%',
-        minHeight: '80px',
-        fontSize: '14px',
-        padding: '8px',
-        resize: 'vertical', // if you want to allow manual resizing
-      },
-  });
-  
+export const useTableStyles = makeStyles({
+  tableContainer: { overflowX: 'auto' },
+
+  headerRow: { backgroundColor: tokens.colorNeutralBackground3 },
+  selectedRow: { backgroundColor: tokens.colorBrandBackground2 },
+  rowHover: { cursor: 'pointer' },
+  actionsCell: { textAlign: 'right' },
+
+  buttonRow: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    marginTop: tokens.spacingVerticalM,
+  },
+
+  feedbackBlock: {
+    marginTop: tokens.spacingVerticalL,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalXS,
+  },
+
+  /* ------------ modal overlay ------------ */
+  modalOverlay: {
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+
+  /* modal surface */
+  modal: {
+    backgroundColor: tokens.colorNeutralBackground2,
+    color: tokens.colorNeutralForeground1,
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    borderRadius: tokens.borderRadiusMedium,
+    minWidth: '320px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalM,
+  },
+
+  /* textarea (used in modal & feedback) */
+  textarea: {
+    width: '100%',
+    minHeight: '80px',
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: tokens.borderRadiusSmall,
+    padding: tokens.spacingHorizontalS,
+  },
+
+  /* -------- buttons inside modal --------- */
+  modalButtonRow: {
+    display: 'flex',
+    justifyContent: 'flex-end',   // ← align buttons to the right
+    gap: tokens.spacingHorizontalS,
+  },
+});

@@ -1,48 +1,47 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
-  card: {
-    marginBottom: '16px',
-    padding: '24px',
+  /* ---------- shared container for main component ---------- */
+  container: {
     width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalL,
   },
-  /**
-   * Flex container for the header text ("Conversation History")
-   * and the info icon button on the right
-   */
+
+  /* ---------- card ---------- */
+  card: {
+    width: '100%',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    marginBottom: tokens.spacingVerticalL,
+    backgroundColor: tokens.colorNeutralBackground1,
+  },
+
+  /* ---------- header row ---------- */
   headerContainer: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '16px',
+    marginBottom: tokens.spacingVerticalL,
   },
   header: {
     margin: 0,
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
+    fontSize: tokens.fontSizeBase500,
+    fontWeight: tokens.fontWeightSemibold,
   },
-  /**
-   * Styling for the info icon that appears to the immediate right
-   * of the "Conversation History" label.
-   */
-  infoIcon: {
-    marginLeft: '8px', // add a little spacing from the header text
-  },
-  row: {
-    cursor: 'pointer',
-  },
-  headerCell: {
-    fontWeight: 'bold',
-  },
-  cell: {
-    // Customize as needed
-  },
-  actionCell: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
+  infoIcon: { marginLeft: tokens.spacingHorizontalXS },
+
+  /* ---------- datagrid ---------- */
+  headerCell: { fontWeight: tokens.fontWeightSemibold },
+  cell: { fontSize: tokens.fontSizeBase300 },
+
+  row: { cursor: 'pointer' },
+  rowSelected: { backgroundColor: tokens.colorBrandBackground2 },
+
+  /* ---------- delete button ---------- */
+  actionCell: { justifyContent: 'flex-start' },
   actionButton: {
-    padding: '0',
     height: '28px',
-    lineHeight: '1',
+    lineHeight: 1,
+    padding: 0,
   },
 });

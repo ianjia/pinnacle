@@ -1,37 +1,37 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
   card: {
-    marginBottom: '16px',
-    padding: '24px',
-    width: '100%', // Ensuring full width of container
+    width: '100%',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    marginBottom: tokens.spacingVerticalL,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
+
   grid: {
     display: 'grid',
     gridTemplateColumns: '1fr',
-    gap: '16px',
+    gap: tokens.spacingVerticalM,
   },
+
   fieldRow: {
     display: 'flex',
-    flexDirection: 'row',
-    gap: '16px',
     alignItems: 'center',
+    gap: tokens.spacingHorizontalL,
   },
+
   nameFieldContainer: {
-    width: '33%', // 1/3 of the card width
+    width: '33%',
     minWidth: '200px',
   },
+
   field: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: tokens.spacingVerticalXS,
   },
-  input: {
-    width: '100%',
-    height: '36px',
-  },
+
   textarea: {
-    width: '100%',
     minHeight: '180px',
   },
 });

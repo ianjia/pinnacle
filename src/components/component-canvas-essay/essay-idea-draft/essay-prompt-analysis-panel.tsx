@@ -1,18 +1,20 @@
 import React from 'react';
+import { Card } from '@fluentui/react-components';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { MarkdownMessageDisplay } from '../../component-mark-down-display';
-import { Card } from '@fluentui/react-components';
-import { useStyles } from './essay-draft-panel.styles';
+import { useCardStyles } from './essay-common-card.styles';
 
 export const EssayPromptAnalysisPanel: React.FC = () => {
-    const styles = useStyles();
-    const promptAnalysis: string | undefined = useSelector((state: RootState) => state.essayWorkshop.promptAnalysis);
+  const cardCommon = useCardStyles();
+  const analysis = useSelector(
+    (s: RootState) => s.essayWorkshop.promptAnalysis
+  );
 
-    return (
-        <Card className={styles.card}>
-            <h2 className={styles.header} style={{ textAlign: 'left' }}>Prompt Analysis</h2>
-            { promptAnalysis && <MarkdownMessageDisplay resultMessage={ promptAnalysis } />}
-        </Card>
-    );
+  return (
+    <Card className={cardCommon.card}>
+      <h2 className={cardCommon.header}>Prompt Analysis</h2>
+      {analysis && <MarkdownMessageDisplay resultMessage={analysis} />}
+    </Card>
+  );
 };

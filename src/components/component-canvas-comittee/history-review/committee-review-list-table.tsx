@@ -12,44 +12,47 @@ import {
   createTableColumn,
   Button,
   Popover,
+  PopoverTrigger,
   PopoverSurface,
-  PopoverTrigger
 } from '@fluentui/react-components';
-
 import { Delete20Regular, Info24Regular } from '@fluentui/react-icons';
 import { mergeClasses } from '@fluentui/react-components';
+
 import { CommitteeReview } from '../../../shared';
 import { useStyles } from './committee-review-list-table.styles';
 
-interface CommitteeReviewListTableProps {
+interface Props {
   reviews: CommitteeReview[];
-  onSelect: (review: CommitteeReview) => void;
-  onDelete: (reviewId: number) => void;
+  onSelect: (r: CommitteeReview) => void;
+  onDelete: (id: number) => void;
   selectedReviewId?: number;
 }
 
-export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> = ({
+export const CommitteeReviewListTable: React.FC<Props> = ({
   reviews,
   onSelect,
   onDelete,
-  selectedReviewId
+  selectedReviewId,
 }) => {
   const styles = useStyles();
 
-  // Sort reviews by time descending (most recent first).
-  const sortedReviews = React.useMemo(() => {
-    return [...reviews].sort((a, b) => {
-      // Adjust parsing based on how your 'time' is represented
-      return new Date(b.time).getTime() - new Date(a.time).getTime();
-    });
-  }, [reviews]);
+  /* newest first */
+  const data = React.useMemo(
+    () =>
+      [...reviews].sort(
+        (a, b) => +new Date(b.time) - +new Date(a.time)
+      ),
+    [reviews]
+  );
 
-  // Define the columns for the DataGrid
+  /* columns */
   const columns: TableColumnDefinition<CommitteeReview>[] = [
-    createTableColumn<CommitteeReview>({
+    createTableColumn({
       columnId: 'time',
       renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Time</DataGridHeaderCell>
+        <DataGridHeaderCell className={styles.headerCell}>
+          Time
+        </DataGridHeaderCell>
       ),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
@@ -57,10 +60,12 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
         </DataGridCell>
       ),
     }),
-    createTableColumn<CommitteeReview>({
+    createTableColumn({
       columnId: 'college',
       renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>College</DataGridHeaderCell>
+        <DataGridHeaderCell className={styles.headerCell}>
+          College
+        </DataGridHeaderCell>
       ),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
@@ -68,10 +73,12 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
         </DataGridCell>
       ),
     }),
-    createTableColumn<CommitteeReview>({
+    createTableColumn({
       columnId: 'major',
       renderHeaderCell: () => (
-        <DataGridHeaderCell className={styles.headerCell}>Major</DataGridHeaderCell>
+        <DataGridHeaderCell className={styles.headerCell}>
+          Major
+        </DataGridHeaderCell>
       ),
       renderCell: (item) => (
         <DataGridCell className={styles.cell}>
@@ -79,21 +86,23 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
         </DataGridCell>
       ),
     }),
-    createTableColumn<CommitteeReview>({
+    createTableColumn({
       columnId: 'actions',
-      renderHeaderCell: () => <DataGridHeaderCell />,
+      renderHeaderCell: () => <DataGridHeaderCell />, // empty
       renderCell: (item) => (
-        <DataGridCell className={mergeClasses(styles.cell, styles.actionCell)}>
+        <DataGridCell
+          className={mergeClasses(styles.cell, styles.actionCell)}
+        >
           <Button
             icon={<Delete20Regular />}
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent row selection if clicking on delete
-              onDelete(item.id);
-            }}
             appearance="subtle"
             size="small"
-            aria-label="Delete Review"
+            aria-label="Delete review"
             className={styles.actionButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(item.id);
+            }}
           />
         </DataGridCell>
       ),
@@ -102,29 +111,25 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
 
   return (
     <Card className={styles.card}>
-      <div className={styles.headerContainer}>
+      <div className={styles.headerRow}>
         <h3 className={styles.header}>Holistic Review History</h3>
         <Popover>
           <PopoverTrigger>
             <Button
               icon={<Info24Regular />}
               appearance="subtle"
+              aria-label="info"
               size="small"
-              aria-label="Information"
               className={styles.infoIcon}
             />
           </PopoverTrigger>
           <PopoverSurface>
-            Please select a row to see details for this Holistic Review.
+            Please select a row to view its review.
           </PopoverSurface>
         </Popover>
       </div>
 
-      <DataGrid
-        items={sortedReviews}
-        columns={columns}
-        getRowId={(item) => String(item.id)}
-      >
+      <DataGrid items={data} columns={columns} getRowId={(r) => `${r.id}`}>
         <DataGridHeader>
           <DataGridRow>
             {({ renderHeaderCell }) => (
@@ -132,17 +137,20 @@ export const CommitteeReviewListTable: React.FC<CommitteeReviewListTableProps> =
             )}
           </DataGridRow>
         </DataGridHeader>
+
         <DataGridBody<CommitteeReview>>
           {({ item }) => (
             <DataGridRow
               key={item.id}
-              className={styles.row}
+              className={mergeClasses(
+                styles.row,
+                selectedReviewId === item.id && styles.rowSelected
+              )}
               onClick={() => onSelect(item)}
-              style={{
-                backgroundColor: selectedReviewId === item.id ? '#e0f0ff' : 'white',
-              }}
             >
-              {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
+              {({ renderCell }) => (
+                <DataGridCell>{renderCell(item)}</DataGridCell>
+              )}
             </DataGridRow>
           )}
         </DataGridBody>

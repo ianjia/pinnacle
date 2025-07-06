@@ -295,10 +295,10 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
           {({ item }) => (
             <DataGridRow
               key={item.id}
-              className={styles.row}
-              style={{
-                backgroundColor: item.id === selectedCollegeId ? '#e0f0ff' : 'white',
-              }}
+              className={mergeClasses(
+                styles.row,
+                item.id === selectedCollegeId && styles.rowSelected   // themed highlight
+              )}
               onClick={() => onSelectCollege(item)}
             >
               {({ renderCell }) => (

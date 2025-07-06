@@ -13,38 +13,36 @@ import {
   Button,
   Popover,
   PopoverSurface,
-  PopoverTrigger
+  PopoverTrigger,
+  mergeClasses,
 } from '@fluentui/react-components';
-
 import { Delete20Regular, Info24Regular } from '@fluentui/react-icons';
 import { Conversation } from '../../../shared';
-import { mergeClasses } from '@fluentui/react-components';
 import { useStyles } from './conversation-list-table.styles';
 
-interface ConversationListTableProps {
+interface Props {
   conversations: Conversation[];
-  onSelect: (conversation: Conversation) => void;
-  onDelete: (conversationId: number) => void;
+  onSelect: (c: Conversation) => void;
+  onDelete: (id: number) => void;
   selectedConversationId?: number;
 }
 
-export const ConversationListTable: React.FC<ConversationListTableProps> = ({
+export const ConversationListTable: React.FC<Props> = ({
   conversations,
   onSelect,
   onDelete,
-  selectedConversationId
+  selectedConversationId,
 }) => {
   const styles = useStyles();
 
-  // Sort conversations by time descending (most recent first).
-  const sortedConversations = React.useMemo(() => {
-    return [...conversations].sort((a, b) => {
-      // Adjust parsing based on how your 'time' is represented (e.g., Date object, timestamp, string).
-      return new Date(b.time).getTime() - new Date(a.time).getTime();
-    });
-  }, [conversations]);
+  const sorted = React.useMemo(
+    () =>
+      [...conversations].sort(
+        (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+      ),
+    [conversations]
+  );
 
-  // Define the columns for the DataGrid
   const columns: TableColumnDefinition<Conversation>[] = [
     createTableColumn<Conversation>({
       columnId: 'time',
@@ -86,14 +84,14 @@ export const ConversationListTable: React.FC<ConversationListTableProps> = ({
         <DataGridCell className={mergeClasses(styles.cell, styles.actionCell)}>
           <Button
             icon={<Delete20Regular />}
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent row selection if clicking on delete
-              onDelete(item.id);
-            }}
             appearance="subtle"
             size="small"
-            aria-label="Delete Conversation"
+            aria-label="Delete"
             className={styles.actionButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(item.id);
+            }}
           />
         </DataGridCell>
       ),
@@ -110,21 +108,15 @@ export const ConversationListTable: React.FC<ConversationListTableProps> = ({
               icon={<Info24Regular />}
               appearance="subtle"
               size="small"
-              aria-label="Information"
+              aria-label="Info"
               className={styles.infoIcon}
             />
           </PopoverTrigger>
-          <PopoverSurface>
-            Please select a row to see transcript and review
-          </PopoverSurface>
+          <PopoverSurface>Please select a row to see transcript and review</PopoverSurface>
         </Popover>
       </div>
 
-      <DataGrid
-        items={sortedConversations}
-        columns={columns}
-        getRowId={(item) => String(item.id)}
-      >
+      <DataGrid items={sorted} columns={columns} getRowId={(i) => String(i.id)}>
         <DataGridHeader>
           <DataGridRow>
             {({ renderHeaderCell }) => (
@@ -132,15 +124,16 @@ export const ConversationListTable: React.FC<ConversationListTableProps> = ({
             )}
           </DataGridRow>
         </DataGridHeader>
+
         <DataGridBody<Conversation>>
           {({ item }) => (
             <DataGridRow
               key={item.id}
-              className={styles.row}
               onClick={() => onSelect(item)}
-              style={{
-                backgroundColor: selectedConversationId === item.id ? '#e0f0ff' : 'white',
-              }}
+              className={mergeClasses(
+                styles.row,
+                item.id === selectedConversationId && styles.rowSelected
+              )}
             >
               {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
             </DataGridRow>

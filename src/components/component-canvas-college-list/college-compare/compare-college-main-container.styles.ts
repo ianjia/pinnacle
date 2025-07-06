@@ -1,49 +1,54 @@
-import { makeStyles, shorthands } from '@fluentui/react-components';
+// compare-college-main-container.styles.ts
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
-  /* ---------- outer wrapper ---------- */
+  /* ───────────────── outer wrapper ───────────────── */
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '16px',
+    gap: tokens.spacingVerticalL,                            // ~16 px in light theme
   },
 
-  /* ---------- card ---------- */
+  /* ───────────────── cards ───────────────────────── */
   card: {
-    padding: '24px',
-    ...shorthands.margin('0', '0', '16px', '0'),
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    marginBottom: tokens.spacingVerticalL,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
 
   header: {
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    marginBottom: '24px',
-  },
-  resultHeader: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    marginBottom: '12px',
+    fontSize: tokens.fontSizeBase600,
+    fontWeight: tokens.fontWeightSemibold,
+    marginBottom: tokens.spacingVerticalL,
   },
 
-  /* ---------- first row: selects ---------- */
+  resultHeader: {
+    fontSize: tokens.fontSizeBase500,
+    fontWeight: tokens.fontWeightSemibold,
+    marginBottom: tokens.spacingVerticalM,
+  },
+
+  /* ───────────────── first row: selects ─────────── */
   selectRow: {
     display: 'flex',
     flexWrap: 'wrap',
-    gap: '70px',
-    alignItems: 'end',
-    marginBottom: '20px',
+    gap: tokens.spacingHorizontalXL,                        // was “70px”
+    alignItems: 'flex-end',
+    marginBottom: tokens.spacingVerticalM,
   },
+
   selectField: {
     minWidth: '220px',
     flexGrow: 1,
   },
 
-  /* ---------- second row: button ---------- */
+  /* ───────────────── second row: button ─────────── */
   buttonRow: {
     display: 'flex',
   },
+
   compareButton: {
-    width: '220px',
-    height: '32px',
+    width: '220px',                                         // keep explicit width
+    height: '32px',                                         // default Medium button height
   },
 });

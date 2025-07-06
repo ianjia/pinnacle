@@ -12,11 +12,9 @@ export const PreferenceSectionCard: React.FC<PreferenceSectionCardProps> = ({ ti
   
   return (
     <Card className={styles.card}>
-      <h2 className={styles.header} style={{ textAlign: 'left' }}>{title}</h2>
+      <h2 className={styles.header}>{title}</h2>
       <CardPreview>
-        <div className={styles.grid}>
-          {children}
-        </div>
+        <div className={styles.grid}>{children}</div>
       </CardPreview>
     </Card>
   );

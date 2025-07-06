@@ -8,6 +8,7 @@ import {
   DataGridBody,
   DataGridRow,
   DataGridCell,
+  Input,
   TableCellLayout,
   TableColumnDefinition,
   createTableColumn,
@@ -27,29 +28,26 @@ const ApExamNameCell: React.FC<{
   className?: string;
 }> = ({ value, onUpdate, className }) => {
   const dispatch = useDispatch();
-
-  const [inputValue, setInputValue] = useState(value || '');
+  const [val, setVal] = useState(value || '');
 
   const handleBlur = () => {
-    if (inputValue.trim() === '') {
-        dispatch(
-          alertDialogActions.showAlert({
-            title: 'Validation Error',
-            message: 'AP Exam Name cannot be empty.',
-          })
-        );
-    } else if (inputValue !== value) {
-      onUpdate(inputValue);
+    if (!val.trim()) {
+      dispatch(alertDialogActions.showAlert({
+        title: 'Validation Error',
+        message: 'AP Exam Name cannot be empty.',
+      }));
+    } else if (val !== value) {
+      onUpdate(val);
     }
   };
 
   return (
-    <input
-      type="text"
-      value={inputValue}
-      onChange={(e) => setInputValue(e.target.value)}
+    <Input
+      value={val}
+      onChange={(_, data) => setVal(data.value)}
       onBlur={handleBlur}
       className={className}
+      size="small"
     />
   );
 };

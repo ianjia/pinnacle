@@ -1,53 +1,43 @@
 import React, { useContext, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, committeeReviewActions } from '../../../store';
+import { committeeReviewActions, RootState } from '../../../store';
 
 import { CommitteeReview } from '../../../shared';
 import { committeeReviewService } from '../../component-service-proxy';
 import { AuthContext } from '../../../auth';
+
 import { CommitteeReviewListTable } from './committee-review-list-table';
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
+import { useStyles } from './ommittee-review-history-main-container.styles';
 
 export const CommitteeReviewHistoryMainContainer: React.FC = () => {
+  const styles = useStyles();
   const dispatch = useDispatch();
   const { userId } = useContext(AuthContext);
 
-  const reviewList = useSelector(
-    (state: RootState) => state.committeeReview.committeeReviewHistory
+  const reviews = useSelector(
+    (s: RootState) => s.committeeReview.committeeReviewHistory
   );
 
-  // Keep track of which review is selected
-  const [selectedReview, setSelectedReview] = useState<CommitteeReview | null>(null);
+  const [selected, setSelected] = useState<CommitteeReview | null>(null);
 
-  // Deletion of a review from history
-  const handleDeleteReview = (reviewId: number) => {
-    dispatch(committeeReviewActions.deleteReviewFromHistory(reviewId));
-    committeeReviewService.deleteById(reviewId, userId as number);
-
-    // If the deleted review is the one selected, clear the selection
-    if (selectedReview?.id === reviewId) {
-      setSelectedReview(null);
-    }
-  };
-
-  // Row selection
-  const handleSelectReview = (review: CommitteeReview) => {
-    setSelectedReview(review);
+  /* delete review */
+  const handleDelete = (id: number) => {
+    dispatch(committeeReviewActions.deleteReviewFromHistory(id));
+    committeeReviewService.deleteById(id, userId as number);
+    if (selected?.id === id) setSelected(null);
   };
 
   return (
-    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {/* Render the table component */}
+    <div className={styles.container}>
       <CommitteeReviewListTable
-        reviews={reviewList}
-        onSelect={handleSelectReview}
-        onDelete={handleDeleteReview}
-        selectedReviewId={selectedReview?.id}
+        reviews={reviews}
+        onDelete={handleDelete}
+        onSelect={setSelected}
+        selectedReviewId={selected?.id}
       />
 
-      {selectedReview && (
-         <ReviewDisplay review={selectedReview.review} />
-      )}
+      {selected && <ReviewDisplay review={selected.review} />}
     </div>
   );
 };

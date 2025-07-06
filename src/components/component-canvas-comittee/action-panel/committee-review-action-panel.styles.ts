@@ -1,57 +1,67 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
+  /* outer scrollable wrapper */
   container: {
-    overflowX: 'auto',
-    overflowY: 'auto',
-    padding: '16px',
+    overflow: 'auto',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
   },
+
+  /* card */
   card: {
-    marginBottom: '16px',
-    padding: '24px',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    marginBottom: tokens.spacingVerticalL,
   },
+
   header: {
-    marginBottom: '32px',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    paddingLeft: '0px',
+    marginBottom: tokens.spacingVerticalXL,
+    fontSize: tokens.fontSizeBase600,
+    fontWeight: tokens.fontWeightSemibold,
   },
+
+  /* CSS grid: 2 columns */
   grid: {
-    display: 'grid !important',
-    gridTemplateColumns: 'repeat(2, 1fr) !important',
-    gap: '16px !important',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: tokens.spacingHorizontalL,
   },
+
   field: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: tokens.spacingVerticalXS,
   },
-  /* NEW – full-width text-area field */
+
+  /* textarea field spans both columns */
   textAreaField: {
-    gridColumn: '1 / -1',              // span both columns
+    gridColumn: '1 / -1',
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: tokens.spacingVerticalXS,
   },
+
   textarea: {
     minHeight: '240px',
     width: '100%',
   },
+
   fieldButton: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
+    gap: tokens.spacingVerticalXS,
     alignItems: 'flex-start',
   },
+
   buttonSmall: {
     width: '200px',
   },
-  infoIcon: {
-    marginLeft: '8px',
-  },
+
+  /* label & info icon */
   labelContainer: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '1px',
+    gap: tokens.spacingHorizontalXXS,
   },
+
+  infoIcon: { marginLeft: tokens.spacingHorizontalXS },
 });

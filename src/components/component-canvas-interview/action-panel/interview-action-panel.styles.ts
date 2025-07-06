@@ -1,80 +1,65 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
+  /* outer wrapper */
   container: {
-    overflowX: 'auto',
+    padding: tokens.spacingHorizontalXL,
     overflowY: 'auto',
-    padding: '16px',
   },
+
+  /* card */
   card: {
-    marginBottom: '16px',
-    padding: '24px',
+    marginBottom: tokens.spacingVerticalL,
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
   header: {
-    marginBottom: '32px',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    paddingLeft: '0px',
+    marginBottom: tokens.spacingVerticalL,
+    fontSize: tokens.fontSizeBase600,
+    fontWeight: tokens.fontWeightSemibold,
   },
+
+  /* ---------- 2×2 grid (forced) ---------- */
   grid: {
-    display: 'grid !important', // Force priority
-    gridTemplateColumns: 'repeat(2, 1fr) !important',
-    gap: '16px !important',
+    display: 'grid !important',                         // override CardPreview flex
+    gridTemplateColumns: '1fr 1fr !important',          // two equal columns
+    rowGap: tokens.spacingVerticalL,
+    columnGap: tokens.spacingHorizontalXL,
   },
+
+  /* shared field styling */
   field: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '4px',
-  },
-  input: {
-    height: '36px',
-    width: '80%',
-  },
-  fieldButton: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    alignItems: 'flex-start',
-  },
-  buttonSmall: {
-    width: '200px', // Adjust as needed
-  },
-  buttonGreen: {
-    backgroundColor: 'green',
-    color: 'white', 
-  },
-  buttonRed: {
-    backgroundColor: 'red',
-    color: 'white',
+    gap: tokens.spacingVerticalXS,
   },
 
-  // Additional overlay styling for "isProcessing"
-  processingModal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 9999,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  processingDialog: {
-    backgroundColor: 'white',
-    padding: '30px',
-    borderRadius: '10px',
-    textAlign: 'center',
-  },
+  buttonWide: { width: '200px' },
 
-  // New additions for popover label
-  infoIcon: {
-    marginLeft: '8px',
-  },
+  /* label additions */
+  infoIcon: { marginLeft: tokens.spacingHorizontalXXS },
   labelContainer: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '1px', // spacing between "College" text and the info button
+    gap: tokens.spacingHorizontalXXS,
+  },
+
+  /* processing overlay */
+  processingModal: {
+    position: 'fixed',
+    inset: 0,
+    zIndex: 9999,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,.45)',
+  },
+  processingDialog: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorNeutralForeground1,
+    padding: `${tokens.spacingVerticalXL} ${tokens.spacingHorizontalXL}`,
+    borderRadius: tokens.borderRadiusMedium,
+    boxShadow: tokens.shadow16,
+    textAlign: 'center',
   },
 });

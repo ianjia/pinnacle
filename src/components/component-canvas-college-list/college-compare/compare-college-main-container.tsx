@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Card,
   Field,
@@ -21,42 +21,39 @@ import {
 } from '../../component-service-proxy';
 
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
-import { useStyles } from './compare-college-main-container.styles';
+import { useStyles } from './compare-college-main-container.styles';  
 
 export const CompareCollegeMainContainer: React.FC = () => {
-  const styles   = useStyles();
-  const dispatch = useDispatch();
+  const styles = useStyles();
 
   /* ---------- Redux data ---------- */
-  const collegeList   = useSelector((s: RootState) => s.collegeListWorkshop.collegeList);
-  const collegeNames  = collegeList.map((c) => c.college);
+  const collegeList = useSelector(
+    (s: RootState) => s.collegeListWorkshop.collegeList,
+  );
+  const collegeNames = collegeList.map((c) => c.college);
 
   /* ---------- Local state --------- */
-  const [collegeA, setCollegeA]   = useState<string>('');
-  const [collegeB, setCollegeB]   = useState<string>('');
-  const [major,    setMajor]      = useState<Major | ''>('');
-  const [result,   setResult]     = useState<string>('');
+  const [collegeA, setCollegeA] = useState<string>('');
+  const [collegeB, setCollegeB] = useState<string>('');
+  const [major, setMajor] = useState<Major | ''>('');
+  const [result, setResult] = useState<string>('');
 
   /* ---------- Task runner --------- */
-  const {
-    startTask: runCompareTask,
-    showModal,
-    progressMessage,
-  } = useTaskRunner({
-    taskType: TaskType.CompareCollege,
-    requestData: {
-      first_college:  collegeA,
-      second_college: collegeB,
-      major,
-    } as unknown as CollegeCompareRequest,
-    onResult: (data: TaskResult) => {
-      const { review } = data as CompareCollegeTaskResult;
-      setResult(review);
-    },
-  });
+  const { startTask: runCompareTask, showModal, progressMessage } =
+    useTaskRunner({
+      taskType: TaskType.CompareCollege,
+      requestData: {
+        first_college: collegeA,
+        second_college: collegeB,
+        major,
+      } as unknown as CollegeCompareRequest,
+      onResult: (data: TaskResult) => {
+        const { review } = data as CompareCollegeTaskResult;
+        setResult(review);
+      },
+    });
 
-  const canCompare =
-    collegeA && collegeB && major && collegeA !== collegeB;
+  const canCompare = collegeA && collegeB && major && collegeA !== collegeB;
 
   /* ---------- JSX ---------- */
   return (
@@ -70,7 +67,10 @@ export const CompareCollegeMainContainer: React.FC = () => {
 
         {/* 1st row – three selects */}
         <div className={styles.selectRow}>
-          <Field label="College A in Recommended List" className={styles.selectField}>
+          <Field
+            label="College A in Recommended List"
+            className={styles.selectField}
+          >
             <Dropdown
               placeholder="Select college"
               value={collegeA}
@@ -84,7 +84,10 @@ export const CompareCollegeMainContainer: React.FC = () => {
             </Dropdown>
           </Field>
 
-          <Field label="College B in Recommended List" className={styles.selectField}>
+          <Field
+            label="College B in Recommended List"
+            className={styles.selectField}
+          >
             <Dropdown
               placeholder="Select college"
               value={collegeB}

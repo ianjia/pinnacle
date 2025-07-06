@@ -4,46 +4,34 @@ import { RootState, interviewConversationActions } from '../../../store';
 
 import { Conversation } from '../../../shared';
 import { ConversationListTable } from './conversation-list-table';
-import { ConversationReviewContainer } from '../display-combined-container/converstation-review-container';
+import { ConversationReviewContainer } from '../display-combined-container/conversation-review-container';
 import { conversationService } from '../../component-service-proxy';
 import { AuthContext } from '../../../auth';
+import { useStyles } from './conversation-list-table.styles';   // <— same style hook
 
-/**
- * Container component that renders both the ConversationListTable (left/upper portion)
- * and the ConversationReviewContainer (right/lower portion or whichever layout you prefer).
- */
 export const ConversationHistoryMainContainer: React.FC = () => {
+  const styles   = useStyles();
   const dispatch = useDispatch();
   const { userId } = useContext(AuthContext);
 
-  // Retrieve the conversation list from Redux store
   const conversationList = useSelector(
-    (state: RootState) => state.conversation.interviewHistoryList
+    (s: RootState) => s.conversation.interviewHistoryList
   );
 
-  // Keep track of which conversation is selected
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
 
-  // Deletion of a conversation from interview history
-  const handleDeleteConversation = (conversationId: number) => {
-    dispatch(interviewConversationActions.deleteInterviewFromHistory(conversationId));
-
-    conversationService.deleteById(conversationId, userId as number);
-    
-    // If the deleted conversation is the one selected, clear the selection
-    if (selectedConversation?.id === conversationId) {
-      setSelectedConversation(null);
-    }
+  /* ── delete from server + store ── */
+  const handleDeleteConversation = (id: number) => {
+    dispatch(interviewConversationActions.deleteInterviewFromHistory(id));
+    conversationService.deleteById(id, userId as number);
+    if (selectedConversation?.id === id) setSelectedConversation(null);
   };
 
-  // Row selection
-  const handleSelectConversation = (conversation: Conversation) => {
-    setSelectedConversation(conversation);
-  };
+  /* ── row select ── */
+  const handleSelectConversation = (conv: Conversation) => setSelectedConversation(conv);
 
   return (
-    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-      {/* Render the table component */}
+    <div className={styles.container}>
       <ConversationListTable
         conversations={conversationList}
         onSelect={handleSelectConversation}
@@ -51,7 +39,6 @@ export const ConversationHistoryMainContainer: React.FC = () => {
         selectedConversationId={selectedConversation?.id}
       />
 
-      {/* Render the ConversationReviewContainer based on selection */}
       {selectedConversation && (
         <ConversationReviewContainer
           conversation={selectedConversation.messages}

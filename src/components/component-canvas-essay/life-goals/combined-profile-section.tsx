@@ -8,12 +8,13 @@ export const LifeGoalCombinedProfileSections: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.section}>
+      <section className={styles.section}>
         <LifeStoryProfileForm />
-      </div>
-      <div className={styles.section}>
+      </section>
+
+      <section className={styles.section}>
         <AcademicCareerGoalProfileForm />
-      </div>
+      </section>
     </div>
   );
 };

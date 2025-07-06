@@ -1,29 +1,38 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
+  /* ── outer card ─────────────────────────────────────────────── */
   card: {
-    marginBottom: '16px',
-    padding: '24px',
+    marginBottom: tokens.spacingVerticalL,                            
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,   
+    backgroundColor: tokens.colorNeutralBackground1,
   },
+
   header: {
-    marginBottom: '32px',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    paddingLeft: '0px',
+    marginBottom: tokens.spacingVerticalL,                                
+    fontSize: tokens.fontSizeBase600,                                  
+    fontWeight: tokens.fontWeightSemibold,
+    textAlign: 'left',
   },
+
+  /* ── grid wrapper for children (keeps 1-column stack) ───────── */
   grid: {
-    display: 'grid !important', // Force priority
-    gridTemplateColumns: 'repeat(1, 1fr) !important',
-    gap: '16px !important',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(1, 1fr)',
+    gap: tokens.spacingVerticalL,                                         
   },
+
+  /* ── form row inside each section ───────────────────────────── */
   row: {
-    display: 'flex', // Use flexbox for horizontal alignment
+    display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: '48px', // Add spacing between elements
-    marginBottom: '16px', // Add spacing between rows
+    gap: tokens.spacingHorizontalXL,                                       
+    marginBottom: tokens.spacingVerticalL,                                 
   },
+
   label: {
-    minWidth: '200px', // Set a minimum width for labels for alignment
-    fontWeight: 'bold',
+    minWidth: '200px',                                                   
+    fontWeight: tokens.fontWeightSemibold,
   },
 });

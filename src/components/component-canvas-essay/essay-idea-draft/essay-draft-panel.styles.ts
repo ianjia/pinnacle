@@ -1,31 +1,23 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
-export const useStyles = makeStyles({
-    card: {
-      padding: '16px',
-      margin: '16px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-    },
-    header: {
-      marginBottom: '32px',
-      fontSize: '1.5rem',
-      fontWeight: 'bold',
-    },
-    grid: {
-      display: 'grid !important', // Force priority
-      gridTemplateColumns: 'repeat(4, 1fr) !important',
-      gap: '16px !important',
-    },
-    buttonGenerate: {
-      width: '200px', // Adjust as needed
-    },
-    feedbackLabel: {
-      fontWeight: 'bold',
-    },
-    feedbackTextarea: {
-      width: '100%',
-      minHeight: '50px',
-    },
-  });
+export const useDraftStyles = makeStyles({
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: tokens.spacingHorizontalL,
+  },
+
+  button: { width: '200px' },
+
+  feedbackBlock: {
+    marginTop: tokens.spacingVerticalL,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalXS,
+  },
+
+  textarea: {
+    width: '100%',
+    minHeight: '80px',
+  },
+});

@@ -14,7 +14,13 @@ import {
 } from '@fluentui/react-components';
 import { Add16Regular, Delete16Regular } from '@fluentui/react-icons';
 
-import { alertDialogActions, essayWorkshopActions, RootState, useBasicInfoFilled } from '../../../store';
+import {
+  alertDialogActions,
+  essayWorkshopActions,
+  RootState,
+  useBasicInfoFilled,
+} from '../../../store';
+
 import {
   EssayIdeaRefinementRequest,
   ProgressModal,
@@ -23,221 +29,189 @@ import {
   TaskType,
   useTaskRunner,
 } from '../../component-service-proxy';
-import { useStyles } from './ideas-table.styles';
 
-interface IdeasTableProps {
+import { useTableStyles } from './ideas-table.styles';
+import { useCardStyles } from './essay-common-card.styles';
+
+interface Props {
   editable: boolean;
-  selectCallback?: (selectedValue: string) => void;
+  selectCallback?: (k: string) => void;
 }
 
-export const IdeasTable: React.FC<IdeasTableProps> = ({
-  editable,
-  selectCallback,
-}) => {
-  const styles = useStyles();
+export const IdeasTable: React.FC<Props> = ({ editable, selectCallback }) => {
+  const cardCommon = useCardStyles();
+  const styles = useTableStyles();
   const dispatch = useDispatch();
 
-  // Ideas from Redux
-  const ideas = useSelector((state: RootState) => state.essayWorkshop.ideas);
+  /* Redux data */
+  const ideas = useSelector((s: RootState) => s.essayWorkshop.ideas);
   const ideaEntries = Object.entries(ideas);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
-  // Local state
-  const [selectedIdeaKey, setSelectedIdeaKey] = useState<string | null>(null);
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [newIdeaText, setNewIdeaText] = useState<string>('');
-  const [textAreaValue, setTextAreaValue] = useState<string>('');
+  /* modal (add idea) */
+  const [showAdd, setShowAdd] = useState(false);
+  const [newIdea, setNewIdea] = useState('');
 
-  // Redux references for refining an idea
-  const college = useSelector((state: RootState) => state.essayWorkshop.college);
-  const major = useSelector((state: RootState) => state.essayWorkshop.major);
-  const essay_prompt = useSelector(
-    (state: RootState) => state.essayWorkshop.essayPrompt
-  );
-  const additional_ask = useSelector(
-    (state: RootState) => state.essayWorkshop.additionalAsk
-  );
+  /* refinement feedback */
+  const [feedback, setFeedback] = useState('');
+  const hasProfile = useBasicInfoFilled();
 
-  const hasBasicInfoFilled = useBasicInfoFilled();
+  /* task‑runner data */
+  const college = useSelector((s: RootState) => s.essayWorkshop.college);
+  const major   = useSelector((s: RootState) => s.essayWorkshop.major);
+  const prompt  = useSelector((s: RootState) => s.essayWorkshop.essayPrompt);
+  const addn    = useSelector((s: RootState) => s.essayWorkshop.additionalAsk);
 
-  // Task Runner for "Refine" button
-  const { startTask: startRefineEssayIdeaTask, showModal, progressMessage } =
-    useTaskRunner({
-      taskType: TaskType.RefineEssayIdea,
-      requestData: {
-        college,
-        major,
-        prompt: essay_prompt,
-        additionalInfo: additional_ask,
-        idea: ideas[selectedIdeaKey as string],
-        feedback: textAreaValue,
-      } as EssayIdeaRefinementRequest,
-      onResult: (data: TaskResult) => {
-        const result = (data as RefineEssayIdeaTaskResult).idea;
-        dispatch(
-          essayWorkshopActions.addIdea({
-            key: selectedIdeaKey as string,
-            value: result,
-          })
-        );
-      },
-    });
-
-  // --------------------- HANDLERS ---------------------
-  // Row selection
-  const handleRowClick = (key: string) => {
-    setSelectedIdeaKey(key);
-    selectCallback?.(key);
-  };
-
-  // Delete a row (idea)
-  const handleRowDelete = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    key: string
-  ) => {
-    e.stopPropagation(); // avoid triggering row-click selection
-    dispatch(essayWorkshopActions.deleteIdea(key));
-    if (selectedIdeaKey === key) {
-      setSelectedIdeaKey(null);
-    }
-  };
-
-  // Refine
-  const handleRefine = () => {
-    if (!hasBasicInfoFilled) {
+  const { startTask, showModal, progressMessage } = useTaskRunner({
+    taskType: TaskType.RefineEssayIdea,
+    requestData: {
+      college,
+      major,
+      prompt,
+      additionalInfo: addn,
+      idea: ideas[selectedKey as string],
+      feedback,
+    } as EssayIdeaRefinementRequest,
+    onResult: (d: TaskResult) =>
       dispatch(
+        essayWorkshopActions.addIdea({
+          key: selectedKey as string,
+          value: (d as RefineEssayIdeaTaskResult).idea,
+        })
+      ),
+  });
+
+  /* ---------- helpers ---------- */
+  const selectRow = (k: string) => {
+    setSelectedKey(k);
+    selectCallback?.(k);
+  };
+
+  const deleteRow = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    k: string
+  ) => {
+    e.stopPropagation();
+    dispatch(essayWorkshopActions.deleteIdea(k));
+    if (selectedKey === k) setSelectedKey(null);
+  };
+
+  const addIdea = () => {
+    if (newIdea.trim()) {
+      dispatch(essayWorkshopActions.addIdea({ key: uuidv4(), value: newIdea }));
+      setNewIdea('');
+    }
+    setShowAdd(false);
+  };
+
+  const refineIdea = () => {
+    if (!hasProfile)
+      return dispatch(
         alertDialogActions.showAlert({
           title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
-      return;
-    }
-
-    if (selectedIdeaKey) {
-      startRefineEssayIdeaTask();
-    } else {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'Please select an idea.',
+          message: 'Fill basic profile first.',
         })
       );
-    }
+    if (!selectedKey)
+      return dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: 'Select an idea first.',
+        })
+      );
+    startTask();
   };
 
-  // Add item (modal open/close)
-  const handleAdd = () => {
-    setShowAddModal(true);
-  };
-  const handleAddCancel = () => {
-    setNewIdeaText('');
-    setShowAddModal(false);
-  };
-  const handleAddDone = () => {
-    if (newIdeaText.trim() !== '') {
-      const newKey = uuidv4();
-      dispatch(essayWorkshopActions.addIdea({ key: newKey, value: newIdeaText }));
-      setNewIdeaText('');
-    }
-    setShowAddModal(false);
-  };
-
-  // --------------------- RENDER ---------------------
+  /* ---------- JSX ---------- */
   return (
-    <Card className={styles.card}>
+    <Card className={cardCommon.card}>
+      <h2 className={cardCommon.header}>Essay Ideas</h2>
       <ProgressModal show={showModal} message={progressMessage} />
-      <h2 className={styles.header} style={{ textAlign: 'left' }}>
-        Essay Ideas
-      </h2>
 
-      {/* If there's a modal for adding a new idea */}
-      {showAddModal && (
-        <div className={styles.modalContainer}>
-          <div className={styles.modalContent}>
-            <h3>Add New Idea</h3>
-            {/* Changed from <input> to <textarea> */}
+      {/* Add‑idea modal */}
+      {showAdd && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h3>Add new idea</h3>
+
             <textarea
-              className={styles.textAreaInput}
-              value={newIdeaText}
-              onChange={(e) => setNewIdeaText(e.target.value)}
-              rows={4} // Adjust the number of rows as needed
+              className={styles.textarea}
+              value={newIdea}
+              onChange={(e) => setNewIdea(e.target.value)}
             />
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Button appearance="primary" onClick={handleAddDone}>
+
+            <div className={styles.modalButtonRow}>
+              <Button appearance="primary" onClick={addIdea}>
                 Done
               </Button>
-              <Button onClick={handleAddCancel}>Cancel</Button>
+              <Button onClick={() => setShowAdd(false)}>Cancel</Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Table */}
+      {/* Ideas table */}
       <div className={styles.tableContainer}>
-        <Table aria-label="Ideas Table">
+        <Table aria-label="ideas">
           <TableHeader>
             <TableRow className={styles.headerRow}>
               <TableHeaderCell style={{ width: '40px' }}>#</TableHeaderCell>
               <TableHeaderCell>Idea</TableHeaderCell>
-              {/* Actions column */}
               <TableHeaderCell style={{ width: '50px' }} />
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {ideaEntries.map(([key, value], index) => {
-              const isSelected = selectedIdeaKey === key;
-              return (
-                <TableRow
-                  as="div"
-                  role="row"         // optional for accessibility
-                  tabIndex={0}       // optional if you want tab-focus
-                  onClick={() => handleRowClick(key)}
-                  className={mergeClasses(styles.rowHover, isSelected && styles.selectedRow)}
-                  >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{value}</TableCell>
-                  {/* Delete (trash can) button */}
-                  <TableCell className={styles.actionsCell}>
-                    <Button
-                      icon={<Delete16Regular />}
-                      appearance="subtle"
-                      size="small"
-                      onClick={(e) => handleRowDelete(e, key)}
-                    />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {ideaEntries.map(([k, v], i) => (
+              <TableRow
+                key={k}
+                onClick={() => selectRow(k)}
+                className={mergeClasses(
+                  styles.rowHover,
+                  selectedKey === k && styles.selectedRow
+                )}
+              >
+                <TableCell>{i + 1}</TableCell>
+                <TableCell>{v}</TableCell>
+                <TableCell className={styles.actionsCell}>
+                  <Button
+                    icon={<Delete16Regular />}
+                    appearance="subtle"
+                    size="small"
+                    aria-label="delete"
+                    onClick={(e) => deleteRow(e, k)}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
 
-      {/* "Add an item" button below the table */}
+      {/* Add item button */}
       {editable && (
-        <div className={styles.buttonRow}>
-          <Button icon={<Add16Regular />} onClick={handleAdd}>
-            Add an item
-          </Button>
-        </div>
-      )}
-
-      {/* Refinement feedback textarea + "Refine" button */}
-      {editable && (
-        <div className={styles.feedbackContainer}>
-          <div className={styles.feedbackLabel}>Refinement Feedback:</div>
-          <textarea
-            className={styles.feedbackTextarea}
-            value={textAreaValue}
-            onChange={(e) => setTextAreaValue(e.target.value)}
-          />
-
-          <div className={styles.refineButtonContainer}>
-            <Button onClick={handleRefine} disabled={!selectedIdeaKey}>
-              Refine Idea
+        <>
+          <div className={styles.buttonRow}>
+            <Button icon={<Add16Regular />} onClick={() => setShowAdd(true)}>
+              Add an item
             </Button>
           </div>
-        </div>
+
+          {/* Feedback + refine */}
+          <div className={styles.feedbackBlock}>
+            <strong>Refinement feedback:</strong>
+            <textarea
+              className={styles.textarea}
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+            />
+            <div className={styles.buttonRow}>
+              <Button onClick={refineIdea} disabled={!selectedKey}>
+                Refine Idea
+              </Button>
+            </div>
+          </div>
+        </>
       )}
     </Card>
   );

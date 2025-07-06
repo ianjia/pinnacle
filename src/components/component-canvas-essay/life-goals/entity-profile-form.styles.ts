@@ -1,27 +1,30 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
   container: {
-    padding: '16px',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
   },
+
   header: {
-    marginBottom: '16px',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
+    marginBottom: tokens.spacingVerticalL,
+    fontSize: tokens.fontSizeBase600,
+    fontWeight: tokens.fontWeightSemibold,
     textAlign: 'left',
   },
+
   itemContainer: {
     position: 'relative',
-    marginBottom: '16px',
+    marginBottom: tokens.spacingVerticalL,
   },
+
   deleteButton: {
     position: 'absolute',
-    top: '8px',
-    right: '8px',
+    top: tokens.spacingVerticalXS,
+    right: tokens.spacingHorizontalXS,
   },
+
   addButton: {
-    marginTop: '16px',
-    fontSize: '14px',
-    color: 'gray',
+    marginTop: tokens.spacingVerticalL,
+    width: '160px',
   },
 });

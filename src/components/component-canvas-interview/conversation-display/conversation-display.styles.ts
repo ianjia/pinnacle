@@ -1,36 +1,52 @@
 import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
-  /* Outer wrapper – fills the space the parent gives it */
-  conversationContainer: {
+  container: {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    overflow: 'hidden',          // ▶ keeps any extra scrollbars out of sight
   },
 
-  /* Scrollable message area */
-  conversationBox: {
-    flex: 1,                     // ▶ take up remaining height
-    overflowY: 'auto',           // ▶ **makes this div scroll instead of page**
-    backgroundColor: tokens.colorNeutralBackground1,
-    padding: '30px',
-    borderRadius: '5px',
+  box: {
+    backgroundColor: tokens.colorNeutralBackground2,
+    color: tokens.colorNeutralForeground1,
+    /* wider padding for comfort */
+    padding: `${tokens.spacingVerticalXL} ${tokens.spacingHorizontalXXL}`,
+    borderRadius: tokens.borderRadiusMedium,
+    boxShadow: tokens.shadow4,
+    overflowY: 'auto',
+  },
+  
+  /* one message row (label + bubble on SAME line) */
+  item: { marginBottom: tokens.spacingVerticalM },
+  left: { textAlign: 'left' },
+  right: { textAlign: 'right' },
+
+  /* label in each row */
+  label: {
+    marginRight: tokens.spacingHorizontalS,   // ← gap between label & bubble
+    fontWeight: tokens.fontWeightSemibold,
   },
 
-  /* Message bubbles -------------------------------------------------- */
-  conversationItem: { marginBottom: '15px' },
-  left:            { textAlign: 'left'  },
-  right:           { textAlign: 'right' },
-
-  message: {
+  /* chat bubbles */
+  bubble: {
     display: 'inline-block',
-    padding: '10px 15px',
-    borderRadius: '15px',
+    padding: `${tokens.spacingVerticalS} ${tokens.spacingHorizontalM}`,
+    borderRadius: tokens.borderRadiusXLarge,
     maxWidth: '70%',
-    wordWrap: 'break-word',
-    color: '#212529',
+    wordBreak: 'break-word',
+    fontSize: tokens.fontSizeBase300,
   },
-  interviewer: { backgroundColor: '#e9ecef' },
-  you:         { backgroundColor: '#d1ecf1' },
+
+  bubbleInterviewer: {
+    backgroundColor: tokens.colorNeutralBackground3,
+    color: tokens.colorNeutralForeground1,
+  },
+
+  bubbleYou: {
+    backgroundColor: tokens.colorBrandBackground2,
+    color: tokens.colorNeutralForegroundOnBrand,
+  },
 });
+
+

@@ -1,40 +1,34 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
   card: {
-    marginBottom: '16px',
-    padding: '24px',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    marginBottom: tokens.spacingVerticalL,
     width: '100%',
+    backgroundColor: tokens.colorNeutralBackground1,
   },
+
   headerContainer: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '16px',
+    marginBottom: tokens.spacingVerticalL,
   },
+
   header: {
     margin: 0,
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
+    fontSize: tokens.fontSizeBase500,
+    fontWeight: tokens.fontWeightSemibold,
   },
-  infoIcon: {
-    marginLeft: '8px',
-  },
-  row: {
-    cursor: 'pointer',
-  },
-  headerCell: {
-    fontWeight: 'bold',
-  },
-  cell: {
-    // Customize as needed
-  },
-  actionCell: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  },
-  actionButton: {
-    padding: '0',
-    height: '28px',
-    lineHeight: '1',
-  },
+
+  infoIcon: { marginLeft: tokens.spacingHorizontalS },
+
+  /* data‑grid */
+  row: { cursor: 'pointer' },
+  rowSelected: { backgroundColor: tokens.colorBrandBackground2 },
+
+  headerCell: { fontWeight: tokens.fontWeightSemibold },
+  cell: {},
+
+  actionCell: { display: 'flex', justifyContent: 'flex-start' },
+  actionButton: { padding: 0, height: '28px' },
 });

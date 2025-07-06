@@ -1,20 +1,20 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
   container: {
-    padding: '24px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '32px',
-    maxHeight: '100vh', // Limit height to viewport for scrolling
-    overflowY: 'auto', // Enable vertical scrolling
+    gap: tokens.spacingVerticalXL,
+    maxHeight: '100vh',
+    overflowY: 'auto',
+    padding: tokens.spacingHorizontalXL,
   },
-  
+
   section: {
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    padding: '16px',
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#f9f9f9',
+    border: `1px solid ${tokens.colorNeutralStroke2}`,
+    borderRadius: tokens.borderRadiusMedium,
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    backgroundColor: tokens.colorNeutralBackground2,
+    boxShadow: tokens.shadow4,
   },
 });

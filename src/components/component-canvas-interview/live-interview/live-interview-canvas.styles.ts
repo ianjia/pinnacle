@@ -1,15 +1,25 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
-  contentContainer: {
-    overflowX: 'auto',
-    overflowY: 'auto',
-    padding: '16px',
+  /* full‑height canvas */
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    backgroundColor: tokens.colorNeutralBackground1,   // theme‑aware
   },
 
-  actionContainer: {
-    padding: '16px',
-  }
+  /* top action panel */
+  action: {
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+  },
+
+  /* main scrollable area */
+  content: {
+    flexGrow: 1,
+    overflowX: 'auto',
+    overflowY: 'auto',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+  },
 });
-
-

@@ -15,6 +15,7 @@ export const useLeftPaneStyles = makeStyles({
     overscrollBehaviorY: 'contain',
     backgroundColor: tokens.colorNeutralBackground2,
     borderRight: `1px solid ${tokens.colorNeutralStroke2}`,
+    paddingTop: tokens.spacingHorizontalL,  // consistent internal gap
   },
 
   content: {

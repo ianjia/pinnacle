@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Field,
   Input,
@@ -7,7 +7,6 @@ import {
 } from '@fluentui/react-components';
 import { useStyles } from './entity-card.styles';
 
-// We define a minimal interface that matches both LifeStory and AcademicCareerGoal:
 export interface BasicEntity {
   id: number;
   user_id: number;
@@ -15,53 +14,59 @@ export interface BasicEntity {
   description?: string;
 }
 
-interface EntityCardProps<T extends BasicEntity> {
+interface Props<T extends BasicEntity> {
   entity: T;
-  onUpdateEntity: (entity: T) => void;
+  onUpdateEntity: (e: T) => void;
 }
 
-export function EntityCard<T extends BasicEntity>({ entity, onUpdateEntity }: EntityCardProps<T>) {
+export function EntityCard<T extends BasicEntity>({
+  entity,
+  onUpdateEntity,
+}: Props<T>) {
   const [localEntity, setLocalEntity] = useState<T>(entity);
+  const styles = useStyles();
 
   const handleBlur = (field: keyof T, value: any) => {
-    // Compare with the prop `entity` passed in from the parent, 
-    // not with `localEntity` (because `localEntity` is already updated by onChange).
-    if (entity[field] === value) {
-      // Nothing changed compared to the parent, do nothing.
-      return;
-    }
-
-    const updatedEntity = { ...localEntity, [field]: value };
-    setLocalEntity(updatedEntity);
-    onUpdateEntity(updatedEntity);
+    if (entity[field] === value) return;
+    const updated = { ...localEntity, [field]: value };
+    setLocalEntity(updated);
+    onUpdateEntity(updated);
   };
-
-  const styles = useStyles();
 
   return (
     <Card className={styles.card}>
-        <div className={styles.fieldRow}>
-          <div className={styles.nameFieldContainer}>
-            <Field label="Name" className={styles.field}>
-              <Input
-                className={styles.input}
-                value={localEntity.name || ''}
-                onChange={(e) => setLocalEntity({ ...localEntity, name: e.target.value })}
-                onBlur={(e) => handleBlur('name', e.target.value)}
-              />
-            </Field>
-          </div>
-        </div>
-        <div className={styles.grid}>
-          <Field label="Description" className={styles.field}>
-            <Textarea
-              className={styles.textarea}
-              value={localEntity.description || ''}
-              onChange={(e) => setLocalEntity({ ...localEntity, description: e.target.value })}
-              onBlur={(e) => handleBlur('description', e.target.value)}
+      {/* name row */}
+      <div className={styles.fieldRow}>
+        <div className={styles.nameFieldContainer}>
+          <Field label="Name" className={styles.field}>
+            <Input
+              value={localEntity?.name ?? ''}
+              onChange={(e) =>
+                setLocalEntity({ ...localEntity, name: e.target.value })
+              }
+              onBlur={(e) => handleBlur('name', e.target.value)}
             />
           </Field>
         </div>
+      </div>
+
+      {/* description row */}
+      <div className={styles.grid}>
+        <Field label="Description" className={styles.field}>
+          <Textarea
+            value={localEntity?.description ?? ''}
+            onChange={(e) =>
+              setLocalEntity({
+                ...localEntity,
+                description: e.target.value,
+              })
+            }
+            onBlur={(e) => handleBlur('description', e.target.value)}
+            resize="vertical"
+            className={styles.textarea}
+          />
+        </Field>
+      </div>
     </Card>
   );
 }

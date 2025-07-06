@@ -1,64 +1,29 @@
-import { makeStyles } from "@fluentui/react-components";
+import { makeStyles, tokens } from "@fluentui/react-components";
 
-export const useStyles = makeStyles({
-  container: {
-    overflowX: 'auto',
-    overflowY: 'auto',
-    padding: '16px',
-  },
-  card: {
-    marginBottom: '16px',
-    padding: '24px',
-  },
-  header: {
-    marginBottom: '32px',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-  },
-  cardPreview: {
-    marginBottom: '16px',
-  },
+export const usePromptStyles = makeStyles({
+  container: { paddingBottom: tokens.spacingVerticalL },
+  cardPreview: { marginBottom: tokens.spacingVerticalL },
+
   grid: {
-    display: 'grid !important', // Force priority
-    gridTemplateColumns: 'repeat(2, 1fr) !important',
-    gap: '16px !important',
-  },
-  field: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  },
-  fullWidth: {
-    // Spans both columns to take the full width
-    gridColumn: '1 / 3',
-  },
-  input: {
-    height: '36px',
-    width: '100%',
-  },
-  textarea: {
-    width: '100%',
-    height: '120px',
-  },
-  assistanttextarea: {
-    width: '100%',
-    height: '80px',
-  },
-  buttonField: {
-    // Reduced spacing above the button
-    marginTop: '8px',
-  },
-  buttonGenerate: {
-    width: '200px', // Adjust as needed
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: tokens.spacingHorizontalL,
   },
 
-  // --- Add the same popover icon + label container styling as before ---
-  infoIcon: {
-    marginLeft: '8px',
-  },
-  labelContainer: {
+  field: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalXS },
+  fullWidth: { gridColumn: '1 / -1' },
+
+  textarea: { width: '100%', minHeight: '120px' },
+  textareaSmall: { width: '100%', minHeight: '80px' },
+
+  buttonField: { marginTop: tokens.spacingVerticalS },
+  button: { width: '200px' },
+
+  labelWrap: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '1px',
+    gap: tokens.spacingHorizontalXXS,
   },
+  infoIcon: { marginLeft: tokens.spacingHorizontalXS },
 });
+

@@ -31,7 +31,8 @@ import {
 } from '../../component-service-proxy';
 import { DropdownCustom } from '../../component-customized-fluent-ui';
 import { Major } from '../../../shared';
-import { useStyles } from './essay-ideas-prompt.styles';
+import { usePromptStyles } from './essay-ideas-prompt.styles';
+import { useCardStyles } from './essay-common-card.styles';
 
 /**
  * For demonstration, we still keep this basic length check,
@@ -42,225 +43,132 @@ function isPromptValid(prompt: string): boolean {
 }
 
 export const EssayPrompt: React.FC = () => {
-  const styles = useStyles();
+  const cardCommon = useCardStyles();
+  const styles = usePromptStyles();
   const dispatch: AppDispatch = useDispatch();
 
-  // --- Redux values ---
-  const college = useSelector((state: RootState) => state.essayWorkshop.college);
-  const major = useSelector((state: RootState) => state.essayWorkshop.major);
-  const essay_prompt = useSelector(
-    (state: RootState) => state.essayWorkshop.essayPrompt
-  );
-  const additional_ask = useSelector(
-    (state: RootState) => state.essayWorkshop.additionalAsk
-  );
+  /* Redux state */
+  const college     = useSelector((s: RootState) => s.essayWorkshop.college);
+  const major       = useSelector((s: RootState) => s.essayWorkshop.major);
+  const essayPrompt = useSelector((s: RootState) => s.essayWorkshop.essayPrompt);
+  const addnAsk     = useSelector((s: RootState) => s.essayWorkshop.additionalAsk);
+  const collegeList = useSelector((s: RootState) => s.collegeListWorkshop.collegeList);
 
-  const collegeList = useSelector(
-    (state: RootState) => state.collegeListWorkshop.collegeList
-  );
+  /* Local refs to sync textarea values */
+  const promptRef   = useRef<HTMLTextAreaElement>(null);
+  const askRef      = useRef<HTMLTextAreaElement>(null);
 
-  // Track which (if any) task is active (so we can show the ProgressModal)
-  const [activeTask, setActiveTask] = useState<"generateIdeas" | "promptAnalysis" | null>(null);
+  /* keep textareas in sync with Redux when Redux modified elsewhere */
+  useEffect(() => { if (promptRef.current) promptRef.current.value = essayPrompt; }, [essayPrompt]);
+  useEffect(() => { if (askRef.current)    askRef.current.value    = addnAsk;    }, [addnAsk]);
 
-  // --- Local refs for textareas (if needed) ---
-  const essayPromptInputRef = useRef<HTMLTextAreaElement>(null);
-  const additionalAskInputRef = useRef<HTMLTextAreaElement>(null);
+  /* local task indicator */
+  const [active, setActive] = useState<null | 'ideas' | 'analysis'>(null);
 
-  const hasBasicInfoFilled = useBasicInfoFilled();
+  const hasProfile = useBasicInfoFilled();
 
-  // --- Sync local textareas with Redux store when Redux values change ---
-  useEffect(() => {
-    if (essayPromptInputRef.current) {
-      essayPromptInputRef.current.value = essay_prompt;
-    }
-  }, [essay_prompt]);
-
-  useEffect(() => {
-    if (additionalAskInputRef.current) {
-      additionalAskInputRef.current.value = additional_ask;
-    }
-  }, [additional_ask]);
-
-  // --- Handlers for textareas ---
-  const handleEssayPromptBlur = () => {
-    const currentValue = essayPromptInputRef.current?.value || '';
-    if (isPromptValid(currentValue) && currentValue !== essay_prompt) {
-      dispatch(essayWorkshopActions.setEssayPrompt(currentValue));
-    } else if (!isPromptValid(currentValue)) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The prompt you entered is not valid. Please re-enter.',
-        })
-      );
-    }
-  };
-
-  const handleAdditionalAskBlur = () => {
-    const currentValue = additionalAskInputRef.current?.value || '';
-    if (currentValue !== additional_ask) {
-      dispatch(essayWorkshopActions.setAdditionalAsk(currentValue));
-    }
-  };
-
-  /**
-   * Handle user selecting a different college in the dropdown.
-   */
-  const handleCollegeSelect = (event: SelectionEvents, data: OptionOnSelectData) => {
-    if (!data.optionValue) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you selected is not valid. Please check.',
-        })
-      );
+  /* ---------- handlers ---------- */
+  const onCollegeSelect = (_: SelectionEvents, d: OptionOnSelectData) => {
+    const key = d.optionValue && getCollegeNameKey(d.optionValue);
+    if (!key) {
+      dispatch(alertDialogActions.showAlert({ title: 'Validation Error', message: 'Invalid college.' }));
       return;
     }
-    const matchedCollegeName = getCollegeNameKey(data.optionValue);
-    if (!matchedCollegeName) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you selected is not valid. Please check.',
-        })
-      );
+    dispatch(essayWorkshopActions.setCollege(key));
+  };
+
+  const onMajorSelect = (m: Major) => dispatch(essayWorkshopActions.setMajor(m));
+
+  const savePrompt = () => {
+    const v = promptRef.current?.value ?? '';
+    if (!isPromptValid(v)) {
+      dispatch(alertDialogActions.showAlert({ title: 'Validation Error', message: 'Prompt too short.' }));
       return;
     }
-    dispatch(essayWorkshopActions.setCollege(matchedCollegeName));
+    if (v !== essayPrompt) dispatch(essayWorkshopActions.setEssayPrompt(v));
   };
 
-  /**
-   * Handler for Major changes (using custom dropdown).
-   */
-  const handleMajorSelect = (newMajor: Major) => {
-    dispatch(essayWorkshopActions.setMajor(newMajor));
+  const saveAsk = () => {
+    const v = askRef.current?.value ?? '';
+    if (v !== addnAsk) dispatch(essayWorkshopActions.setAdditionalAsk(v));
   };
 
-  // --- Task Runner for generating essay ideas ---
-  const { startTask: startEssayIdeasTask, showModal: showEssayIdeasModal, progressMessage: showEssayIdeasMessage } = useTaskRunner({
-    taskType: TaskType.GenerateEssayIdeas,
-    requestData: {
-      college,
-      major,
-      prompt: essay_prompt,
-      additionalInfo: additional_ask,
-    } as EssayIdeasGenerationRequest,
-    onResult: (data: TaskResult) => {
-      essayWorkshopActions.clearIdeas();
-      const resultList = (data as GenerateEssayIdeasTaskResult).ideas;
-      for (const idea of resultList) {
-        const ideaKey = uuidv4();
-        dispatch(essayWorkshopActions.addIdea({ key: ideaKey, value: idea }));
-        setActiveTask(null);
-      }
-    },
-  });
+  /* ---------- task runners ---------- */
+  const { startTask: genIdeas, showModal: showIdeas, progressMessage: msgIdeas } =
+    useTaskRunner({
+      taskType: TaskType.GenerateEssayIdeas,
+      requestData: { college, major, prompt: essayPrompt, additionalInfo: addnAsk } as EssayIdeasGenerationRequest,
+      onResult: (data: TaskResult) => {
+        dispatch(essayWorkshopActions.clearIdeas());
+        (data as GenerateEssayIdeasTaskResult).ideas.forEach((idea) =>
+          dispatch(essayWorkshopActions.addIdea({ key: uuidv4(), value: idea })),
+        );
+        setActive(null);
+      },
+    });
 
-  const { startTask: startPromptAnalysisTask, showModal: showPromptAnalysisModal, progressMessage: showPromptAnalysisMessage } = useTaskRunner({
-    taskType: TaskType.EssayPromptAnalysis,
-    requestData: {
-      college,
-      major,
-      prompt: essay_prompt,
-      additionalInfo: additional_ask,
-    } as EssayIdeasGenerationRequest,
-    onResult: (data: TaskResult) => {
-      const analysis = (data as PromptAnalysisTaskResult).analysis;
-      dispatch(essayWorkshopActions.setPromptAnalysis(analysis));
-      setActiveTask(null);
-    },
-  });
+  const { startTask: analyse, showModal: showAnal, progressMessage: msgAnal } =
+    useTaskRunner({
+      taskType: TaskType.EssayPromptAnalysis,
+      requestData: { college, major, prompt: essayPrompt, additionalInfo: addnAsk } as EssayIdeasGenerationRequest,
+      onResult: (d: TaskResult) => {
+        dispatch(essayWorkshopActions.setPromptAnalysis((d as PromptAnalysisTaskResult).analysis));
+        setActive(null);
+      },
+    });
 
-  /**
-   * Start the “Generate Essay Ideas” task if the prompt is valid.
-   */
-  const handleStartGenerateEssayIdeasTask = () => {
-    if (!hasBasicInfoFilled) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
-        return;
-    }
-
-    if (isPromptValid(essay_prompt)) {
-      setActiveTask("generateIdeas");
-      startEssayIdeasTask();
-    } else {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The prompt is not valid. Please re-enter.',
-        })
-      );
-    }
-  };
-
-  const handleStartPromptAnalysisTask = () => {
-    if (!hasBasicInfoFilled) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
+  const runIdeas = () => {
+    if (!hasProfile) {
+      dispatch(alertDialogActions.showAlert({ title: 'Insuffient Information', message: 'Fill basic profile first.' }));
       return;
     }
-
-    if (isPromptValid(essay_prompt)) {
-      setActiveTask("promptAnalysis");
-      startPromptAnalysisTask();
-    } else {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The prompt is not valid. Please re-enter.',
-        })
-      );
+    if (isPromptValid(essayPrompt)) {
+      setActive('ideas');
+      genIdeas();
     }
   };
 
+  const runAnalysis = () => {
+    if (!hasProfile) {
+      dispatch(alertDialogActions.showAlert({ title: 'Insuffient Information', message: 'Fill basic profile first.' }));
+      return;
+    }
+    if (isPromptValid(essayPrompt)) {
+      setActive('analysis');
+      analyse();
+    }
+  };
+
+  /* ---------- JSX ---------- */
   return (
     <div className={styles.container}>
-      {/* Progress Modal while tasks run */}
       <ProgressModal
-        show={activeTask !== null && ( showEssayIdeasModal|| showPromptAnalysisModal)}
-        message={
-          activeTask === 'generateIdeas'
-            ? showEssayIdeasMessage
-            : activeTask === 'promptAnalysis'
-            ? showPromptAnalysisMessage
-            : ''
-        }
+        show={active !== null && (showIdeas || showAnal)}
+        message={active === 'ideas' ? msgIdeas : msgAnal}
       />
 
-      <Card className={styles.card}>
-        <h2 className={styles.header} style={{ textAlign: 'left' }}>
-          Essay Prompt
-        </h2>
+      <Card className={cardCommon.card}>
+        <h2 className={cardCommon.header}>Essay Prompt</h2>
 
         <CardPreview className={styles.cardPreview}>
           <div className={styles.grid}>
-            {/* College (left column) with popover */}
+            {/* College + popover */}
             <Field
               label={
-                <span className={styles.labelContainer}>
-                  <span>College</span>
+                <span className={styles.labelWrap}>
+                  College
                   <Popover positioning={{ position: 'after', align: 'top' }}>
                     <PopoverTrigger>
                       <Button
-                        icon={<Info24Regular />}
                         appearance="subtle"
+                        icon={<Info24Regular />}
                         size="small"
-                        aria-label="Information"
+                        aria-label="info"
                         className={styles.infoIcon}
                       />
                     </PopoverTrigger>
                     <PopoverSurface>
-                      Please make sure the college list was created 
-                      before selecting a college here
+                      Make sure you have a recommended college list first.
                     </PopoverSurface>
                   </Popover>
                 </span>
@@ -268,10 +176,10 @@ export const EssayPrompt: React.FC = () => {
               className={styles.field}
             >
               <Dropdown
-                placeholder="Select a college"
+                placeholder="Select college"
                 value={college}
-                onOptionSelect={handleCollegeSelect}
-                disabled={collegeList.length === 0} // disable if no colleges
+                onOptionSelect={onCollegeSelect}
+                disabled={!collegeList.length}
               >
                 {collegeList.map((c) => (
                   <Option key={c.id} value={c.college}>
@@ -281,68 +189,55 @@ export const EssayPrompt: React.FC = () => {
               </Dropdown>
             </Field>
 
-            {/* Major (right column) */}
+            {/* Major */}
             <Field label="Major" className={styles.field}>
               <DropdownCustom
                 options={Major}
-                onOptionSelect={(e, option) => handleMajorSelect(option.optionValue as Major)}
                 value={major}
-                placeHolder="Select a major"
+                placeHolder="Select major"
+                onOptionSelect={(_, o) => onMajorSelect(o.optionValue as Major)}
               />
             </Field>
 
-            {/* Essay Prompt (full-width) */}
+            {/* Prompt */}
             <Field
               label="Essay Prompt"
               className={mergeClasses(styles.field, styles.fullWidth)}
             >
               <Textarea
+                ref={promptRef}
+                onBlur={savePrompt}
                 className={styles.textarea}
-                id="prompt"
-                defaultValue={essay_prompt}
-                ref={essayPromptInputRef}
-                onBlur={handleEssayPromptBlur}
-                rows={3}
               />
             </Field>
 
-            {/* Additional Ask (full-width) */}
+            {/* Additional ask */}
             <Field
-              label="Additional Information (Optional)"
+              label="Additional Information (optional)"
               className={mergeClasses(styles.field, styles.fullWidth)}
             >
               <Textarea
-                className={styles.assistanttextarea}
-                id="additionalAsk"
-                defaultValue={additional_ask}
-                ref={additionalAskInputRef}
-                onBlur={handleAdditionalAskBlur}
-                rows={3}
+                ref={askRef}
+                onBlur={saveAsk}
+                className={styles.textareaSmall}
               />
             </Field>
           </div>
         </CardPreview>
 
+        {/* buttons */}
         <div className={styles.grid}>
-        <Field className={styles.buttonField}>
-            <Button
-              className={styles.buttonGenerate}
-              onClick={handleStartPromptAnalysisTask}
-            >
+          <Field className={styles.buttonField}>
+            <Button className={styles.button} onClick={runAnalysis}>
               Analyze Prompt
             </Button>
           </Field>
-
           <Field className={styles.buttonField}>
-            <Button
-              className={styles.buttonGenerate}
-              onClick={handleStartGenerateEssayIdeasTask}
-            >
+            <Button className={styles.button} onClick={runIdeas}>
               Generate Essay Ideas
             </Button>
           </Field>
         </div>
-
       </Card>
     </div>
   );

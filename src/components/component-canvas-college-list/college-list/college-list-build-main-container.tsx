@@ -1,11 +1,14 @@
+// CollegeListBuildMainContainer.tsx
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { alertDialogActions, RootState, useBasicInfoFilled } from '../../../store';
 import {
+  alertDialogActions,
+  RootState,
+  useBasicInfoFilled,
   collegeListWorkshopActions,
   committeeReviewActions,
   interviewConversationActions,
-  navigationTabActions
+  navigationTabActions,
 } from '../../../store';
 
 import {
@@ -18,7 +21,7 @@ import {
   GetCollegeDataChanceTaskResult,
   CollegeDataAndChanceRequest,
   ProgressModal,
-  toCombinedCollegeData
+  toCombinedCollegeData,
 } from '../../component-service-proxy';
 
 import { AuthContext } from '../../../auth';
@@ -27,12 +30,15 @@ import { getCollegeNameKey } from '../../component-navigation-map';
 
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
 import { CollegeListBuildForm } from './college-list-build-form';
+
 import {
   Card,
   Popover,
   PopoverSurface,
   PopoverTrigger,
-  Button as FluentButton
+  Button,
+  Input,
+  tokens,
 } from '@fluentui/react-components';
 import { Info24Regular } from '@fluentui/react-icons';
 import { useStyles } from './college-list-build-form.styles';
@@ -41,92 +47,77 @@ export const CollegeListBuildMainContainer: React.FC = () => {
   const dispatch = useDispatch();
   const { userId } = useContext(AuthContext);
   const styles = useStyles();
-  
-  // Pull college list and preferences from Redux
-  const collegeList = useSelector((state: RootState) => state.collegeListWorkshop.collegeList);
+
+  /* ------------------------------------------------------------------ */
+  /* Redux state */
+  const collegeList = useSelector((s: RootState) => s.collegeListWorkshop.collegeList);
   const collegePref: CollegePreferences = useSelector(
-    (state: RootState) => state.collegePreferences.collegePreferences
+    (s: RootState) => s.collegePreferences.collegePreferences
   );
-  const majorPref: string = collegePref.specializedProgram.value;
-
-  // Track which college row is selected
-  const [selectedCollege, setSelectedCollege] = useState<CollegeAdmissionData | null>(null);
-
-  // State for opening the "Add college" modal
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newCollegeName, setNewCollegeName] = useState('');
-
-  // Track which (if any) task is active (so we can show the ProgressModal)
-  const [activeTask, setActiveTask] = useState<"collegeList" | "evaluation" | null>(null);
-
-  const [showConfirmCleanUpDialog, setShowConfirmCleanUpDialog] = useState(false);
-
+  const majorPref = collegePref.specializedProgram.value;
   const hasBasicInfoFilled = useBasicInfoFilled();
 
-  /**
-   * Task runner for building a college list:
-   */
+  /* ------------------------------------------------------------------ */
+  /* Local state */
+  const [selectedCollege, setSelectedCollege] = useState<CollegeAdmissionData | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newCollegeName, setNewCollegeName] = useState('');
+  const [activeTask, setActiveTask] = useState<'collegeList' | 'evaluation' | null>(null);
+  const [showConfirmCleanUpDialog, setShowConfirmCleanUpDialog] = useState(false);
+
+  /* ------------------------------------------------------------------ */
+  /* Task runner – build list */
   const {
     startTask: startCollegeListTask,
     showModal: showCollegeListModal,
-    progressMessage: progressCollegeListMessage
+    progressMessage: progressCollegeListMessage,
   } = useTaskRunner({
     taskType: TaskType.BuildCollegeList,
     requestData: {} as CollegeListBuildRequest,
-
     onResult: async (data: TaskResult) => {
-      const buildResult = data as BuildCollegeListTaskResult; 
-      const newCollegeList = buildResult.college_list.map((college) => ({
+      const buildResult = data as BuildCollegeListTaskResult;
+      const newItems = buildResult.college_list.map((c) => ({
         id: 0,
         user_id: userId as number,
-        college: college.college,
+        college: c.college,
         data: {
-            admitRate: college.admitRate,
-            undergradEnroll: college.undergradEnroll,
-            annualCost: college.annualCost,
-            nationalRanking: college.nationalRanking,
-            programRanking: college.programRanking,
-            chance: college.chance,
-            category: college.category,
-            reason: college.reason,
+          admitRate: c.admitRate,
+          undergradEnroll: c.undergradEnroll,
+          annualCost: c.annualCost,
+          nationalRanking: c.nationalRanking,
+          programRanking: c.programRanking,
+          chance: c.chance,
+          category: c.category,
+          reason: c.reason,
         },
       }));
 
       try {
-        // Create each new college item on the server, one by one
-        const updatedCollegeList: CollegeAdmissionData[] = [];
-      
-        for (const collegeItem of newCollegeList) {
-          const returnedId = await collegeAdmissionDataService.create(collegeItem);
-          updatedCollegeList.push({ ...collegeItem, id: returnedId });
+        const updated: CollegeAdmissionData[] = [];
+        for (const item of newItems) {
+          const id = await collegeAdmissionDataService.create(item);
+          updated.push({ ...item, id });
         }
-      
-        // Dispatch to Redux store
-        dispatch(collegeListWorkshopActions.setCollegeList(updatedCollegeList));
-      
-      } catch (error) {
-        console.error('Failed to create new college items: ', error);
+        dispatch(collegeListWorkshopActions.setCollegeList(updated));
       } finally {
         setActiveTask(null);
       }
     },
   });
 
-  /**
-   * Task runner for evaluating a particular college's data/chance:
-   */
+  /* ------------------------------------------------------------------ */
+  /* Task runner – evaluate college */
   const {
     startTask: startEvaluationTask,
     showModal: showEvaluationModal,
-    progressMessage: progressEvaluationMessage
+    progressMessage: progressEvaluationMessage,
   } = useTaskRunner({
     taskType: TaskType.GetCollegeDataChance,
     requestData: { college_name: selectedCollege?.college, major: majorPref } as CollegeDataAndChanceRequest,
     onResult: async (data: TaskResult) => {
-      const result = data as GetCollegeDataChanceTaskResult;
       if (!selectedCollege) return;
+      const result = data as GetCollegeDataChanceTaskResult;
 
-      // 1) Update Redux store
       dispatch(
         collegeListWorkshopActions.setCollegeData({
           id: selectedCollege.id,
@@ -134,210 +125,115 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         })
       );
 
-      // 2) Update server
       try {
         await collegeAdmissionDataService.update({
           ...selectedCollege,
           data: toCombinedCollegeData(result.data_chance),
         });
-      } catch (err) {
-        console.error('Failed to update server:', err);
+      } finally {
+        setActiveTask(null);
       }
-
-      setActiveTask(null);
     },
   });
 
-  /**
-   *  If the existing collegeList is not empty, show a confirmation dialog;
-   *  if user cancels, do nothing; if user confirms, delete all, then proceed.
-   */
-  const handleStartCollegeListTask = () => {
-    if (!hasBasicInfoFilled) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
-      return;
-    }
-
-    if (collegeList.length > 0) {
-      // Show the confirmation dialog if there's anything in the list
-      setShowConfirmCleanUpDialog(true);
-    } else {
-      // If the list is empty, proceed as before
-      setActiveTask('collegeList');
-      startCollegeListTask();
-    }
-  };
-
-  // Called if user clicks "Ok" to confirm clearing the list
-  const handleConfirmCleanUpOk = async () => {
-    setShowConfirmCleanUpDialog(false); // hide confirmation dialog
-    // Delete all colleges in the current list (sequentially)
-    
-    for (const college of collegeList) {
-      try {
-        await handleDeleteCollege(college.id);
-      } catch(error) {
-        dispatch(
-          alertDialogActions.showAlert({
-            title: 'Saving Error',
-            message: `Error deleting college on server side, please try again, please refresh browser tab and re-login if it still does not work}`,
-          })
-        );
-        return; // do nothing
-      }
-    }
-    
-    // Proceed with the original logic
-    setActiveTask('collegeList');
-    startCollegeListTask();
-  
-  };
-
-  // Called if user clicks "Cancel" in the confirmation dialog
-  const handleConfirmCleanUpCancel = () => {
-    setShowConfirmCleanUpDialog(false);
-    // Do nothing else
-  };
-
-  /** Evaluate the selected college's data/chance */
-  const handleStartEvaluationTask = () => {
-    if (!hasBasicInfoFilled) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
-      return;
-    }
-
-    if (!selectedCollege) {
-       return 
-    };
-
-    setActiveTask("evaluation");
-    startEvaluationTask();
-  };
-
-  /** Jump to the Committee Review tab (only if a college is selected) */
-  const handleCommitteeReview = () => {
-    if (!selectedCollege) return;
-    dispatch(navigationTabActions.setActiveTab(NavTabType.ComitteReview));
-  };
-
-  /** When user wants to add a new college */
-  const handleAddCollege = () => {
-    setIsAddModalOpen(true);
-  };
-
-  const handleAddCollegeDone = async () => {
-    const matchedCollegeName = getCollegeNameKey(newCollegeName.trim());
-    if (!matchedCollegeName) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you entered is not valid. Please re-enter.',
-        })
-      );
-      return;
-    }
-
-    const existingCollege = collegeList.find(
-      (c) => c.college === matchedCollegeName
-    );
-    if (existingCollege) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message:  `${matchedCollegeName} already exists in college list, please try a different one`,
-        })
-      );
-      return;
-    }    
-
-    const newCollegeItem = {
-      id: 0,
-      user_id: userId as number,
-      college: matchedCollegeName,
-      data: undefined,
-    };
-
-    try {
-      const newId = await collegeAdmissionDataService.create(newCollegeItem);
-      dispatch(
-        collegeListWorkshopActions.addCollege({
-          ...newCollegeItem,
-          id: newId,
-        })
-      );
-      setIsAddModalOpen(false);
-      setNewCollegeName('');
-    } catch (error: any) {
-        dispatch(
-          alertDialogActions.showAlert({
-            title: 'Saving Error',
-            message: `Error creating college on server side: ${error.message}`,
-          })
-        );
-    }
-  };
-
-  const handleAddCollegeCancel = () => {
-    setIsAddModalOpen(false);
-    setNewCollegeName('');
-  };
-
-  const handleDeleteSingleCollege = async (collegeId: number) => {
-    try {
-      await handleDeleteCollege(collegeId)
-    } catch (e) {
-        dispatch(
-          alertDialogActions.showAlert({
-            title: 'Saving Error',
-            message: `Error deleting college on server side, please try again, please refresh browser tab and re-login if it still does not work}`,
-          })
-        );
-    }
-  };
-
-  /** Delete a college by id (from the table’s row) */
+  /* ------------------------------------------------------------------ */
+  /* Helpers */
   const handleDeleteCollege = async (collegeId: number) => {
-    const foundCollege = collegeList.find((c) => c.id === collegeId);
-    if (!foundCollege) return;
-
-    try {
-      await collegeAdmissionDataService.deleteById(foundCollege.id, foundCollege.user_id);
-      dispatch(collegeListWorkshopActions.deleteCollege(foundCollege.id));
-
-      // Clear selection if we just deleted the selectedCollege
-      if (selectedCollege?.id === collegeId) {
-        setSelectedCollege(null);
-      }
-    } catch (error: any) {
-      throw (error)
-    }
+    const found = collegeList.find((c) => c.id === collegeId);
+    if (!found) return;
+    await collegeAdmissionDataService.deleteById(found.id, found.user_id);
+    dispatch(collegeListWorkshopActions.deleteCollege(found.id));
+    if (selectedCollege?.id === collegeId) setSelectedCollege(null);
   };
 
-  /** Row selection in the table */
   const handleSelectCollege = (collegeItem: CollegeAdmissionData) => {
     setSelectedCollege(collegeItem);
-
-    // Also set live college/major for committeeReview or interview
     dispatch(committeeReviewActions.setLiveReviewCollege(collegeItem.college));
     dispatch(committeeReviewActions.setLiveReviewMajor(majorPref));
     dispatch(interviewConversationActions.setLiveConversationCollege(collegeItem.college));
     dispatch(interviewConversationActions.setLiveConversationMajor(majorPref));
   };
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  /* ------------------------------------------------------------------ */
+  /* Action panel handlers */
+  const handleStartCollegeListTask = () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insufficient Information',
+          message: 'Please fill in basic information in student profile before performing the task.',
+        })
+      );
+      return;
+    }
 
-      {/* Progress Modal while tasks run */}
+    if (collegeList.length) setShowConfirmCleanUpDialog(true);
+    else {
+      setActiveTask('collegeList');
+      startCollegeListTask();
+    }
+  };
+
+  const handleStartEvaluationTask = () => {
+    if (!hasBasicInfoFilled) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Insufficient Information',
+          message: 'Please fill in basic information in student profile before performing the task.',
+        })
+      );
+      return;
+    }
+    if (!selectedCollege) return;
+
+    setActiveTask('evaluation');
+    startEvaluationTask();
+  };
+
+  const handleCommitteeReview = () => {
+    if (selectedCollege) dispatch(navigationTabActions.setActiveTab(NavTabType.ComitteReview));
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* Clean-up confirmation */
+  const confirmCleanUpOk = async () => {
+    setShowConfirmCleanUpDialog(false);
+    for (const c of collegeList) await handleDeleteCollege(c.id);
+    setActiveTask('collegeList');
+    startCollegeListTask();
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* Add-college dialog */
+  const handleAddCollegeDone = async () => {
+    const key = getCollegeNameKey(newCollegeName.trim());
+    if (!key) {
+      dispatch(
+        alertDialogActions.showAlert({ title: 'Validation Error', message: 'Invalid college name.' })
+      );
+      return;
+    }
+    if (collegeList.some((c) => c.college === key)) {
+      dispatch(
+        alertDialogActions.showAlert({
+          title: 'Validation Error',
+          message: `${key} already exists in the list.`,
+        })
+      );
+      return;
+    }
+
+    const item = { id: 0, user_id: userId as number, college: key, data: undefined };
+    const id = await collegeAdmissionDataService.create(item);
+    dispatch(collegeListWorkshopActions.addCollege({ ...item, id }));
+    setIsAddModalOpen(false);
+    setNewCollegeName('');
+  };
+
+  /* ------------------------------------------------------------------ */
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL }}>
+      {/* Progress modal */}
       <ProgressModal
         show={activeTask !== null && (showCollegeListModal || showEvaluationModal)}
         message={
@@ -349,165 +245,130 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         }
       />
 
-      {/* (NEW) Confirmation dialog for cleaning up existing colleges */}
+      {/* Clean-up confirmation dialog */}
       {showConfirmCleanUpDialog && (
-        <div
-          style={{
-            position: 'fixed',
-            zIndex: 9999,
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: '#ffffff',
-            padding: '20px',
-            borderRadius: '4px',
-            boxShadow: '0 0 10px rgba(0,0,0,0.3)',
-          }}
-        >
-          <h3>Please be noticed...</h3>
-          <p>Continuing this task will remove all current colleges in the list.</p>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <button onClick={handleConfirmCleanUpOk}>Ok</button>
-            <button onClick={handleConfirmCleanUpCancel}>Cancel</button>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Please be noticed…</h3>
+            <p>Continuing this task will remove all current colleges in the list.</p>
+            <div className={styles.modalButtonRow}>
+              <Button appearance="primary" onClick={confirmCleanUpOk}>
+                Ok
+              </Button>
+              <Button onClick={() => setShowConfirmCleanUpDialog(false)}>Cancel</Button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Top buttons: Build list, Evaluate, Committee Review */}
+      {/* Action panel */}
       <Card className={styles.card}>
-        <h2 className={styles.header} style={{ textAlign: 'left' }}>
-          Action Panel
-        </h2>
+        <h2 className={styles.header}>Action Panel</h2>
 
-        <div style={{ display: 'flex', gap: '50px' }}>
-          {/* Create/Refresh List + info popover */}
+        <div style={{ display: 'flex', gap: tokens.spacingHorizontalXL }}>
+          {/* Build list */}
           <div className={styles.buttonWithInfo}>
-            <button
-              className={styles.actionPanelButton}
-              onClick={handleStartCollegeListTask}
-            >
+            <Button className={styles.actionPanelButton} onClick={handleStartCollegeListTask}>
               Build College List
-            </button>
+            </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <FluentButton
+                <Button
                   icon={<Info24Regular />}
                   appearance="subtle"
                   size="small"
-                  aria-label="Information on creating a recommended college list"
+                  aria-label="Info"
                   className={styles.infoIcon}
                 />
               </PopoverTrigger>
-              <PopoverSurface>
-                Create a recommended college list
-              </PopoverSurface>
+              <PopoverSurface>Create a recommended college list</PopoverSurface>
             </Popover>
           </div>
 
-          {/* Evaluate + info popover */}
+          {/* Evaluate */}
           <div className={styles.buttonWithInfo}>
-            <button
+            <Button
               className={styles.actionPanelButton}
               onClick={handleStartEvaluationTask}
               disabled={!selectedCollege || selectedCollege.data !== undefined}
             >
               Evaluate a College
-            </button>
+            </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <FluentButton
+                <Button
                   icon={<Info24Regular />}
                   appearance="subtle"
                   size="small"
-                  aria-label="Information on evaluation"
+                  aria-label="Info"
                   className={styles.infoIcon}
                 />
               </PopoverTrigger>
               <PopoverSurface>
-                Please use Add an Item to create a row and then select it to evaluate
+                Use “Add an Item” to create a row then select it to evaluate
               </PopoverSurface>
             </Popover>
           </div>
 
-          {/* Holistic Review + info popover */}
+          {/* Holistic review */}
           <div className={styles.buttonWithInfo}>
-            <button
+            <Button
               className={styles.actionPanelButton}
               onClick={handleCommitteeReview}
               disabled={!selectedCollege}
             >
               Holistic Review on My Chance
-            </button>
+            </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <FluentButton
+                <Button
                   icon={<Info24Regular />}
                   appearance="subtle"
                   size="small"
-                  aria-label="Information on holistic review"
+                  aria-label="Info"
                   className={styles.infoIcon}
                 />
               </PopoverTrigger>
-              <PopoverSurface>
-                Please select a row for a comprehensive review
-              </PopoverSurface>
+              <PopoverSurface>Select a row for a comprehensive review</PopoverSurface>
             </Popover>
           </div>
         </div>
       </Card>
 
-
-      {/* If a row is selected AND it has a `reason`, show it in ReviewDisplay */}
+      {/* Selected college reason */}
       {selectedCollege?.data?.reason && (
         <Card className={styles.card}>
-          <h3 className={styles.reviewHeader} style={{ textAlign: 'left' }}>
-            My fit with this college
-          </h3>
+          <h3 className={styles.reviewHeader}>My fit with this college</h3>
           <ReviewDisplay review={selectedCollege.data.reason} />
         </Card>
       )}
 
-      {/* The table component */}
+      {/* Data grid */}
       <CollegeListBuildForm
         collegeList={collegeList}
         selectedCollegeId={selectedCollege?.id}
         onSelectCollege={handleSelectCollege}
-        onDeleteCollege={handleDeleteSingleCollege}
-        onAddCollege={handleAddCollege}
+        onDeleteCollege={(id) => handleDeleteCollege(id)}
+        onAddCollege={() => setIsAddModalOpen(true)}
       />
 
-      {/* "Add College" modal */}
+      {/* Add-college dialog */}
       {isAddModalOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            zIndex: 9999,
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            backgroundColor: '#ffffff',
-            padding: '20px',
-            borderRadius: '4px',
-            boxShadow: '0 0 10px rgba(0,0,0,0.3)',
-          }}
-        >
-          <h3>Add College</h3>
-          <input
-            type="text"
-            value={newCollegeName}
-            onChange={(e) => setNewCollegeName(e.target.value)}
-            placeholder="Enter college name"
-            style={{
-              marginBottom: '10px',
-              padding: '8px',
-              fontSize: '14px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-            }}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <button onClick={handleAddCollegeDone}>Done</button>
-            <button onClick={handleAddCollegeCancel}>Cancel</button>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Add College</h3>
+            <Input
+              value={newCollegeName}
+              onChange={(_, d) => setNewCollegeName(d.value)}
+              placeholder="Enter college name"
+              className={styles.modalInput}
+            />
+            <div className={styles.modalButtonRow}>
+              <Button appearance="primary" onClick={handleAddCollegeDone}>
+                Done
+              </Button>
+              <Button onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+            </div>
           </div>
         </div>
       )}

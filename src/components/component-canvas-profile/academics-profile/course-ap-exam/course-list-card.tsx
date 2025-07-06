@@ -8,6 +8,7 @@ import {
   DataGridBody,
   DataGridRow,
   DataGridCell,
+  Input,
   TableCellLayout,
   TableColumnDefinition,
   createTableColumn,
@@ -22,37 +23,34 @@ import { useDispatch } from 'react-redux';
 import { alertDialogActions } from '../../../../store';
 
 const CourseNameCell: React.FC<{
-    value: string;
-    onUpdate: (updatedValue: string) => void;
-    className?: string; // Accept a className prop for styling
-  }> = ({ value, onUpdate, className }) => {
-    const dispatch = useDispatch();
+  value: string;
+  onUpdate: (updatedValue: string) => void;
+  className?: string;
+}> = ({ value, onUpdate, className }) => {
+  const dispatch = useDispatch();
+  const [val, setVal] = useState(value || '');
 
-    const [inputValue, setInputValue] = useState(value || '');
-  
-    const handleBlur = () => {
-      if (inputValue.trim() === '') {
-          dispatch(
-            alertDialogActions.showAlert({
-              title: 'Validation Error',
-              message: 'Course Exam Name cannot be empty.',
-            })
-          );
-      } else if (inputValue !== value) {
-        onUpdate(inputValue);
-      }
-    };
-  
-    return (
-      <input
-        type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onBlur={handleBlur}
-        className={className} // Apply the passed className
-      />
-    );
-  };  
+  const handleBlur = () => {
+    if (!val.trim()) {
+      dispatch(alertDialogActions.showAlert({
+        title: 'Validation Error',
+        message: 'Course Name cannot be empty.',
+      }));
+    } else if (val !== value) {
+      onUpdate(val);
+    }
+  };
+
+  return (
+    <Input
+      value={val}
+      onChange={(_, data) => setVal(data.value)}
+      onBlur={handleBlur}
+      className={className}        // width helper
+      size="small"                 // matches 34-px height you had
+    />
+  );
+};
 
 export const CourseListCard: React.FC<CourseListCardProps> = ({
   title,

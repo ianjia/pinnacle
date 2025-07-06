@@ -1,44 +1,47 @@
 import React, { useEffect, useRef } from 'react';
-import { useStyles } from './conversation-display.styles';
 import { ConversationItem } from '../../../shared';
 import { ConversationDisplayProps } from './conversation-display.types';
+import { useStyles } from './conversation-display.styles';
 
-export const ConversationDisplay: React.FC<ConversationDisplayProps> = ({ conversation }) => {
-  const conversationEndRef = useRef<HTMLDivElement>(null);
+/**
+ * Scrollable chat transcript that auto‑scrolls to the latest message.
+ */
+export const ConversationDisplay: React.FC<ConversationDisplayProps> = ({
+  conversation,
+}) => {
   const styles = useStyles();
+  const endRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom whenever the conversation updates
+  /* auto‑scroll on update */
   useEffect(() => {
-    if (conversationEndRef.current) {
-        conversationEndRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',  // <- prevents the document from jumping
-      });    
-    }
+    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [conversation]);
 
   return (
-    <div className={styles.conversationContainer}>
-      <div className={styles.conversationBox}>
-        {conversation.map((item: ConversationItem, index: number) => (
+    <div className={styles.container}>
+      <div className={styles.box}>
+        {conversation.map((msg, idx) => (
           <div
-            key={index}
-            className={`${styles.conversationItem} ${
-              item.role === 'interviewer' ? styles.left : styles.right
+            key={idx}
+            className={`${styles.item} ${
+              msg.role === 'interviewer' ? styles.left : styles.right
             }`}
           >
-            <strong>{item.role === 'interviewer' ? 'Interviewer' : 'You'}:</strong>
+            <strong className={styles.label}>
+              {msg.role === 'interviewer' ? 'Interviewer' : 'You'}:
+            </strong>
             <p
-              className={`${styles.message} ${
-                item.role === 'interviewer' ? styles.interviewer : styles.you
+              className={`${styles.bubble} ${
+                msg.role === 'interviewer'
+                  ? styles.bubbleInterviewer
+                  : styles.bubbleYou
               }`}
             >
-              {item.content}
+              {msg.content}
             </p>
           </div>
         ))}
-        {/* Invisible div to anchor scrolling */}
-        <div ref={conversationEndRef} />
+        <div ref={endRef} />
       </div>
     </div>
   );

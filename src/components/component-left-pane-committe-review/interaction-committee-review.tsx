@@ -62,7 +62,7 @@ export const InteractionCommitteeReviewPane: React.FC = () => {
                   styles.accordionTitleActive,
               )}
             >
-              Conduct Holistic Review
+              Conduct Review
             </span>
           </AccordionHeader>
         </AccordionItem>
@@ -94,7 +94,7 @@ export const InteractionCommitteeReviewPane: React.FC = () => {
                   styles.accordionTitleActive,
               )}
             >
-              Holistic Review History
+              Review History
             </span>
           </AccordionHeader>
         </AccordionItem>

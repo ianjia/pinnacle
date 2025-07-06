@@ -1,74 +1,67 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useStyles = makeStyles({
+  /* ── card shells ─────────────────────────────────────────────── */
   card: {
-    marginBottom: '16px',
-    padding: '24px',
+    marginBottom: tokens.spacingVerticalL,
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
   },
+
   header: {
-    marginBottom: '32px',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    paddingLeft: '0px',
+    marginBottom: tokens.spacingVerticalXL,
+    fontSize: tokens.fontSizeHero700,          // hero size that exists
+    fontWeight: tokens.fontWeightSemibold,
   },
+
   subcard: {
-    marginBottom: '10px',
-    padding: '12px',
+    marginBottom: tokens.spacingVerticalM,
+    padding: `${tokens.spacingVerticalM} ${tokens.spacingHorizontalL}`,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
+
   subcardheader: {
-    marginBottom: '8px',
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-    paddingLeft: '0px',
+    marginBottom: tokens.spacingVerticalS,
+    fontSize: tokens.fontSizeBase500,
+    fontWeight: tokens.fontWeightSemibold,
   },
+
+  /* ── DataGrid rows / cells ───────────────────────────────────── */
   row: {
-    height: '50px',
-    display: 'flex',
-    alignItems: 'center',
-    overflow: 'hidden',
+    height: '48px',
   },
+
   cell: {
     display: 'flex',
-    alignItems: 'flex-start',
-    paddingTop: '2px',
-    paddingRight: '20px',
-    margin: '0',
-    height: '100%',
-  },
-  headerCell: {
-    display: 'flex',
     alignItems: 'center',
-    paddingTop: '2px',
-    paddingRight: '20px',
-    margin: '0',
-    fontSize: '15px',
-    height: '100%',
+    padding: `${tokens.spacingVerticalXXS} ${tokens.spacingHorizontalM}`,
+    fontSize: tokens.fontSizeBase300,
   },
-  actionCell: {
-    justifyContent: 'left',
-    paddingLeft: '50px',
+
+  headerCell: {
+    composes: '$cell',                         // reuse base cell styles
+    fontWeight: tokens.fontWeightSemibold,
   },
+
+  /* ── actions column ──────────────────────────────────────────── */
+  actionCell: { justifyContent: 'flex-start' },
+
   actionButton: {
-    padding: '0',
     height: '28px',
-    lineHeight: '1',
+    padding: 0,
   },
-  addItemButton: {
-    fontSize: '14px',
-    color: 'gray',
-  },
+
+  /* ── add-item UI ─────────────────────────────────────────────── */
   addItemContainer: {
     display: 'flex',
     justifyContent: 'flex-start',
-    marginTop: '10px',
+    marginTop: tokens.spacingVerticalS,
   },
-  input: {
-    width: '200px',
-    border: '1px solid #ccc',
-    borderRadius: '2px',
-    padding: '0',
-    fontSize: '12px',
-    height: '34px',
-    lineHeight: '1',
+
+  addItemButton: {
+    fontSize: tokens.fontSizeBase300,
+    color: tokens.colorNeutralForeground3,
   },
+
+  /* ── width helper for <Input> fields ─────────────────────────── */
+  input: { width: '200px' },
 });

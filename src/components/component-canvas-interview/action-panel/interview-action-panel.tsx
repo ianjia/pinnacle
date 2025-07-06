@@ -5,7 +5,6 @@ import {
   Button,
   CardPreview,
   Field,
-  mergeClasses,
   Dropdown,
   Option,
   SelectionEvents,
@@ -13,6 +12,7 @@ import {
   Popover,
   PopoverSurface,
   PopoverTrigger,
+  tokens,
 } from '@fluentui/react-components';
 import { Info24Regular } from '@fluentui/react-icons';
 
@@ -41,172 +41,114 @@ import {
 
 export const InterviewActionPanel: React.FC = () => {
   const dispatch = useDispatch();
-  const styles = useStyles();
+  const styles   = useStyles();
 
-  // Redux state
-  const liveCollege: string = useSelector(
-    (state: RootState) => state.conversation.liveConversationCollege
-  );
-  const liveMajor: string = useSelector(
-    (state: RootState) => state.conversation.liveConversationMajor
-  );
-  const liveId: number = useSelector(
-    (state: RootState) => state.conversation.liveConverstationId
-  );
-  const collegeList = useSelector(
-    (state: RootState) => state.collegeListWorkshop.collegeList
-  );
-
+  /* ─────────── Redux data ─────────── */
+  const liveCollege = useSelector((s: RootState) => s.conversation.liveConversationCollege);
+  const liveMajor   = useSelector((s: RootState) => s.conversation.liveConversationMajor);
+  const liveId      = useSelector((s: RootState) => s.conversation.liveConverstationId);
+  const collegeList = useSelector((s: RootState) => s.collegeListWorkshop.collegeList);
   const hasBasicInfoFilled = useBasicInfoFilled();
 
-  // Hooks for interview start/stop, post-review, etc.
-  const onStartInterview = useOnStartInterviewCreator();
-  const onStopInterview = useOnStopInterviewCreator();
-  const onReviewComplete = useOnReviewCompleteCreator();
-
-  // Manages real-time / PeerConnection logic
+  /* ─────────── Interview hooks ────── */
+  const onStartInterview  = useOnStartInterviewCreator();
+  const onStopInterview   = useOnStopInterviewCreator();
+  const onReviewComplete  = useOnReviewCompleteCreator();
   const { interviewActive, isProcessing, toggleInterview } = useInterviewConnection({
     onStartInterview,
     onStopInterview,
   });
 
-  // Manages “AnalyzeInterview” tasks
-  const { startTask: startInterviewReviewTask, showModal, progressMessage } = useTaskRunner({
+  /* ─────────── Review task runner ─── */
+  const { startTask: startReview, showModal, progressMessage } = useTaskRunner({
     taskType: TaskType.AnalyzeInterview,
     requestData: { conversation_id: liveId } as InterviewAnalyzeRequest,
-    onResult: (data: TaskResult) => {
-      const review = (data as InterviewAnalyzeResult).message;
+    onResult: (d: TaskResult) => {
+      const review = (d as InterviewAnalyzeResult).message;
       dispatch(interviewConversationActions.setLiveConversationReview(review));
       onReviewComplete();
     },
   });
 
-  /**
-   * Handle user selecting a different college in the dropdown.
-   */
-  const handleCollegeSelect = (event: SelectionEvents, data: OptionOnSelectData) => {
-    // data.optionValue can be undefined, so check it first:
-    if (!data.optionValue) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you selected is not valid. Please check.',
-        })
-      );      
+  /* ─────────── Handlers ───────────── */
+  const handleCollegeSelect = (_: SelectionEvents, d: OptionOnSelectData) => {
+    const key = d.optionValue ? getCollegeNameKey(d.optionValue) : undefined;
+    if (!key) {
+      dispatch(alertDialogActions.showAlert({
+        title: 'Validation Error',
+        message: 'The college name you selected is not valid.',
+      }));
       return;
     }
-    const matchedCollegeName = getCollegeNameKey(data.optionValue);
-    if (!matchedCollegeName) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you selected is not valid. Please check.',
-        })
-      );
-      return;
-    }
-    // Update Redux
-    dispatch(interviewConversationActions.setLiveConversationCollege(matchedCollegeName));
+    dispatch(interviewConversationActions.setLiveConversationCollege(key));
   };
 
-  /**
-   * Handle changes to the Major field.
-   */
-  const handleMajorChange = (newMajor: string) => {
-    dispatch(interviewConversationActions.setLiveConversationMajor(newMajor));
-  };
+  const handleMajorChange = (m: string) =>
+    dispatch(interviewConversationActions.setLiveConversationMajor(m));
 
-  /**
-   * Start/Stop Interview button handler.
-   */
   const toggleInterviewHandler = () => {
     if (!hasBasicInfoFilled) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
+      dispatch(alertDialogActions.showAlert({
+        title: 'Insufficient Information',
+        message: 'Please complete basic student information first.',
+      }));
       return;
     }
-
-    const matchedCollegeName = getCollegeNameKey(liveCollege);
-    if (!matchedCollegeName || matchedCollegeName.length < 3) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Validation Error',
-          message: 'The college name you entered is not valid. Please re-enter.',
-        })
-      );
+    if (!getCollegeNameKey(liveCollege)) {
+      dispatch(alertDialogActions.showAlert({
+        title: 'Validation Error',
+        message: 'Please choose a valid college before starting.',
+      }));
       return;
     }
     toggleInterview();
   };
 
-  /**
-   * For "Interview Review" button, triggers the analysis task.
-   */
-  const handleReviewClick = async () => {
+  const handleReviewClick = () => {
     if (!hasBasicInfoFilled) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Insuffient Information',
-          message: 'Please fill in basic information in student profile before performing the task',
-        }));
-
+      dispatch(alertDialogActions.showAlert({
+        title: 'Insufficient Information',
+        message: 'Please complete basic student information first.',
+      }));
       return;
     }
-
-    try {
-      if (liveId === 0) {
-        dispatch(
-          alertDialogActions.showAlert({
-            title: 'Validation Error',
-            message: 'Review can only be performed after finishing the interview.',
-          })
-        );
-        return;
-      }
-      startInterviewReviewTask();
-    } catch (error) {
-      dispatch(
-        alertDialogActions.showAlert({
-          title: 'Review Error',
-          message: 'Error happend during review on server side.',
-        })
-      );
-      console.error('Error in review flow:', error);
+    if (liveId === 0) {
+      dispatch(alertDialogActions.showAlert({
+        title: 'Validation Error',
+        message: 'You can only review after finishing an interview.',
+      }));
+      return;
     }
+    startReview();
   };
 
+  /* ─────────── UI ─────────────────── */
   return (
     <div className={styles.container}>
       <ProgressModal show={showModal} message={progressMessage} />
 
       <Card className={styles.card}>
-        <h2 className={styles.header} style={{ textAlign: 'left' }}>
-          Action Panel
-        </h2>
+        <h2 className={styles.header}>Action Panel</h2>
 
         <CardPreview>
           <div className={styles.grid}>
-            {/* Field for College (with popover on label) */}
+            {/* -------- row‑1: College ---------------- */}
             <Field
               label={
                 <span className={styles.labelContainer}>
-                  <span>College</span>
+                  College
                   <Popover positioning={{ position: 'after', align: 'top' }}>
                     <PopoverTrigger>
                       <Button
                         icon={<Info24Regular />}
                         appearance="subtle"
                         size="small"
-                        aria-label="Information"
+                        aria-label="Info"
                         className={styles.infoIcon}
                       />
                     </PopoverTrigger>
                     <PopoverSurface>
-                      Please make sure the college list was created before selecting a college here
+                      Build your list first, then pick one here.
                     </PopoverSurface>
                   </Popover>
                 </span>
@@ -217,44 +159,44 @@ export const InterviewActionPanel: React.FC = () => {
                 placeholder="Select a college"
                 value={liveCollege}
                 onOptionSelect={handleCollegeSelect}
-                disabled={collegeList.length === 0} // Disable if no colleges
+                disabled={!collegeList.length}
               >
-                {collegeList.map((c) => (
-                  <Option key={c.id} value={c.college}>
-                    {c.college}
-                  </Option>
+                {collegeList.map(({ id, college }) => (
+                  <Option key={id} value={college}>{college}</Option>
                 ))}
               </Dropdown>
             </Field>
 
-            {/* Field for Major */}
+            {/* -------- row‑1: Major ------------------ */}
             <Field label="Major" className={styles.field}>
               <DropdownCustom
                 options={Major}
-                onOptionSelect={(e, option) =>
-                  handleMajorChange(option.optionValue as Major)
-                }
                 value={liveMajor}
                 placeHolder="Select a major"
+                onOptionSelect={(_, o) => handleMajorChange(o.optionValue as Major)}
               />
             </Field>
 
-            {/* Start/Stop Interview */}
-            <Field className={styles.fieldButton}>
+            {/* -------- row‑2: Start/Stop ------------- */}
+            <Field className={styles.field}>
               <Button
-                className={mergeClasses(
-                  styles.buttonSmall,
-                  interviewActive ? styles.buttonRed : styles.buttonGreen
-                )}
+                className={styles.buttonWide}
+                appearance={interviewActive ? 'primary' : 'secondary'}
+                style={{
+                  backgroundColor: interviewActive
+                    ? tokens.colorPaletteRedBackground3
+                    : tokens.colorPaletteGreenBackground3,
+                  color: tokens.colorNeutralForegroundOnBrand,
+                }}
                 onClick={toggleInterviewHandler}
               >
                 {interviewActive ? 'Stop Interview' : 'Start Interview'}
               </Button>
             </Field>
 
-            {/* Review Button */}
-            <Field className={styles.fieldButton}>
-              <Button className={styles.buttonSmall} onClick={handleReviewClick}>
+            {/* -------- row‑2: Review ----------------- */}
+            <Field className={styles.field}>
+              <Button className={styles.buttonWide} onClick={handleReviewClick}>
                 Review
               </Button>
             </Field>
@@ -262,12 +204,12 @@ export const InterviewActionPanel: React.FC = () => {
         </CardPreview>
       </Card>
 
-      {/* “isProcessing” overlay */}
+      {/* overlay while WebRTC spins up */}
       {isProcessing && (
         <div className={styles.processingModal}>
           <div className={styles.processingDialog}>
-            <h2>Processing...</h2>
-            <p>Please wait while we connect to the real-time API.</p>
+            <h2>Processing…</h2>
+            <p>Please wait while we connect to the real‑time API.</p>
           </div>
         </div>
       )}
