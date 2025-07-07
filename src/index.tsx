@@ -16,11 +16,23 @@ import { AuthProvider, initializeAuthToken } from './auth';
 initializeAuthToken();
 
 /* 1 ─ Brand palette (same values you supplied) */
-const myBrand: BrandVariants = {
-  10: '#003D3C',  20: '#027371',  30: '#049C99',  40: '#06C4C1',
-  50: '#07DFDB',  60: '#21E6E2',  70: '#4EECEA',  80: '#79F1EF',
-  90: '#A3F6F5', 100: '#CCFBFA', 110: '#E6FEFD', 120: '#F0FFFE',
-  130: '#F5FFFE', 140: '#FAFFFE', 150: '#FDFFFE', 160: '#FFFFFF',
+export const myBrand: BrandVariants = {
+  10:  '#000048',
+  20:  '#00087A',
+  30:  '#0012B0',
+  40:  '#1022D0',
+  50:  '#3333CC',   // ← key accent
+  60:  '#4950D6',
+  70:  '#636BDE',
+  80:  '#8289E7',
+  90:  '#A6ACF0',
+ 100:  '#C7CDF6',
+ 110:  '#D9DEF9',
+ 120:  '#E8ECFB',
+ 130:  '#F1F3FC',
+ 140:  '#F7F7FD',
+ 150:  '#FCFCFE',
+ 160:  '#FFFFFF',
 };
 
 /* 2 ─ Theme objects */

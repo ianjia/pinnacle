@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AdminRoute, ProtectedRoute } from './auth';
 import { MainApp } from './components/component-main-app';
-import { Root } from './home-page/root';
+import { StartPage } from './home-page/start-page';
 
 import './App.css';
 import { ForgotPassword } from './home-page/forgot-password';
@@ -25,7 +25,7 @@ const App: React.FC<AppProps> = ({ toggleTheme }) => {
       <div className="App">
         <Router>
           <Routes>
-            <Route path="/" element={<Root />} />
+            <Route path="/" element={<StartPage />} />
             <Route
               path="/admin"
               element={

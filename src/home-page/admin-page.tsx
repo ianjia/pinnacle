@@ -39,13 +39,6 @@ export const AdminPage = () => {
     dir: 'asc',
   });
 
-  /* usage events */
-//   const [usageRows, setUsageRows] = useState<any[]>([]);
-//   const [usageSort, setUsageSort] = useState<{ col: string; dir: Dir }>({
-//     col: 'created_at',
-//     dir: 'desc',
-//   });
-
   /* fetch once */
   useEffect(() => {
     api.get('/api/v1/admin/users').then(r => setUserRows(r.data));
@@ -57,21 +50,12 @@ export const AdminPage = () => {
     () => sortRows(userRows, userSort.col, userSort.dir),
     [userRows, userSort]
   );
-//   const sortedUsage = useMemo(
-//     () => sortRows(usageRows, usageSort.col, usageSort.dir),
-//     [usageRows, usageSort]
-//   );
 
   /* click handlers */
   const handleUserHeader = (col: string) =>
     setUserSort(s =>
       s.col === col ? { col, dir: toggle(s.dir) } : { col, dir: 'asc' }
     );
-
-//   const handleUsageHeader = (col: string) =>
-//     setUsageSort(s =>
-//       s.col === col ? { col, dir: toggle(s.dir) } : { col, dir: 'asc' }
-//     );
 
   /* UI */
   return (
@@ -111,40 +95,6 @@ export const AdminPage = () => {
           ))}
         </TableBody>
       </Table>
-
-      {/* ───── AI Usage Events ───── */}
-      {/* <h2 style={{ marginTop: 32 }}>AI Usage Events</h2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHeaderCell onClick={() => handleUsageHeader('user_id')}>
-              User&nbsp;ID
-            </TableHeaderCell>
-            <TableHeaderCell onClick={() => handleUsageHeader('task_type')}>
-              Task Type
-            </TableHeaderCell>
-            <TableHeaderCell
-              onClick={() => handleUsageHeader('credit_consumption')}
-            >
-              Credits
-            </TableHeaderCell>
-            <TableHeaderCell onClick={() => handleUsageHeader('created_at')}>
-              Created&nbsp;At
-            </TableHeaderCell>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {sortedUsage.map(r => (
-            <TableRow key={`${r.user_id}-${r.created_at}`}>
-              <TableCell>{r.user_id}</TableCell>
-              <TableCell>{r.task_type}</TableCell>
-              <TableCell>{r.credit_consumption}</TableCell>
-              <TableCell>{new Date(r.created_at).toLocaleString()}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table> */}
     </div>
   );
 };

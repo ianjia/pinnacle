@@ -1,33 +1,60 @@
-import { makeStyles } from '@fluentui/react-components';
+import { makeStyles, tokens } from '@fluentui/react-components';
 
-export const useStyles = makeStyles({
+export const useLoginRegisterStyles = makeStyles({
+  /* ── modal-body wrapper ─────────────────────────────────── */
   container: {
-    minWidth: '300px',
+    backgroundColor: tokens.colorNeutralBackground1,          // adapts to light / dark
+    /* old: shorthands.padding(tokens.spacingHorizontalXL, tokens.spacingVerticalXL) */
+    paddingBlock: tokens.spacingHorizontalXL,                 // top & bottom
+    paddingInline: tokens.spacingVerticalXL,                  // left & right
+    borderRadius: tokens.borderRadiusMedium,
+    boxShadow: tokens.shadow64,
+    minWidth: '320px',
+    maxWidth: '420px',
     textAlign: 'center',
   },
+
+  /* ── form layout ───────────────────────────────────────── */
   form: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: '20px',
+    gap: tokens.spacingVerticalS,
+    marginTop: tokens.spacingVerticalM,
   },
+
+  /* ── interactive controls ─────────────────────────────── */
   input: {
-    padding: '8px',
-    margin: '5px 0',
-    fontSize: '16px',
+    /* old: shorthands.padding(tokens.spacingHorizontalM, tokens.spacingVerticalS) */
+    paddingBlock: tokens.spacingHorizontalM,                  // top & bottom
+    paddingInline: tokens.spacingVerticalS,                   // left & right
+    fontSize: tokens.fontSizeBase400,
+    backgroundColor: tokens.colorNeutralBackground1,
   },
+
   button: {
-    padding: '10px',
-    fontSize: '16px',
-    marginTop: '10px',
+    /* old: shorthands.padding(tokens.spacingHorizontalM, tokens.spacingVerticalS) */
+    paddingBlock: tokens.spacingHorizontalM,
+    paddingInline: tokens.spacingVerticalS,
+    fontSize: tokens.fontSizeBase400,
+    marginTop: tokens.spacingVerticalM,
+  },
+
+  /* link-styled button for “forgot password?” */
+  linkButton: {
+    background: 'none',
+    border: 'none',
+    color: tokens.colorBrandForegroundLink,
     cursor: 'pointer',
+    fontSize: tokens.fontSizeBase300,
+    padding: '0',                                             // replaces shorthands.padding(0)
   },
-  error: {
-    color: 'red',
-  },
-  success: {
-    color: 'green',
-  },
-  forgotPasswordWrapper: {
-    marginTop: '1rem',
-  },
+
+  /* ── status text ───────────────────────────────────────── */
+  error:   { color: tokens.colorPaletteRedForeground2 },
+  success: { color: tokens.colorPaletteGreenForeground2 },
+
+  forgotPasswordWrapper: { marginTop: tokens.spacingVerticalM },
+
+  /* checkbox extra margin inside dialog */
+  checkboxSpacing: { marginTop: tokens.spacingVerticalM },
 });

@@ -8,147 +8,102 @@ import {
   DialogActions,
   Button,
   Checkbox,
+  Input,
 } from '@fluentui/react-components';
+
 import { api } from '../auth';
-import { useStyles } from './hooks/use-login-register-modal-styles';
+import { useLoginRegisterStyles } from './hooks/use-login-register-modal-styles';
 import { passwordMeetsRequirements } from './utils/password-validator';
 import { TermsScrollArea } from './utils/terms-area';
 
-interface RegisterModalContentProps {
-  onSuccess?: () => void;
-}
+interface Props { onSuccess?: () => void; }
 
-// ─────────────────────────────────────────────────────────
-// Main component
-// ─────────────────────────────────────────────────────────
-export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({
-  onSuccess,
-}) => {
-  const styles = useStyles();
+export const RegisterModalContent: React.FC<Props> = ({ onSuccess }) => {
+  const styles = useLoginRegisterStyles();
 
-  // form
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail]                 = useState('');
+  const [password, setPassword]           = useState('');
+  const [confirmPassword, setConfirmPwd]  = useState('');
+  const [error, setError]                 = useState('');
+  const [success, setSuccess]             = useState('');
 
-  // feedback
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
-  // dialog
   const [showTerms, setShowTerms] = useState(false);
-  const [agreed, setAgreed] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [agreed, setAgreed]       = useState(false);
+  const [busy, setBusy]           = useState(false);
 
-  const resetMessages = () => {
-    setError('');
-    setSuccess('');
-  };
+  const pwdValid = passwordMeetsRequirements(password);
+  const match    = password && confirmPassword && password === confirmPassword;
 
-  const preValidate = () => {
-    if (!passwordMeetsRequirements(password)) {
-      setError(
-        'Password must be at least 8 characters, include a number, and a special character.',
-      );
-      return false;
-    }
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return false;
-    }
-    return true;
-  };
+  const clearMsg = () => { setError(''); setSuccess(''); };
 
-  // 1️⃣ First click — just open the dialog
-  const handleRegister = (e: React.FormEvent) => {
+  /* first click */
+  const openTerms = (e: React.FormEvent) => {
     e.preventDefault();
-    resetMessages();
-    if (preValidate()) {
-      setAgreed(false);
-      setShowTerms(true);
-    }
+    clearMsg();
+    if (!pwdValid)  { setError('Password must be ≥8 chars, include a number & symbol.'); return; }
+    if (!match)     { setError('Passwords do not match'); return; }
+    setAgreed(false);
+    setShowTerms(true);
   };
 
-  // 2️⃣ Second click — API call
+  /* continue inside dialog */
   const handleContinue = useCallback(async () => {
-    if (!agreed || submitting) return;
-    setSubmitting(true);
-    resetMessages();
+    if (!agreed || busy) return;
+    setBusy(true); clearMsg();
     try {
       await api.post('/register', { email, password });
       setSuccess('Registration successful!');
       setShowTerms(false);
       setTimeout(() => onSuccess?.(), 1500);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed, try again later');
-    } finally {
-      setSubmitting(false);
-    }
-  }, [agreed, submitting, email, password, onSuccess]);
-
-  const passwordsMatch = password && confirmPassword && password === confirmPassword;
-  const passwordValid = passwordMeetsRequirements(password);
+      setError(err.response?.data?.message || 'Registration failed');
+    } finally { setBusy(false); }
+  }, [agreed, busy, email, password, onSuccess]);
 
   return (
     <>
-      {/* ──────────── sign-up form ──────────── */}
+      {/* sign-up form */}
       <div className={styles.container}>
         <h2>Sign Up</h2>
 
-        <form onSubmit={handleRegister} className={styles.form}>
-          <input
-            type="text"
-            placeholder="Email (Use real email, in case you need to reset password)"
+        <form onSubmit={openTerms} className={styles.form}>
+          <Input
+            placeholder="Email (use real email for reset)"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(_, v) => setEmail(v.value)}
             className={styles.input}
             required
           />
-          <input
+          <Input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(_, v) => setPassword(v.value)}
             className={styles.input}
             required
           />
-          <input
+          <Input
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirm password"
             value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            onChange={(_, v) => setConfirmPwd(v.value)}
             className={styles.input}
             required
           />
 
-          {password && !passwordValid && (
-            <p className={styles.error}>
-              Password must be at least 8 characters, include a number, and a
-              special character.
-            </p>
-          )}
-          {password && confirmPassword && !passwordsMatch && (
-            <p className={styles.error}>Passwords do not match</p>
-          )}
-          {error && <p className={styles.error}>{error}</p>}
+          {password && !pwdValid      && <p className={styles.error}>Password must be ≥8 chars, include a number &amp; symbol.</p>}
+          {password && confirmPassword && !match && <p className={styles.error}>Passwords do not match</p>}
+          {error   && <p className={styles.error}>{error}</p>}
           {success && <p className={styles.success}>{success}</p>}
 
-          <Button
-            appearance="primary"
-            type="submit"
-            disabled={!passwordValid || !passwordsMatch}
-          >
+          <Button appearance="primary" type="submit" className={styles.button} disabled={!pwdValid || !match}>
             Register
           </Button>
         </form>
       </div>
 
-      {/* ──────────── terms dialog ──────────── */}
-      <Dialog
-        open={showTerms}
-        modalType="modal"
-        onOpenChange={(_, data) => setShowTerms(data.open)}
-      >
+      {/* terms dialog */}
+      <Dialog open={showTerms} modalType="modal" onOpenChange={(_, d) => setShowTerms(d.open)}>
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Terms &amp; Policies</DialogTitle>
@@ -156,22 +111,18 @@ export const RegisterModalContent: React.FC<RegisterModalContentProps> = ({
             <DialogContent>
               <TermsScrollArea />
               <Checkbox
-                label="I have read and agree to the Terms and Policies"
+                label="I have read and agree"
                 checked={agreed}
                 onChange={(_, d) => setAgreed(!!d.checked)}
-                style={{ marginTop: 12 }}
+                className={styles.checkboxSpacing}
               />
             </DialogContent>
 
             <DialogActions>
-              <Button
-                appearance="primary"
-                onClick={handleContinue}
-                disabled={!agreed || submitting}
-              >
+              <Button appearance="primary" onClick={handleContinue} disabled={!agreed || busy}>
                 Continue
               </Button>
-              <Button onClick={() => setShowTerms(false)} disabled={submitting}>
+              <Button onClick={() => setShowTerms(false)} disabled={busy}>
                 Cancel
               </Button>
             </DialogActions>

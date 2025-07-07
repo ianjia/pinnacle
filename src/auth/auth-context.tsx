@@ -8,7 +8,6 @@ import React, {
 import { setAuthToken } from './api';
 import { jwtDecode } from 'jwt-decode';
 
-
 interface DecodedToken {
   user_id: number;
   role: 'user' | 'admin';
@@ -143,6 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setRole(decoded.role);
 
       resetInactivityTimer();
+
     } catch (err) {
       console.error('Failed to log in user', err);
       logout();
