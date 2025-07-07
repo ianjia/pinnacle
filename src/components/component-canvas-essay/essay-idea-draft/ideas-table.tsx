@@ -144,7 +144,7 @@ export const IdeasTable: React.FC<Props> = ({ editable, selectCallback }) => {
               <Button appearance="primary" onClick={addIdea}>
                 Done
               </Button>
-              <Button onClick={() => setShowAdd(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setShowAdd(false)}>Cancel</Button>
             </div>
           </div>
         </div>
@@ -191,8 +191,8 @@ export const IdeasTable: React.FC<Props> = ({ editable, selectCallback }) => {
       {/* Add item button */}
       {editable && (
         <>
-          <div className={styles.buttonRow}>
-            <Button icon={<Add16Regular />} onClick={() => setShowAdd(true)}>
+          <div className={styles.addItemContainer}>
+            <Button appearance='secondary' icon={<Add16Regular />} onClick={() => setShowAdd(true)} className={styles.addItemButton}>
               Add an item
             </Button>
           </div>
@@ -205,8 +205,8 @@ export const IdeasTable: React.FC<Props> = ({ editable, selectCallback }) => {
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
             />
-            <div className={styles.buttonRow}>
-              <Button onClick={refineIdea} disabled={!selectedKey}>
+            <div className={styles.buttonField}>
+              <Button appearance = 'primary' onClick={refineIdea} disabled={!selectedKey} className= {styles.button}>
                 Refine Idea
               </Button>
             </div>

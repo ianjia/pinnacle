@@ -39,14 +39,18 @@ export function EntityProfileForm<T extends BasicEntity>({
         </div>
       ))}
 
-      <Button
-        appearance="secondary"
-        icon={<Add20Regular />}
-        className={styles.addButton}
-        onClick={onAddEntity}
-      >
-        Add
-      </Button>
+
+      <div className={styles.addItemContainer}>
+        <Button
+          appearance="secondary"
+          icon={<Add20Regular />}
+          className={styles.addItemButton}
+          onClick={onAddEntity}
+        >
+          Add an item
+        </Button>
+      </div>
+
     </div>
   );
 }

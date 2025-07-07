@@ -7,8 +7,8 @@ import { MarkdownMessageDisplay } from '../../component-mark-down-display';
 import { Button, Card, Textarea } from '@fluentui/react-components';
 import { useOnDraftCompleteCreator } from './hooks/use-on-draft-complete-creator';
 import { useOnRefineCompleteCreator } from './hooks/use-on-refine-complete-creator';
-import { useCardStyles } from './essay-common-card.styles';
 import { useDraftStyles } from './essay-draft-panel.styles';
+import { useCardStyles } from './essay-common-card.styles';
 
 function isIdeaValid(idea: string | undefined): boolean {
     if (idea === undefined || idea.length <= 10) { // The way to check idea string length <= 8 is temparary
@@ -139,10 +139,11 @@ export const EssayDraftPanel: React.FC = () => {
 
       {/* buttons */}
       <div className={s.grid}>
-        <Button className={s.button} onClick={runDraft} disabled={!key}>
+        <Button appearance = 'primary' className={s.button} onClick={runDraft} disabled={!key}>
           Draft
         </Button>
         <Button
+          appearance='primary'
           className={s.button}
           onClick={runRefine}
           disabled={!key || !essay}

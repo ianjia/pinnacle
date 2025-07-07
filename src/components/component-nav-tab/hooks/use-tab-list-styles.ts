@@ -1,10 +1,7 @@
-/*  src/components/component-nav-tab/hooks/use-tab-list-styles.ts
-    ───────────────────────────────────────────────────────────── */
-
 import { makeStyles, tokens } from '@fluentui/react-components';
 
 export const useTabListStyles = makeStyles({
-  /* ── sidebar rail ───────────────────────────────────────────── */
+  /* sidebar rail */
   rail: {
     display: 'flex',
     flexDirection: 'column',
@@ -13,45 +10,28 @@ export const useTabListStyles = makeStyles({
     backgroundColor: tokens.colorNeutralBackground2,
   },
 
-  /* ── vertical TabList (scrolls if needed) ───────────────────── */
+  /* vertical tab list */
   tabList: {
     flexGrow: 1,
     minHeight: 0,
-    overflowX: 'hidden',
     overflowY: 'auto',
+    '& .fui-Tab:not(:last-child)': { marginBottom: tokens.spacingVerticalL },
 
-    /* spacing between items via margin, not gap, to keep overlay wide */
-    '& .fui-Tab:not(:last-child)': {
-      marginBottom: tokens.spacingVerticalL,
-    },
-
-    /* ---------- tab root ---------- */
     '& .fui-Tab': {
-      /* make the overlay span the full rail width */
       width: '100%',
       justifyContent: 'flex-start',
-
       paddingInlineStart: tokens.spacingHorizontalM,
       paddingInlineEnd:   tokens.spacingHorizontalL,
       paddingBlock:       tokens.spacingVerticalS,
-
-      /* ---------- interactive states ---------- */
-      /* hover */
-      '&:hover': {
-        backgroundColor: tokens.colorSubtleBackgroundHover,
-      },
-      /* pressed / active */
-      '&:active': {
-        backgroundColor: tokens.colorSubtleBackgroundPressed,
-      },
-      /* selected */
+      '&:hover':  { backgroundColor: tokens.colorSubtleBackgroundHover   },
+      '&:active': { backgroundColor: tokens.colorSubtleBackgroundPressed },
       '&[data-selected="true"]': {
         backgroundColor: tokens.colorSubtleBackgroundSelected,
       },
     },
   },
 
-  /* ── footer (avatar + logout) ───────────────────────────────── */
+  /* footer cluster */
   bottomArea: {
     marginTop: 'auto',
     marginBottom: tokens.spacingVerticalXL,
@@ -64,11 +44,10 @@ export const useTabListStyles = makeStyles({
 
   avatarBtn: {},
 
-  logoutButton: {
-    width: '80%',
-  },
+  themeSwitch: { width: '80%' },   // same alignment as buttons
+  logoutButton: { width: '80%' },
 
-  /* grid used inside the avatar-picker dialog */
+  /* avatar-picker grid */
   grid: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, 56px)',

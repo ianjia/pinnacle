@@ -23,8 +23,6 @@ export const useStyles = makeStyles({
     right: tokens.spacingHorizontalXS,
   },
 
-  addButton: {
-    marginTop: tokens.spacingVerticalL,
-    width: '160px',
-  },
+  addItemContainer: { display: 'flex', justifyContent: 'flex-start', marginTop: tokens.spacingVerticalS },
+  addItemButton: { fontSize: tokens.fontSizeBase300, color: tokens.colorNeutralForeground3, height: '28px' },
 });

@@ -228,12 +228,12 @@ export const EssayPrompt: React.FC = () => {
         {/* buttons */}
         <div className={styles.grid}>
           <Field className={styles.buttonField}>
-            <Button className={styles.button} onClick={runAnalysis}>
+            <Button appearance = 'primary' className={styles.button} onClick={runAnalysis}>
               Analyze Prompt
             </Button>
           </Field>
           <Field className={styles.buttonField}>
-            <Button className={styles.button} onClick={runIdeas}>
+            <Button appearance = 'primary' className={styles.button} onClick={runIdeas}>
               Generate Essay Ideas
             </Button>
           </Field>

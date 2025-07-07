@@ -196,7 +196,7 @@ export const InterviewActionPanel: React.FC = () => {
 
             {/* -------- row‑2: Review ----------------- */}
             <Field className={styles.field}>
-              <Button className={styles.buttonWide} onClick={handleReviewClick}>
+              <Button appearance = 'primary' className={styles.buttonWide} onClick={handleReviewClick}>
                 Review
               </Button>
             </Field>

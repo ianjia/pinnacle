@@ -30,6 +30,7 @@ export const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: tokens.spacingVerticalXS,
+    marginBottom: tokens.spacingVerticalL,
   },
 
   /* textarea field spans both columns */
@@ -38,6 +39,7 @@ export const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: tokens.spacingVerticalXS,
+    marginBottom: tokens.spacingVerticalL,
   },
 
   textarea: {

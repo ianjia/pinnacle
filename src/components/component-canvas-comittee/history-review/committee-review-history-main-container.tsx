@@ -8,7 +8,7 @@ import { AuthContext } from '../../../auth';
 
 import { CommitteeReviewListTable } from './committee-review-list-table';
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
-import { useStyles } from './ommittee-review-history-main-container.styles';
+import { useStyles } from './committee-review-history-main-container.styles';
 
 export const CommitteeReviewHistoryMainContainer: React.FC = () => {
   const styles = useStyles();

@@ -268,7 +268,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
         <div style={{ display: 'flex', gap: tokens.spacingHorizontalXL }}>
           {/* Build list */}
           <div className={styles.buttonWithInfo}>
-            <Button className={styles.actionPanelButton} onClick={handleStartCollegeListTask}>
+            <Button appearance="primary" className={styles.actionPanelButton} onClick={handleStartCollegeListTask}>
               Build College List
             </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
@@ -288,6 +288,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
           {/* Evaluate */}
           <div className={styles.buttonWithInfo}>
             <Button
+              appearance="primary"
               className={styles.actionPanelButton}
               onClick={handleStartEvaluationTask}
               disabled={!selectedCollege || selectedCollege.data !== undefined}
@@ -313,6 +314,7 @@ export const CollegeListBuildMainContainer: React.FC = () => {
           {/* Holistic review */}
           <div className={styles.buttonWithInfo}>
             <Button
+              appearance="primary"
               className={styles.actionPanelButton}
               onClick={handleCommitteeReview}
               disabled={!selectedCollege}

@@ -270,7 +270,7 @@ export const CommitteeReviewActionPanel: React.FC = () => {
 
             {/* Review button ---------------------------------------------- */}
             <Field className={styles.fieldButton}>
-              <Button className={styles.buttonSmall} onClick={handleReviewClick}>
+              <Button appearance = 'primary' className={styles.buttonSmall} onClick={handleReviewClick}>
                 Review
               </Button>
             </Field>

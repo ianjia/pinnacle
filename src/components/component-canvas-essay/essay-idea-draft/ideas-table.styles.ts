@@ -8,11 +8,11 @@ export const useTableStyles = makeStyles({
   rowHover: { cursor: 'pointer' },
   actionsCell: { textAlign: 'right' },
 
-  buttonRow: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginTop: tokens.spacingVerticalM,
-  },
+  buttonField: { marginTop: tokens.spacingVerticalS },
+  button: { width: '200px' },
+
+  addItemContainer: { display: 'flex', justifyContent: 'flex-start', marginTop: tokens.spacingVerticalS },
+  addItemButton: { fontSize: tokens.fontSizeBase300, color: tokens.colorNeutralForeground3, height: '28px' },
 
   feedbackBlock: {
     marginTop: tokens.spacingVerticalL,

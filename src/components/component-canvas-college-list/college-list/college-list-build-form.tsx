@@ -263,6 +263,7 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
 
       <div className={styles.addItemContainer}>
         <Button
+          appearance='secondary'
           icon={<Add20Regular />}
           onClick={onAddCollege}
           className={styles.addItemButton}
