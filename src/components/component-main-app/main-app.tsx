@@ -3,20 +3,15 @@ import { Canvas } from '../component-canvas';
 import { LeftPane } from '../component-left-pane';
 import { mergeClasses } from '@fluentui/react-components';
 import { useMainLayoutStyles } from './hooks/use-main-layout-styles';
+import { IThemeToggleProps } from '../component-util';
 
-/* NEW: accept the prop */
-interface Props {
-  toggleTheme: () => void;
-}
-
-export const MainApp: React.FC<Props> = ({ toggleTheme }) => {
+export const MainApp: React.FC<IThemeToggleProps> = ({ toggleTheme, isDarkMode }) => {
   const styles = useMainLayoutStyles();
 
   return (
     <div className={styles.container}>
       <div className={mergeClasses(styles.column, styles.leftColumn)}>
-        {/* forward it to LeftPane */}
-        <LeftPane toggleTheme={toggleTheme} />
+        <LeftPane toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
       </div>
 
       <div className={mergeClasses(styles.column, styles.rightColumn)}>

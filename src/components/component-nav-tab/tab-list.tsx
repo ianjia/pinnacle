@@ -14,7 +14,7 @@ import {
   SelectTabData,
   SelectTabEvent,
   Button,
-  Switch,                              // ← using Switch
+  Switch,
   Dialog,
   DialogTrigger,
   DialogSurface,
@@ -31,47 +31,41 @@ import { AuthContext } from '../../auth/auth-context';
 import { api } from '../../auth';
 import { useTabListStyles } from './hooks/use-tab-list-styles';
 import { AVATAR_KEYS, avatarSrc } from './avatar/avatars';
+import { IThemeToggleProps } from '../component-util';
 
-interface Props {
-  toggleTheme: () => void;
-}
-
-export const LeftPaneTabList: React.FC<Props> = ({ toggleTheme }) => {
+export const LeftPaneTabList: React.FC<IThemeToggleProps> = ({
+  toggleTheme,
+  isDarkMode,
+}) => {
   const styles = useTabListStyles();
 
-  /* ── redux + auth ─────────────────────────── */
-  const dispatch      = useDispatch<AppDispatch>();
-  const active        = useSelector((s: RootState) => s.navigationTab.activeTab);
-  const email         = useSelector((s: RootState) => s.navigationTab.email);
-  const profileImage  = useSelector((s: RootState) => s.navigationTab.profileImage);
-  const { logout }    = useContext(AuthContext);
+  /* redux + auth */
+  const dispatch = useDispatch<AppDispatch>();
+  const active   = useSelector((s: RootState) => s.navigationTab.activeTab);
+  const email    = useSelector((s: RootState) => s.navigationTab.email);
+  const profile  = useSelector((s: RootState) => s.navigationTab.profileImage);
+  const { logout } = useContext(AuthContext);
 
-  /* ── tab select ───────────────────────────── */
   const onSelect = (_: SelectTabEvent, d: SelectTabData) =>
     dispatch(navigationTabActions.setActiveTab(d.value as NavTabType));
 
-  /* ── avatar-picker dialog state ───────────── */
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [pickMode,   setPickMode]   = useState(false);
-  const [selected,   setSelected]   = useState(profileImage);
+  /* avatar dialog local state */
+  const [open, setOpen] = useState(false);
+  const [pick, setPick] = useState(false);
+  const [sel,  setSel]  = useState(profile);
 
-  const openDialog  = () => { setSelected(profileImage); setPickMode(false); setDialogOpen(true); };
-  const closeDialog = () => setDialogOpen(false);
-
-  const onDone = async () => {
-    if (selected !== profileImage) {
-      dispatch(navigationTabActions.setProfileImage(selected));
-      await api.put('/api/v1/user/profile-picture', { profile_picture_url: selected });
+  /* avatar save */
+  const saveAvatar = async () => {
+    if (sel !== profile) {
+      dispatch(navigationTabActions.setProfileImage(sel));
+      await api.put('/api/v1/user/profile-picture', { profile_picture_url: sel });
     }
-    closeDialog();
+    setOpen(false);
   };
-
-  /* ── local state only for label/icon ──────── */
-  const [dark, setDark] = useState(false);
 
   return (
     <aside className={styles.rail}>
-      {/* ── tab list ───────────────────────────────────────── */}
+      {/* tabs */}
       <TabList
         className={styles.tabList}
         vertical
@@ -95,22 +89,18 @@ export const LeftPaneTabList: React.FC<Props> = ({ toggleTheme }) => {
         </Tab>
       </TabList>
 
-      {/* ── footer cluster ────────────────────────────────── */}
+      {/* footer */}
       <div className={styles.bottomArea}>
-        {/* avatar trigger */}
-        <Dialog modalType="modal" open={dialogOpen} onOpenChange={(_, d) => setDialogOpen(d.open)}>
+        {/* avatar */}
+        <Dialog modalType="modal" open={open} onOpenChange={(_, d) => setOpen(d.open)}>
           <DialogTrigger disableButtonEnhancement>
             <Button
               appearance="transparent"
               shape="circular"
-              onClick={openDialog}
+              onClick={() => { setSel(profile); setPick(false); setOpen(true); }}
               className={styles.avatarBtn}
             >
-              <Image
-                src={avatarSrc(profileImage)}
-                alt="avatar"
-                style={{ borderRadius: '50%', width: 72, height: 72 }}
-              />
+              <Image src={avatarSrc(profile)} alt="avatar" style={{ width: 72, height: 72, borderRadius: '50%' }} />
             </Button>
           </DialogTrigger>
 
@@ -119,50 +109,40 @@ export const LeftPaneTabList: React.FC<Props> = ({ toggleTheme }) => {
               <DialogTitle>My profile</DialogTitle>
               <p>{email}</p>
 
-              {!pickMode && (
-                <Avatar size={96} image={{ src: avatarSrc(selected) }} style={{ margin: '0 auto' }} />
-              )}
-
-              {pickMode && (
+              {!pick && <Avatar size={96} image={{ src: avatarSrc(sel) }} style={{ margin: '0 auto' }} />}
+              {pick && (
                 <div className={styles.grid}>
                   {AVATAR_KEYS.map(k => (
                     <Button
                       key={k}
                       shape="circular"
-                      appearance={selected === k ? 'primary' : 'transparent'}
-                      onClick={() => setSelected(k)}
+                      appearance={sel === k ? 'primary' : 'transparent'}
+                      onClick={() => setSel(k)}
                     >
-                      <Image
-                        src={avatarSrc(k)}
-                        alt={k}
-                        style={{ width: 56, height: 56, borderRadius: '50%' }}
-                      />
+                      <Image src={avatarSrc(k)} alt={k} style={{ width: 56, height: 56, borderRadius: '50%' }} />
                     </Button>
                   ))}
                 </div>
               )}
 
               <DialogActions>
-                <Button appearance="primary" onClick={() => setPickMode(!pickMode)}>
-                  {pickMode ? 'Preview' : 'Change'}
+                <Button appearance="primary" onClick={() => setPick(!pick)}>
+                  {pick ? 'Preview' : 'Change'}
                 </Button>
-                <Button appearance="primary" onClick={onDone}>Done</Button>
+                <Button appearance="primary" onClick={saveAvatar}>Done</Button>
               </DialogActions>
             </DialogBody>
           </DialogSurface>
         </Dialog>
 
-        {/* theme switch */}
+        {/* theme switch (controlled) */}
         <Switch
-          checked={dark}
-          onChange={(_, data) => {
-            setDark(data.checked);
-            toggleTheme();
-          }}
+          checked={isDarkMode}
+          onChange={toggleTheme}
           label={
             <>
-              {dark ? <WeatherMoonRegular /> : <WeatherSunnyRegular />}
-              &nbsp;{dark ? 'Dark' : 'Light'}
+              {isDarkMode ? <WeatherMoonRegular /> : <WeatherSunnyRegular />}
+              &nbsp;{isDarkMode ? 'Dark' : 'Light'}
             </>
           }
           labelPosition="after"

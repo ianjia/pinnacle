@@ -10,17 +10,13 @@ import { AlertDialog } from './components/component-dialog';
 import { alertDialogActions } from './store/alert-dialog-slice';
 import { AdminPage } from './home-page/admin-page';
 import { RootState } from './store';
-
 import './App.css';
+import { IThemeToggleProps } from './components/component-util';
 
-interface AppProps {
-  toggleTheme: () => void;
-}
-
-const App: React.FC<AppProps> = ({ toggleTheme }) => {
+const App: React.FC<IThemeToggleProps> = ({ toggleTheme, isDarkMode }) => {
   const dispatch = useDispatch();
   const { isOpen, title, message } = useSelector(
-    (state: RootState) => state.alertDialg,
+    (s: RootState) => s.alertDialg,
   );
 
   return (
@@ -39,12 +35,14 @@ const App: React.FC<AppProps> = ({ toggleTheme }) => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* pass toggleTheme to MainApp via the route element */}
           <Route
             path="/mainapp"
             element={
               <ProtectedRoute>
-                <MainApp toggleTheme={toggleTheme} />
+                <MainApp
+                  toggleTheme={toggleTheme}
+                  isDarkMode={isDarkMode}
+                />
               </ProtectedRoute>
             }
           />

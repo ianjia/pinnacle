@@ -53,7 +53,7 @@ const Root: React.FC = () => {
       <FluentProvider theme={isDarkMode ? darkTheme : lightTheme}>
         <Provider store={store}>
           {/* forward the toggler to any component that needs it */}
-          <App toggleTheme={toggleTheme} />
+          <App toggleTheme={toggleTheme} isDarkMode={isDarkMode}  />
         </Provider>
       </FluentProvider>
     </AuthProvider>
