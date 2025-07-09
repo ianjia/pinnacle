@@ -7,6 +7,7 @@ import {
   QuestionCircleRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
+  PersonRegular,
 } from '@fluentui/react-icons';
 import {
   TabList,
@@ -72,6 +73,12 @@ export const LeftPaneTabList: React.FC<IThemeToggleProps> = ({
         selectedValue={active}
         onTabSelect={onSelect}
       >
+
+        <Tab
+          icon={<PersonRegular />} value={NavTabType.Profile}
+        >
+          <>Student<br /> Profile</>
+        </Tab>
         <Tab icon={<HatGraduationRegular />} value={NavTabType.CollegeList}>
           <>College<br />Shortlist</>
         </Tab>
