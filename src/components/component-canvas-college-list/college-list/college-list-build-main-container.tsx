@@ -1,12 +1,25 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import {
   Accordion,
   AccordionItem,
   AccordionHeader,
   AccordionPanel,
   mergeClasses,
+  Combobox,
+  Option as ComboboxOption,
+  OptionOnSelectData,
+  Popover,
+  PopoverSurface,
+  PopoverTrigger,
+  Button,
+  Field,
+  Textarea,
+  Card,
+  tokens,
 } from '@fluentui/react-components';
+import { ChevronRight24Regular, ChevronDown24Regular, Info24Regular } from '@fluentui/react-icons';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   alertDialogActions,
   RootState,
@@ -33,31 +46,25 @@ import {
   applyDecisionService,
 } from '../../component-service-proxy';
 
+import {
+  NavTabType,
+  CollegePreferences,
+  CollegeAdmissionData,
+  toSimplifiedCollegeData,
+  formatCollegeData,
+} from '../../../shared';
+
 import { AuthContext } from '../../../auth';
-import { NavTabType, CollegePreferences, CollegeAdmissionData, toSimplifiedCollegeData, formatCollegeData } from '../../../shared';
 import { getCollegeNameKey } from '../../component-navigation-map';
 
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
 import { CollegeListBuildForm } from './college-list-build-form';
 
-import {
-  Card,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-  Button,
-  Input,
-  tokens,
-  Field,
-  Textarea,
-} from '@fluentui/react-components';
-import {
-  ChevronRight24Regular,
-  ChevronDown24Regular,
-  Info24Regular,          
-} from '@fluentui/react-icons';
 import { useStyles } from './college-list-build-form.styles';
-import { log } from 'console';
+import { fuse } from '../../component-navigation-map/utils/fuzzy-config';
+import { collegeMapping } from '../../component-navigation-map/college-mapping';
+
+const collegeNameOptions = Array.from(collegeMapping.keys());
 
 export const CollegeListBuildMainContainer: React.FC = () => {
   const dispatch = useDispatch();
@@ -68,10 +75,12 @@ export const CollegeListBuildMainContainer: React.FC = () => {
   /* Redux state */
   const collegeList = useSelector((s: RootState) => s.collegeListWorkshop.collegeList);
   const collegePref: CollegePreferences = useSelector(
-    (s: RootState) => s.collegePreferences.collegePreferences
+    (s: RootState) => s.collegePreferences.collegePreferences,
   );
   const majorPref = collegePref.specializedProgram.value;
-  const decisionRecommendation = useSelector((s: RootState) => s.collegeListWorkshop.recommendEdEaRegular);
+  const decisionRecommendation = useSelector(
+    (s: RootState) => s.collegeListWorkshop.recommendEdEaRegular,
+  );
 
   const hasBasicInfoFilled = useBasicInfoFilled();
 
@@ -79,24 +88,36 @@ export const CollegeListBuildMainContainer: React.FC = () => {
   /* Local state */
   const [selectedCollege, setSelectedCollege] = useState<CollegeAdmissionData | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newCollegeName, setNewCollegeName] = useState('');
-  const [activeTask, setActiveTask] = useState<'collegeList' | 'evaluation' | "recommendedearegular"| null>(null);
-  const [showConfirmCleanUpDialogForCollegeList, setShowConfirmCleanUpDialogForCollegeList] = useState(false);
-  const [showConfirmCleanUpDialogForApplyDecision, setShowConfirmCleanUpDialogForApplyDecision] = useState(false);
+  const [newCollegeName, setNewCollegeName] = useState<string>('');
+  const [activeTask, setActiveTask] = useState<
+    'collegeList' | 'evaluation' | 'recommendedearegular' | null
+  >(null);
+  const [showConfirmCleanUpDialogForCollegeList, setShowConfirmCleanUpDialogForCollegeList] =
+    useState(false);
+  const [showConfirmCleanUpDialogForApplyDecision, setShowConfirmCleanUpDialogForApplyDecision] =
+    useState(false);
 
-  const [additionalInfoToBuildCollegeList, setAdditionalInfoToBuildCollegeList] = useState<string>('');
+  const [additionalInfoToBuildCollegeList, setAdditionalInfoToBuildCollegeList] =
+    useState<string>('');
 
   const [showDecisionRec, setShowDecisionRec] = useState(true);
 
   /* ------------------------------------------------------------------ */
+  /* Autocomplete – memoised filtered options */
+  const filteredCollegeNames = useMemo<string[]>(() => {
+    if (!newCollegeName) return collegeNameOptions;
+    return fuse.search(newCollegeName).slice(0, 20).map((r) => r.item);
+  }, [newCollegeName]);
+
+  /* ------------------------------------------------------------------ */
   /* Task runner – build list */
-const {
+  const {
     startTask: startCollegeListTask,
     showModal: showCollegeListModal,
     progressMessage: progressCollegeListMessage,
   } = useTaskRunner({
     taskType: TaskType.BuildCollegeList,
-    requestData: {additionalInfo: additionalInfoToBuildCollegeList} as CollegeListBuildRequest,
+    requestData: { additionalInfo: additionalInfoToBuildCollegeList } as CollegeListBuildRequest,
     onResult: async (data: TaskResult) => {
       const buildResult = data as BuildCollegeListTaskResult;
 
@@ -155,7 +176,7 @@ const {
         collegeListWorkshopActions.setCollegeData({
           id: selectedCollege.id,
           data: toCombinedCollegeData(result.data_chance),
-        })
+        }),
       );
 
       try {
@@ -163,37 +184,34 @@ const {
           ...selectedCollege,
           data: toCombinedCollegeData(result.data_chance),
         });
-      } 
-      catch(e) {
-        // log error
-      }
-      finally {
+      } finally {
         setActiveTask(null);
       }
     },
   });
 
-   
   /* ------------------------------------------------------------------ */
-  /* Task runner – build list */
+  /* Task runner – decision recommendation */
   const {
     startTask: startRecommendEdEaRegularTask,
     showModal: showEdEaRegularModal,
     progressMessage: progressEdEaRegularModalMessage,
   } = useTaskRunner({
     taskType: TaskType.RecommendEaEdRegular,
-    requestData: {collegeList: formatCollegeData(toSimplifiedCollegeData(collegeList)), major: majorPref} as RecommendEdEaRegularRequest,
+    requestData: {
+      collegeList: formatCollegeData(toSimplifiedCollegeData(collegeList)),
+      major: majorPref,
+    } as RecommendEdEaRegularRequest,
     onResult: async (data: TaskResult) => {
       const result = data as RecommendEdEaRegularTaskResult;
 
-      dispatch(collegeListWorkshopActions.setRecommendEdEaRegular(result.recommendation))
+      dispatch(collegeListWorkshopActions.setRecommendEdEaRegular(result.recommendation));
       try {
-        await applyDecisionService.create({user_id: userId as number, decision: result.recommendation} );
-      }
-      catch (e) {
-        // log error
-      }
-      finally {
+        await applyDecisionService.create({
+          user_id: userId as number,
+          decision: result.recommendation,
+        });
+      } finally {
         setActiveTask(null);
       }
     },
@@ -225,7 +243,7 @@ const {
         alertDialogActions.showAlert({
           title: 'Insufficient Information',
           message: 'Please fill in basic information in student profile before performing the task.',
-        })
+        }),
       );
       return;
     }
@@ -243,11 +261,11 @@ const {
         alertDialogActions.showAlert({
           title: 'Insufficient Information',
           message: 'Please fill in basic information in student profile before performing the task.',
-        })
+        }),
       );
       return;
     }
-    
+
     if (decisionRecommendation.trim() !== '') {
       setShowConfirmCleanUpDialogForApplyDecision(true);
     } else {
@@ -262,7 +280,7 @@ const {
         alertDialogActions.showAlert({
           title: 'Insufficient Information',
           message: 'Please fill in basic information in student profile before performing the task.',
-        })
+        }),
       );
       return;
     }
@@ -277,15 +295,13 @@ const {
   };
 
   /* ------------------------------------------------------------------ */
-  /* Clean-up confirmation */
+  /* Clean‑up confirmation callbacks */
   const confirmCleanUpOkForCollegeList = async () => {
     setShowConfirmCleanUpDialogForCollegeList(false);
-    
+
     try {
       for (const c of collegeList) await handleDeleteCollege(c.id);
-    }
-    catch(e) {
-      // To log
+    } catch {
       return;
     }
     setActiveTask('collegeList');
@@ -297,10 +313,8 @@ const {
 
     try {
       await applyDecisionService.deleteById(userId as number);
-    } 
-    catch(e) {
-      // To log
-      return; 
+    } catch {
+      return;
     }
 
     setActiveTask('recommendedearegular');
@@ -308,12 +322,12 @@ const {
   };
 
   /* ------------------------------------------------------------------ */
-  /* Add-college dialog */
+  /* Add‑college dialog handlers */
   const handleAddCollegeDone = async () => {
     const key = getCollegeNameKey(newCollegeName.trim());
     if (!key) {
       dispatch(
-        alertDialogActions.showAlert({ title: 'Validation Error', message: 'Invalid college name.' })
+        alertDialogActions.showAlert({ title: 'Validation Error', message: 'Invalid college name.' }),
       );
       return;
     }
@@ -322,7 +336,7 @@ const {
         alertDialogActions.showAlert({
           title: 'Validation Error',
           message: `${key} already exists in the list.`,
-        })
+        }),
       );
       return;
     }
@@ -332,6 +346,18 @@ const {
     dispatch(collegeListWorkshopActions.addCollege({ ...item, id }));
     setIsAddModalOpen(false);
     setNewCollegeName('');
+  };
+
+  /* Combobox handlers */
+  const handleComboChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    setNewCollegeName(ev.target.value);
+  };
+
+  const handleOptionSelect = (
+    _ev: React.SyntheticEvent<Element, Event>,
+    data: OptionOnSelectData,
+  ) => {
+    setNewCollegeName(data.optionValue as string);
   };
 
   /* ------------------------------------------------------------------ */
@@ -345,13 +371,13 @@ const {
             ? progressCollegeListMessage
             : activeTask === 'evaluation'
             ? progressEvaluationMessage
-            : activeTask ==='recommendedearegular'
+            : activeTask === 'recommendedearegular'
             ? progressEdEaRegularModalMessage
             : ''
         }
       />
 
-      {/* Clean-up confirmation dialog */}
+      {/* Clean‑up confirmation dialog */}
       {showConfirmCleanUpDialogForCollegeList && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -361,7 +387,9 @@ const {
               <Button appearance="primary" onClick={confirmCleanUpOkForCollegeList}>
                 Ok
               </Button>
-              <Button appearance="primary" onClick={() => setShowConfirmCleanUpDialogForCollegeList(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setShowConfirmCleanUpDialogForCollegeList(false)}>
+                Cancel
+              </Button>
             </div>
           </div>
         </div>
@@ -371,17 +399,18 @@ const {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Please be noticed…</h3>
-            <p>Continuing this task will remove current recommendation for ED, EA and RD</p>
+            <p>Continuing this task will remove current recommendation for ED, EA and RD.</p>
             <div className={styles.modalButtonRow}>
               <Button appearance="primary" onClick={confirmCleanUpOkForApplyDecision}>
                 Ok
               </Button>
-              <Button appearance="primary" onClick={() => setShowConfirmCleanUpDialogForApplyDecision(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setShowConfirmCleanUpDialogForApplyDecision(false)}>
+                Cancel
+              </Button>
             </div>
           </div>
         </div>
       )}
-
 
       {/* Action panel */}
       <Card className={styles.card}>
@@ -395,32 +424,20 @@ const {
             </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <Button
-                  icon={<Info24Regular />}
-                  appearance="subtle"
-                  size="small"
-                  aria-label="Info"
-                  className={styles.infoIcon}
-                />
+                <Button icon={<Info24Regular />} appearance="subtle" size="small" aria-label="Info" className={styles.infoIcon} />
               </PopoverTrigger>
               <PopoverSurface>Create a recommended college list</PopoverSurface>
             </Popover>
           </div>
 
-          {/* Build list */}
+          {/* Recommend ED/EA/RD */}
           <div className={styles.buttonWithInfo}>
             <Button appearance="primary" className={styles.actionPanelButton} onClick={handleRecommendEdEaRegularTask} disabled={collegeList.length === 0}>
               Recommend ED/EA/RD
             </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <Button
-                  icon={<Info24Regular />}
-                  appearance="subtle"
-                  size="small"
-                  aria-label="Info"
-                  className={styles.infoIcon}
-                />
+                <Button icon={<Info24Regular />} appearance="subtle" size="small" aria-label="Info" className={styles.infoIcon} />
               </PopoverTrigger>
               <PopoverSurface>Recommend Early Decision, Early Action and Regular Decision on colleges in the list</PopoverSurface>
             </Popover>
@@ -428,74 +445,42 @@ const {
 
           {/* Evaluate */}
           <div className={styles.buttonWithInfo}>
-            <Button
-              appearance="primary"
-              className={styles.actionPanelButton}
-              onClick={handleStartEvaluationTask}
-              disabled={!selectedCollege || selectedCollege.data !== undefined}
-            >
+            <Button appearance="primary" className={styles.actionPanelButton} onClick={handleStartEvaluationTask} disabled={!selectedCollege || selectedCollege.data !== undefined}>
               Evaluate a College
             </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <Button
-                  icon={<Info24Regular />}
-                  appearance="subtle"
-                  size="small"
-                  aria-label="Info"
-                  className={styles.infoIcon}
-                />
+                <Button icon={<Info24Regular />} appearance="subtle" size="small" aria-label="Info" className={styles.infoIcon} />
               </PopoverTrigger>
-              <PopoverSurface>
-                Use “Add an Item” to create a row then select it to evaluate
-              </PopoverSurface>
+              <PopoverSurface>Use “Add an Item” to create a row then select it to evaluate</PopoverSurface>
             </Popover>
           </div>
 
           {/* Holistic review */}
           <div className={styles.buttonWithInfo}>
-            <Button
-              appearance="primary"
-              className={styles.actionPanelButton}
-              onClick={handleCommitteeReview}
-              disabled={!selectedCollege}
-            >
+            <Button appearance="primary" className={styles.actionPanelButton} onClick={handleCommitteeReview} disabled={!selectedCollege}>
               Holistic Review
             </Button>
             <Popover positioning={{ position: 'after', align: 'center' }}>
               <PopoverTrigger>
-                <Button
-                  icon={<Info24Regular />}
-                  appearance="subtle"
-                  size="small"
-                  aria-label="Info"
-                  className={styles.infoIcon}
-                />
+                <Button icon={<Info24Regular />} appearance="subtle" size="small" aria-label="Info" className={styles.infoIcon} />
               </PopoverTrigger>
               <PopoverSurface>Select a row for a comprehensive review</PopoverSurface>
             </Popover>
           </div>
         </div>
 
-        {/* NEW – Essay text area (spans full width) ------------------- */}
+        {/* Additional Info textarea */}
         <Field
           className={styles.textAreaField}
           label={
             <span className={styles.labelContainer}>
-              <span>Addiional Info (Optional)</span>
+              <span>Additional Info (Optional)</span>
               <Popover positioning={{ position: 'after', align: 'top' }}>
                 <PopoverTrigger>
-                  <Button
-                    icon={<Info24Regular />}
-                    appearance="subtle"
-                    size="small"
-                    aria-label="Essay information"
-                    className={styles.infoIcon}
-                  />
+                  <Button icon={<Info24Regular />} appearance="subtle" size="small" aria-label="Essay information" className={styles.infoIcon} />
                 </PopoverTrigger>
-                <PopoverSurface>
-                  Please fill in any additional info or requeset needed to build the college list.
-                </PopoverSurface>
+                <PopoverSurface>Please fill in any additional info or request needed to build the college list.</PopoverSurface>
               </Popover>
             </span>
           }
@@ -504,40 +489,30 @@ const {
             resize="vertical"
             value={additionalInfoToBuildCollegeList}
             onChange={(_, data) => setAdditionalInfoToBuildCollegeList(data.value)}
-            placeholder="Addiional Info for Building College List ..."
+            placeholder="Additional Info for Building College List ..."
             className={styles.textarea}
           />
         </Field>
       </Card>
 
-      {/* Early Decision, Early Action and Regular Decision recommendation for college list */}
+      {/* ED/EA/RD Recommendation accordion */}
       {decisionRecommendation.trim() !== '' && (
         <Card className={styles.card}>
           <Accordion
-            collapsible            // let users close it again
+            collapsible
             openItems={showDecisionRec ? ['rec'] : []}
-            onToggle={(_, { openItems }) =>
-              setShowDecisionRec(openItems.includes('rec'))
-            }
+            onToggle={(_, { openItems }) => setShowDecisionRec(openItems.includes('rec'))}
           >
             <AccordionItem value="rec">
-            <AccordionHeader
-              inline   // puts chevron & title on one line
-              className={mergeClasses(
-                styles.accordionHeader,
-                showDecisionRec && styles.accordionHeaderActive   // active when open
-              )}
-              expandIcon={
-                showDecisionRec
-                  ? <ChevronDown24Regular />
-                  : <ChevronRight24Regular />
-              }
-            >
+              <AccordionHeader
+                inline
+                className={mergeClasses(styles.accordionHeader, showDecisionRec && styles.accordionHeaderActive)}
+                expandIcon={showDecisionRec ? <ChevronDown24Regular /> : <ChevronRight24Regular />}
+              >
                 Recommendation on Early Decision, Early Action and Regular Decision
               </AccordionHeader>
 
               <AccordionPanel>
-                {/* content only renders when open */}
                 <div className={styles.content}>
                   <ReviewDisplay review={decisionRecommendation} />
                 </div>
@@ -564,22 +539,36 @@ const {
         onAddCollege={() => setIsAddModalOpen(true)}
       />
 
-      {/* Add-college dialog */}
+      {/* Add‑college dialog */}
       {isAddModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Add College</h3>
-            <Input
+            <Combobox
+              placeholder="Start typing a college..."
               value={newCollegeName}
-              onChange={(_, d) => setNewCollegeName(d.value)}
-              placeholder="Enter college name"
-              className={styles.modalInput}
-            />
+              onChange={handleComboChange}
+              onOptionSelect={handleOptionSelect}
+              freeform
+            >
+              {filteredCollegeNames.map((name) => (
+                <ComboboxOption key={name} value={name}>
+                  {name}
+                </ComboboxOption>
+              ))}
+            </Combobox>
+
             <div className={styles.modalButtonRow}>
-              <Button appearance="primary" onClick={handleAddCollegeDone}>
+              <Button
+                appearance="primary"
+                onClick={handleAddCollegeDone}
+                disabled={!getCollegeNameKey(newCollegeName.trim())}
+              >
                 Done
               </Button>
-              <Button appearance="primary" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setIsAddModalOpen(false)}>
+                Cancel
+              </Button>
             </div>
           </div>
         </div>
