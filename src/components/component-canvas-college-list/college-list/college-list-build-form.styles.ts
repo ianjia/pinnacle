@@ -34,10 +34,10 @@ export const useStyles = makeStyles({
   },
   headerCell: { composes: '$cell', fontWeight: tokens.fontWeightSemibold },
   actionCell: { justifyContent: 'flex-start', paddingLeft: tokens.spacingHorizontalM },
-  actionButton: { height: '28px', padding: 0 },
+  actionButton: { height: '28px', padding: 0},
   addItemContainer: { display: 'flex', justifyContent: 'flex-start', marginTop: tokens.spacingVerticalS },
   addItemButton: { fontSize: tokens.fontSizeBase300, color: tokens.colorNeutralForeground3, height: '28px' },
-  actionPanelButton: { fontSize: tokens.fontSizeBase300, width: '250px', height: '32px' },
+  actionPanelButton: { fontSize: tokens.fontSizeBase300, width: '180px', height: '32px' },
   buttonWithInfo: { display: 'flex', alignItems: 'center', gap: tokens.spacingHorizontalXS },
   infoIcon: { marginLeft: tokens.spacingHorizontalXXS },
 
@@ -78,5 +78,31 @@ export const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'flex-end',
     gap: tokens.spacingHorizontalM,
+  },
+
+  textAreaField: {
+    gridColumn: '1 / -1',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalXS,
+    marginBottom: tokens.spacingVerticalL,
+  },
+
+  textarea: {
+    minHeight: '60px',
+    width: '100%',
+  },
+
+  /* label & info icon */
+  labelContainer: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: tokens.spacingHorizontalXXS,
+  },
+
+  content: {
+    flexGrow: 1,
+    overflow: 'auto',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
   },
 });

@@ -4,12 +4,14 @@ import { CollegeAdmissionData, CollegeListWorkshopType, CombinedCollegeData } fr
 
 interface CollegeListWorkshopState {
     activeCollegeListWorkshop: CollegeListWorkshopType;
-    collegeList: CollegeAdmissionData[];    
+    collegeList: CollegeAdmissionData[];
+    recommendEdEaRegular: string; // ED, EA, RD recommendation    
 }
 
 const initialState: CollegeListWorkshopState = {
     activeCollegeListWorkshop: CollegeListWorkshopType.Preferences,
     collegeList: [],
+    recommendEdEaRegular: '',
 };
 
 const collegeListWorkshopSlice = createSlice({
@@ -68,6 +70,9 @@ const collegeListWorkshopSlice = createSlice({
           }
         },        
 
+        setRecommendEdEaRegular: (state, action: PayloadAction<string>) => {
+          state.recommendEdEaRegular = action.payload;
+      },
     }
 });
 

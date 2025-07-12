@@ -2,11 +2,17 @@ export interface ITaskRequest {
 }
 
 export interface CollegeListBuildRequest extends ITaskRequest {
+    additionalInfo?: string;
 }
 
 export interface CollegeCompareRequest extends ITaskRequest {
     first_college: string;
     second_college: string;
+    major: string;
+}
+
+export interface RecommendEdEaRegularRequest extends ITaskRequest {
+    collegeList: string;
     major: string;
 }
 

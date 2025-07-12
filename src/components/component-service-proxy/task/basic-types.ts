@@ -11,6 +11,7 @@ export enum TaskType {
     RefineEssay = "RefineEssay",
     AnalyzeInterview = "AnalyzeInterview",
     CompareCollege = "CompareCollege",
+    RecommendEaEdRegular = "RecommendEaEdRegular",
 }
 
 

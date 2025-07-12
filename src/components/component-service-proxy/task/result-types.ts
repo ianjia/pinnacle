@@ -48,6 +48,11 @@ export interface BuildCollegeListTaskResult extends TaskResult {
     college_list: CollegeElementLLMOutputSchema[];
 }
 
+export interface RecommendEdEaRegularTaskResult extends TaskResult {
+    type: TaskType.RecommendEaEdRegular;
+    recommendation: string;
+}
+
 export interface CompareCollegeTaskResult extends TaskResult {
     type: TaskType.CompareCollege;
     review: string;
