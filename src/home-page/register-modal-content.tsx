@@ -122,7 +122,7 @@ export const RegisterModalContent: React.FC<Props> = ({ onSuccess }) => {
               <Button appearance="primary" onClick={handleContinue} disabled={!agreed || busy}>
                 Continue
               </Button>
-              <Button onClick={() => setShowTerms(false)} disabled={busy}>
+              <Button appearance="primary" onClick={() => setShowTerms(false)} disabled={busy}>
                 Cancel
               </Button>
             </DialogActions>

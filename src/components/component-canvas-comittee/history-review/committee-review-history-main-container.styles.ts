@@ -7,4 +7,12 @@ export const useStyles = makeStyles({
     gap: tokens.spacingVerticalL,
     width: '100%',
   },
+
+  /* new rule for the review card */
+  reviewCard: {
+    width: '100%',
+    padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+    backgroundColor: tokens.colorNeutralBackground1,
+    position: 'relative',          // establishes containing block
+  },
 });

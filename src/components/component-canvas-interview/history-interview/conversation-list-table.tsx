@@ -119,25 +119,24 @@ export const ConversationListTable: React.FC<Props> = ({
       <DataGrid items={sorted} columns={columns} getRowId={(i) => String(i.id)}>
         <DataGridHeader>
           <DataGridRow>
-            {({ renderHeaderCell }) => (
-              <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
-            )}
+            {({ renderHeaderCell }) => renderHeaderCell()}
           </DataGridRow>
         </DataGridHeader>
 
         <DataGridBody<Conversation>>
-          {({ item }) => (
-            <DataGridRow
-              key={item.id}
-              onClick={() => onSelect(item)}
-              className={mergeClasses(
-                styles.row,
-                item.id === selectedConversationId && styles.rowSelected
-              )}
-            >
-              {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
-            </DataGridRow>
-          )}
+          {({ item }) => {
+            const isSelected = item.id === selectedConversationId;
+            return (
+              <DataGridRow
+                key={item.id}
+                aria-selected={isSelected}
+                onClick={() => onSelect(item)}
+                className={mergeClasses(styles.row, isSelected && styles.rowSelected)}
+              >
+                {({ renderCell }) => renderCell(item)}
+              </DataGridRow>
+            );
+          }}
         </DataGridBody>
       </DataGrid>
     </Card>

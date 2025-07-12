@@ -9,6 +9,7 @@ import { AuthContext } from '../../../auth';
 import { CommitteeReviewListTable } from './committee-review-list-table';
 import { ReviewDisplay } from '../../component-review-display/review-dislay';
 import { useStyles } from './committee-review-history-main-container.styles';
+import { Card } from '@fluentui/react-components';
 
 export const CommitteeReviewHistoryMainContainer: React.FC = () => {
   const styles = useStyles();
@@ -28,7 +29,20 @@ export const CommitteeReviewHistoryMainContainer: React.FC = () => {
     if (selected?.id === id) setSelected(null);
   };
 
-  return (
+  // return (
+  //   <div className={styles.container}>
+  //     <CommitteeReviewListTable
+  //       reviews={reviews}
+  //       onDelete={handleDelete}
+  //       onSelect={setSelected}
+  //       selectedReviewId={selected?.id}
+  //     />
+
+  //     {selected && <ReviewDisplay review={selected.review} />}
+  //   </div>
+  // );
+
+    return (
     <div className={styles.container}>
       <CommitteeReviewListTable
         reviews={reviews}
@@ -37,7 +51,12 @@ export const CommitteeReviewHistoryMainContainer: React.FC = () => {
         selectedReviewId={selected?.id}
       />
 
-      {selected && <ReviewDisplay review={selected.review} />}
+      {/* wrap the display in its own card so it has a layout box */}
+      {selected && (
+        <Card className={styles.reviewCard}>
+          <ReviewDisplay review={selected.review} />
+        </Card>
+      )}
     </div>
   );
 };

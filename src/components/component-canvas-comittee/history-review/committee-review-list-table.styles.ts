@@ -24,7 +24,20 @@ export const useStyles = makeStyles({
   row: { cursor: 'pointer' },
 
   rowSelected: {
-    backgroundColor: tokens.colorBrandBackground2,
+    /* colour every cell */
+    '& .fui-DataGridCell': {
+      backgroundColor: tokens.colorBrandBackground,
+      color: tokens.colorNeutralForegroundOnBrand,
+    },
+    /* 4‑px brand bar */
+    '& .fui-DataGridCell:first-child': {
+      borderLeft: `4px solid ${tokens.colorBrandStroke1}`,
+      paddingLeft: `calc(${tokens.spacingHorizontalM} - 4px)`,
+    },
+    /* identical shade on hover */
+    '&:hover .fui-DataGridCell': {
+      backgroundColor: tokens.colorBrandBackgroundHover,
+    },
   },
 
   headerCell: {

@@ -293,20 +293,23 @@ export const CollegeListBuildForm: React.FC<CollegeListBuildFormProps> = ({
         </DataGridHeader>
 
         <DataGridBody<CollegeAdmissionData>>
-          {({ item }) => (
-            <DataGridRow
-              key={item.id}
-              className={mergeClasses(
-                styles.row,
-                item.id === selectedCollegeId && styles.rowSelected   // themed highlight
-              )}
-              onClick={() => onSelectCollege(item)}
-            >
-              {({ renderCell }) => (
-                <DataGridCell className={styles.cell}>{renderCell(item)}</DataGridCell>
-              )}
-            </DataGridRow>
-          )}
+          {({ item }) => {
+            const isSelected = item.id === selectedCollegeId;     
+            return (
+              <DataGridRow
+                key={item.id}
+                aria-selected={isSelected}                          
+                className={mergeClasses(
+                  styles.row,
+                  isSelected && styles.rowSelected
+                )}
+                onClick={() => onSelectCollege(item)}
+              >
+                {/* IMPORTANT ‑‑ do not wrap renderCell in another DataGridCell */}
+                {({ renderCell }) => renderCell(item)}
+              </DataGridRow>
+            );
+          }}
         </DataGridBody>
       </DataGrid>
 

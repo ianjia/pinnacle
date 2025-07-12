@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionHeader,
   AccordionPanel,
+  mergeClasses,
 } from '@fluentui/react-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -360,7 +361,7 @@ const {
               <Button appearance="primary" onClick={confirmCleanUpOkForCollegeList}>
                 Ok
               </Button>
-              <Button onClick={() => setShowConfirmCleanUpDialogForCollegeList(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setShowConfirmCleanUpDialogForCollegeList(false)}>Cancel</Button>
             </div>
           </div>
         </div>
@@ -375,7 +376,7 @@ const {
               <Button appearance="primary" onClick={confirmCleanUpOkForApplyDecision}>
                 Ok
               </Button>
-              <Button onClick={() => setShowConfirmCleanUpDialogForApplyDecision(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setShowConfirmCleanUpDialogForApplyDecision(false)}>Cancel</Button>
             </div>
           </div>
         </div>
@@ -520,12 +521,18 @@ const {
             }
           >
             <AccordionItem value="rec">
-              <AccordionHeader
-                inline         // puts chevron & title on one line
-                expandIcon={showDecisionRec
+            <AccordionHeader
+              inline   // puts chevron & title on one line
+              className={mergeClasses(
+                styles.accordionHeader,
+                showDecisionRec && styles.accordionHeaderActive   // active when open
+              )}
+              expandIcon={
+                showDecisionRec
                   ? <ChevronDown24Regular />
-                  : <ChevronRight24Regular />}
-              >
+                  : <ChevronRight24Regular />
+              }
+            >
                 Recommendation on Early Decision, Early Action and Regular Decision
               </AccordionHeader>
 
@@ -572,7 +579,7 @@ const {
               <Button appearance="primary" onClick={handleAddCollegeDone}>
                 Done
               </Button>
-              <Button onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+              <Button appearance="primary" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
             </div>
           </div>
         </div>

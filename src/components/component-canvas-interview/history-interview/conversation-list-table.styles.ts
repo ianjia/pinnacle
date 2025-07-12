@@ -35,7 +35,19 @@ export const useStyles = makeStyles({
   cell: { fontSize: tokens.fontSizeBase300 },
 
   row: { cursor: 'pointer' },
-  rowSelected: { backgroundColor: tokens.colorBrandBackground2 },
+  rowSelected: {
+   '& .fui-DataGridCell': {
+      backgroundColor: tokens.colorBrandBackground,
+      color: tokens.colorNeutralForegroundOnBrand,
+    },
+    '& .fui-DataGridCell:first-child': {
+      borderLeft: `4px solid ${tokens.colorBrandStroke1}`,
+      paddingLeft: `calc(${tokens.spacingHorizontalM} - 4px)`,
+    },
+    '&:hover .fui-DataGridCell': {
+      backgroundColor: tokens.colorBrandBackgroundHover,
+    },
+  },
 
   /* ---------- delete button ---------- */
   actionCell: { justifyContent: 'flex-start' },

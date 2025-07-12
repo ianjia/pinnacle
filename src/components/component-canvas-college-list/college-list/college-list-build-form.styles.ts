@@ -24,7 +24,28 @@ export const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
   },
-  rowSelected: { backgroundColor: tokens.colorBrandBackground2 },
+
+  /* Row background alone is not visible because DataGridRow uses
+     `display: contents`.  Paint the cells instead. */
+  rowSelected: {
+    /* give every cell the brand colour, not the very‑light tint */
+    '& .fui-DataGridCell': {
+      backgroundColor: tokens.colorBrandBackground,        
+      color: tokens.colorNeutralForegroundOnBrand,           // text stays readable
+    },
+
+    /* 4‑px brand bar for extra focus */
+    '& .fui-DataGridCell:first-child': {
+      borderLeft: `4px solid ${tokens.colorBrandStroke1}`,
+      paddingLeft: `calc(${tokens.spacingHorizontalM} - 4px)`,
+    },
+
+    /* keep the same shade when user hovers a selected row */
+    '&:hover .fui-DataGridCell': {
+      backgroundColor: tokens.colorBrandBackgroundHover,
+    },
+  },
+
   wideColumn: { width: '120px', minWidth: '100px', maxWidth: '150px' },
   cell: {
     display: 'flex',
@@ -104,5 +125,47 @@ export const useStyles = makeStyles({
     flexGrow: 1,
     overflow: 'auto',
     padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalXL}`,
+  },
+
+  /* ─── accordion header styles ─── */
+  accordionHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: tokens.spacingHorizontalS,
+
+    /* bigger text for the whole button */
+    '& .fui-AccordionHeader__button': {
+      fontSize: tokens.fontSizeBase500,      // visibly larger
+      fontWeight: tokens.fontWeightRegular,
+    },
+
+    cursor: 'pointer',
+    color: tokens.colorNeutralForeground1,
+    borderRadius: tokens.borderRadiusMedium,
+
+    /* keep the layout of icon + text */
+    '& .fui-AccordionHeader__content': {
+      display: 'flex',
+      alignItems: 'center',
+      gap: tokens.spacingHorizontalS,
+    },
+
+    ':hover': { backgroundColor: tokens.colorNeutralBackground1Hover },
+    ':focus': {
+      outline: `2px solid ${tokens.colorStrokeFocus2}`,
+      outlineOffset: '2px',
+    },
+  },
+
+  accordionHeaderActive: {
+    /* bold the button and its text when selected/open */
+    '& .fui-AccordionHeader__button, & .fui-AccordionHeader__content': {
+      fontWeight: tokens.fontWeightSemibold,
+    },
+
+    /* brand-tinted chevron */
+    '& .fui-AccordionHeader__expandIcon': {
+      color: tokens.colorBrandForeground1,
+    },
   },
 });

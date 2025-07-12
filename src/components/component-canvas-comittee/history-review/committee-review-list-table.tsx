@@ -132,27 +132,24 @@ export const CommitteeReviewListTable: React.FC<Props> = ({
       <DataGrid items={data} columns={columns} getRowId={(r) => `${r.id}`}>
         <DataGridHeader>
           <DataGridRow>
-            {({ renderHeaderCell }) => (
-              <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
-            )}
+            {({ renderHeaderCell }) => renderHeaderCell()}
           </DataGridRow>
         </DataGridHeader>
 
         <DataGridBody<CommitteeReview>>
-          {({ item }) => (
-            <DataGridRow
-              key={item.id}
-              className={mergeClasses(
-                styles.row,
-                selectedReviewId === item.id && styles.rowSelected
-              )}
-              onClick={() => onSelect(item)}
-            >
-              {({ renderCell }) => (
-                <DataGridCell>{renderCell(item)}</DataGridCell>
-              )}
-            </DataGridRow>
-          )}
+          {({ item }) => {
+            const isSelected = selectedReviewId === item.id;
+            return (
+              <DataGridRow
+                key={item.id}
+                aria-selected={isSelected}
+                className={mergeClasses(styles.row, isSelected && styles.rowSelected)}
+                onClick={() => onSelect(item)}
+              >
+                {({ renderCell }) => renderCell(item)}
+              </DataGridRow>
+            );
+          }}
         </DataGridBody>
       </DataGrid>
     </Card>

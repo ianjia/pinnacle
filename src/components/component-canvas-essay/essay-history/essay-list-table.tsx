@@ -109,28 +109,24 @@ export const EssayListTable: React.FC<Props> = ({
 
       <DataGrid items={rows} columns={columns} getRowId={(r) => `${r.id}`}>
         <DataGridHeader>
-          <DataGridRow>
-            {({ renderHeaderCell }) => (
-              <DataGridHeaderCell>{renderHeaderCell()}</DataGridHeaderCell>
-            )}
-          </DataGridRow>
+           <DataGridRow>{({ renderHeaderCell }) => renderHeaderCell()}</DataGridRow>
         </DataGridHeader>
 
         <DataGridBody<Essay>>
-          {({ item }) => (
-            <DataGridRow
-              key={item.id}
-              onClick={() => onSelect(item)}
-              className={mergeClasses(
-                s.row,
-                selectedEssayId === item.id && s.rowSelected
-              )}
-            >
-              {({ renderCell }) => (
-                <DataGridCell>{renderCell(item)}</DataGridCell>
-              )}
-            </DataGridRow>
-          )}
+          {({ item }) => {
+            const isSelected = selectedEssayId === item.id;
+            return (
+              <DataGridRow
+                key={item.id}
+                aria-selected={isSelected}
+                onClick={() => onSelect(item)}
+                className={mergeClasses(s.row, isSelected && s.rowSelected)}
+              >
+                {({ renderCell }) => renderCell(item)}
+              </DataGridRow>
+            );
+          }}
+
         </DataGridBody>
       </DataGrid>
     </Card>
