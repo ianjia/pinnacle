@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HelpResourceTermType, NavTabType } from '../shared';
+import { logoutAction } from './auth-slice';
 
 interface HelpResourceTermState {
     activeTab: HelpResourceTermType;
@@ -16,7 +17,14 @@ const helpResourceTermTabSlice = createSlice({
         setActiveTab(state, action: PayloadAction<HelpResourceTermType>) {
             state.activeTab = action.payload;
         }
-    }
+    },
+
+    extraReducers: builder => {
+    /*  <-‑‑ this single line wipes the whole slice */
+        builder.addCase(logoutAction, () => {
+            return initialState;
+        });
+    },
 });
 
 export const helpResourceTermTabReducers = helpResourceTermTabSlice.reducer;

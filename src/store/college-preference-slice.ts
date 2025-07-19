@@ -27,6 +27,7 @@ import {
   PreferenceItem,
   CollegePreferenceKeys,
 } from '../shared';
+import { logoutAction } from './auth-slice';
 
 // CollegePreferencesState with strong types
 export interface CollegePreferencesState {
@@ -108,6 +109,13 @@ const collegePreferencesSlice = createSlice({
     ) {
       state.collegePreferences = action.payload;
     },
+  },
+
+  extraReducers: builder => {
+  /*  <-‑‑ this single line wipes the whole slice */
+      builder.addCase(logoutAction, () => {
+          return initialState;
+      });
   },
 });
 

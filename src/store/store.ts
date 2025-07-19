@@ -8,6 +8,7 @@ import { collegeListWorkshopReducers } from './college-list-slice';
 import { collegePreferencesReducers } from './college-preference-slice';
 import { alertDialogReducers } from './alert-dialog-slice';
 import { helpResourceTermTabReducers } from './help-resource-slice';
+import { authReducers } from './auth-slice';
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ export const store = configureStore({
     collegePreferences: collegePreferencesReducers,
     helpResourceTerm: helpResourceTermTabReducers,
     alertDialg: alertDialogReducers,
+    auth: authReducers,  
   },
 });
 

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { logoutAction } from './auth-slice';
 
 interface AlertState {
   isOpen: boolean;
@@ -26,6 +27,13 @@ const alertSlice = createSlice({
       state.title = '';
       state.message = '';
     },
+  },
+
+  extraReducers: builder => {
+  /*  <-‑‑ this single line wipes the whole slice */
+      builder.addCase(logoutAction, () => {
+          return initialState;
+      });
   },
 });
 

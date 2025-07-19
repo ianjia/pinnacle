@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CollegeAdmissionData, CollegeListWorkshopType, CombinedCollegeData } from '../shared';
+import { logoutAction } from './auth-slice';
 
 
 interface CollegeListWorkshopState {
@@ -73,7 +74,14 @@ const collegeListWorkshopSlice = createSlice({
         setRecommendEdEaRegular: (state, action: PayloadAction<string>) => {
           state.recommendEdEaRegular = action.payload;
       },
-    }
+    },
+
+    extraReducers: builder => {
+    /*  <-‑‑ this single line wipes the whole slice */
+        builder.addCase(logoutAction, () => {
+            return initialState;
+        });
+    },
 });
 
 export const collegeListWorkshopReducers = collegeListWorkshopSlice.reducer;

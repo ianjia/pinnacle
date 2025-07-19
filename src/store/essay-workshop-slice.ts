@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Essay, EssayWorkshopType } from '../shared';
+import { logoutAction } from './auth-slice';
 
 interface EssayWorkshopState {
     activeWorkshop: EssayWorkshopType;
@@ -129,7 +130,14 @@ const essayWorkshopSlice = createSlice({
               existingEssay.essay = essay;
             }
         },
-    }
+    },
+
+    extraReducers: builder => {
+    /*  <-‑‑ this single line wipes the whole slice */
+        builder.addCase(logoutAction, () => {
+            return initialState;
+        });
+    },
 });
 
 export const essayWorkshopReducers = essayWorkshopSlice.reducer;

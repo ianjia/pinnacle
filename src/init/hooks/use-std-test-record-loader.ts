@@ -1,14 +1,12 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, selectedProfileActions } from "../../store";
+import { useDispatch } from 'react-redux';
+import { selectedProfileActions } from "../../store";
 import axios from 'axios';
 import { logError } from '../../util';
-import { NO_RECORD_FOUND } from '../../shared';
+import { NO_RECORD_FOUND, StandardizedTest } from '../../shared';
 import { stdTestService } from '../../components/component-service-proxy';
 
 export function useStdTestRecordLoader() {
     const dispatch = useDispatch();
-    const stdTestRecord = useSelector((state: RootState) => state.selectedProfile.standardizedTest);
-
     const loadStdTestRecordProfile = async (userId: number): Promise<void> => {
         try {
             // Attempt to fetch the record by userId
@@ -21,15 +19,11 @@ export function useStdTestRecordLoader() {
                     // Update the Redux store with the new userId
                     dispatch(selectedProfileActions.updateStandardizedTestField({ field: 'user_id', value: userId }));
 
-                    // Retrieve the updated state after dispatch
-                    const updatedStdTestRecord = {
-                        ...stdTestRecord,
-                        user_id: userId, // Manually ensure the id is up-to-date
-                    };
+                    const blankStdTestRecord: StandardizedTest = {user_id: userId}
 
                     try {
                         // Pass the updated record to the create API
-                        await stdTestService.create(updatedStdTestRecord);
+                        await stdTestService.create(blankStdTestRecord);
                     } catch (e: unknown) {
                         logError(e);
                     }

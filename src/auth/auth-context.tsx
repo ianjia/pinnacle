@@ -14,6 +14,8 @@ import React, {
 } from 'react';
 import { setAuthToken } from './api';
 import { jwtDecode } from 'jwt-decode';
+import { logoutAction } from '../store/auth-slice';
+import { useDispatch } from 'react-redux';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
@@ -81,6 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const idleTimerId = useRef<number | null>(null);
+  const reduxDispatch = useDispatch();
 
   /** One piece of state holding all auth info */
   const [auth, setAuth] = useState(getInitialAuth);
@@ -96,7 +99,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (idleTimerId.current) clearTimeout(idleTimerId.current);
     clearToken();
     setAuth({ ok: false, id: null, role: null, exp: undefined });
-  }, []);
+    reduxDispatch(logoutAction()); 
+  }, [reduxDispatch]);
 
   const resetInactivityTimer = useCallback(() => {
     if (idleTimerId.current) clearTimeout(idleTimerId.current);
@@ -178,3 +182,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     </AuthContext.Provider>
   );
 };
+
+

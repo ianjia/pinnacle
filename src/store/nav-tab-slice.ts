@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NavTabType } from '../shared';
+import { logoutAction } from './auth-slice';
 
 interface NavigationTabState {
   activeTab:     NavTabType;
@@ -26,6 +27,12 @@ const navigationTabSlice = createSlice({
     setProfileImage(state, action: PayloadAction<string>) {
       state.profileImage = action.payload;
     },
+  },
+  extraReducers: builder => {
+  /*  <-‑‑ this single line wipes the whole slice */
+      builder.addCase(logoutAction, () => {
+          return initialState;
+      });
   },
 });
 export const navigationTabReducers  = navigationTabSlice.reducer;

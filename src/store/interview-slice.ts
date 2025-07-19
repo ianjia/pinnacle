@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Conversation, ConversationItem, InterviewWorkshopType, LiveConversationDisplayType } from '../shared';
+import { logoutAction } from './auth-slice';
 
 interface ConversationState {
   liveConversationItems: ConversationItem[];
@@ -88,6 +89,13 @@ const conversationSlice = createSlice({
         conversation.review = review;
       }
     },
+  },
+
+  extraReducers: builder => {
+  /*  <-‑‑ this single line wipes the whole slice */
+      builder.addCase(logoutAction, () => {
+          return initialState;
+      });
   },
 });
 

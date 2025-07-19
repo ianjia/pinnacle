@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { GPA, LifeStory, ProfileType, StandardizedTest, StudentProfile, Course, ApExam, Activity, Honor, AcademicCareerGoal } from '../shared';
+import { logoutAction } from './auth-slice';
 
 interface selectedProfileState {
     activeProfile: ProfileType;
@@ -301,7 +302,14 @@ const selectedProfileSlice = createSlice({
         deleteCareerGoal(state, action: PayloadAction<number>) {
             state.careerGoalList = state.careerGoalList.filter(careerGoal => careerGoal.id !== action.payload);
         }
-    }
+    },
+
+    extraReducers: builder => {
+    /*  <-‑‑ this single line wipes the whole slice */
+        builder.addCase(logoutAction, () => {
+            return initialState;
+        });
+    },
 });
 
 export const selectedProfileReducers = selectedProfileSlice.reducer;

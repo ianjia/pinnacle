@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CommitteeReview, CommitteeReviewWorkshopType } from '../shared';
+import { logoutAction } from './auth-slice';
 
 interface CommitteeReviewState {
     liveReviewResult: string;
@@ -66,6 +67,14 @@ const committeeReviewSlice = createSlice({
         state.liveReviewId = 0;
       },
     },
+
+    extraReducers: builder => {
+    /*  <-‑‑ this single line wipes the whole slice */
+        builder.addCase(logoutAction, () => {
+            return initialState;
+        });
+    },
+
   });
 
 export const committeeReviewReducers = committeeReviewSlice.reducer;
