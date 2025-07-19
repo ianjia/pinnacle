@@ -1,3 +1,10 @@
+// Auth provider that:
+//
+// • Lets users log in normally (token is kept in localStorage for API calls).
+// • Clears that token on every refresh / tab close (via beforeunload),
+//   so a browser refresh forces a fresh login and the app redirects to “/”.
+// • Still enforces inactivity and JWT‑expiry auto‑logout.
+
 import React, {
   createContext,
   useState,
@@ -8,10 +15,13 @@ import React, {
 import { setAuthToken } from './api';
 import { jwtDecode } from 'jwt-decode';
 
+/* ------------------------------------------------------------------ */
+/*  Types                                                             */
+/* ------------------------------------------------------------------ */
 interface DecodedToken {
   user_id: number;
   role: 'user' | 'admin';
-  exp?: number;              // seconds since Unix epoch
+  exp?: number; // seconds since Unix epoch
 }
 
 interface AuthContextType {
@@ -23,7 +33,7 @@ interface AuthContextType {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Context                                                           */
+/*  Context                                                            */
 /* ------------------------------------------------------------------ */
 export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
@@ -34,27 +44,58 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 /* ------------------------------------------------------------------ */
-/*  Provider                                                          */
+/*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
-const INACTIVITY_LIMIT = 2 * 60 * 60 * 1000;    // 2 hours in ms
+const INACTIVITY_LIMIT = 2 * 60 * 60 * 1000; // 2 hours (ms)
 
+/** Read & validate token synchronously so the first render is correct */
+const getInitialAuth = () => {
+  const token = localStorage.getItem('token');
+  if (!token) return { ok: false, id: null, role: null, exp: undefined };
+
+  try {
+    const decoded = jwtDecode<DecodedToken>(token);
+    const expired = decoded.exp && decoded.exp * 1000 <= Date.now();
+    if (expired) {
+      localStorage.removeItem('token');
+      return { ok: false, id: null, role: null, exp: undefined };
+    }
+
+    setAuthToken(token);
+    return {
+      ok: true,
+      id: decoded.user_id,
+      role: decoded.role,
+      exp: decoded.exp,
+    };
+  } catch {
+    localStorage.removeItem('token');
+    return { ok: false, id: null, role: null, exp: undefined };
+  }
+};
+
+/* ------------------------------------------------------------------ */
+/*  Provider                                                           */
+/* ------------------------------------------------------------------ */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  /* ------------------------------- helpers ------------------------ */
+  const idleTimerId = useRef<number | null>(null);
+
+  /** One piece of state holding all auth info */
+  const [auth, setAuth] = useState(getInitialAuth);
+  const { ok: isAuthenticated, id: userId, role, exp } = auth;
+
+  /* -------------------------- core actions ------------------------ */
   const clearToken = () => {
     localStorage.removeItem('token');
     setAuthToken(null);
   };
 
-  const idleTimerId = useRef<number | null>(null);
-
   const logout = useCallback(() => {
     if (idleTimerId.current) clearTimeout(idleTimerId.current);
     clearToken();
-    setIsAuthenticated(false);
-    setUserId(null);
-    setRole(null);
+    setAuth({ ok: false, id: null, role: null, exp: undefined });
   }, []);
 
   const resetInactivityTimer = useCallback(() => {
@@ -62,54 +103,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     idleTimerId.current = window.setTimeout(logout, INACTIVITY_LIMIT);
   }, [logout]);
 
-  /* ------------------------------- state -------------------------- */
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userId, setUserId]                 = useState<number | null>(null);
-  const [role, setRole]                     = useState<
-    'user' | 'admin' | null
-  >(null);
-
-  /* --------------------- token validation on mount ---------------- */
+  /* --------- schedule auto‑logout for expiry / inactivity --------- */
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!isAuthenticated) return;
 
-    let decoded: DecodedToken;
-    try {
-      decoded = jwtDecode<DecodedToken>(token);
-    } catch {
-      logout();
-      return;
-    }
+    const now = Date.now();
+    let jwtRemaining = exp ? exp * 1000 - now : INACTIVITY_LIMIT;
+    if (jwtRemaining < 0) jwtRemaining = 0;
 
-    if (decoded.exp && decoded.exp * 1000 <= Date.now()) {
-      logout();
-      return;
-    }
-
-    // token is valid
-    setAuthToken(token);
-    setIsAuthenticated(true);
-    setUserId(decoded.user_id);
-    setRole(decoded.role);
-
-    // schedule auto logout at JWT expiry if sooner than inactivity limit
-    const jwtRemaining = decoded.exp
-      ? decoded.exp * 1000 - Date.now()
-      : INACTIVITY_LIMIT;
     const firstTimeout = Math.min(jwtRemaining, INACTIVITY_LIMIT);
     idleTimerId.current = window.setTimeout(logout, firstTimeout);
-  }, [logout]);
 
-  /* --------------- beforeunload: clear token on refresh ----------- */
-  useEffect(() => {
-    const handleUnload = () => clearToken();
-    window.addEventListener('beforeunload', handleUnload);
-    return () => window.removeEventListener('beforeunload', handleUnload);
-  }, []);
+    return () => {
+      if (idleTimerId.current) clearTimeout(idleTimerId.current);
+    };
+  }, [isAuthenticated, exp, logout]);
 
-  /* --------------- inactivity listener (rolling timeout) ---------- */
+  /* --------- rolling inactivity timeout (mouse / key / touch) ----- */
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const events = [
       'mousemove',
       'mousedown',
@@ -118,38 +131,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       'touchstart',
     ] as const;
 
-    events.forEach(evt => window.addEventListener(evt, resetInactivityTimer));
-    resetInactivityTimer(); // start immediately on mount
+    events.forEach(e => window.addEventListener(e, resetInactivityTimer));
+    resetInactivityTimer(); // kick‑off timer immediately
 
     return () => {
-      events.forEach(evt =>
-        window.removeEventListener(evt, resetInactivityTimer),
-      );
+      events.forEach(e => window.removeEventListener(e, resetInactivityTimer));
       if (idleTimerId.current) clearTimeout(idleTimerId.current);
     };
-  }, [resetInactivityTimer]);
+  }, [isAuthenticated, resetInactivityTimer]);
 
-  /* ------------------------------ login --------------------------- */
+  /* ------------- clear token whenever the tab is refreshed -------- */
+  useEffect(() => {
+    const handleUnload = () => clearToken();
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, []);
+
+  /* ----------------------------- login ---------------------------- */
   const loginUser = (token: string) => {
     try {
       const decoded = jwtDecode<DecodedToken>(token);
 
-      setAuthToken(token);
+      setAuthToken(token);            // sets default header for api client
       localStorage.setItem('token', token);
 
-      setIsAuthenticated(true);
-      setUserId(decoded.user_id);
-      setRole(decoded.role);
+      setAuth({
+        ok: true,
+        id: decoded.user_id,
+        role: decoded.role,
+        exp: decoded.exp,
+      });
 
       resetInactivityTimer();
-
     } catch (err) {
-      console.error('Failed to log in user', err);
+      console.error('Failed to log in user:', err);
       logout();
     }
   };
 
-  /* ------------------------------ UI ------------------------------ */
+  /* ----------------------------- UI ------------------------------- */
   return (
     <AuthContext.Provider
       value={{ isAuthenticated, userId, role, loginUser, logout }}
