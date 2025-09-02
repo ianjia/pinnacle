@@ -28,11 +28,11 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch, navigationTabActions } from '../../store';
 import { NavTabType } from '../../shared';
-import { AuthContext } from '../../auth/auth-context';
 import { api } from '../../auth';
 import { useTabListStyles } from './hooks/use-tab-list-styles';
 import { AVATAR_KEYS, avatarSrc } from './avatar/avatars';
 import { IThemeToggleProps } from '../component-util';
+import { AuthContext } from '../../auth/auth-context';
 
 export const LeftPaneTabList: React.FC<IThemeToggleProps> = ({
   toggleTheme,

@@ -1,11 +1,15 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from './auth-context';
 
-interface Props { children: JSX.Element }
+type Props = { children: React.ReactElement };
 
 export const AdminRoute: React.FC<Props> = ({ children }) => {
   const { isAuthenticated, role } = React.useContext(AuthContext);
-  if (!isAuthenticated || role !== 'admin') return <Navigate to="/" />;
+  const location = useLocation();
+
+  if (!isAuthenticated || role !== 'admin') {
+    return <Navigate to="/" state={{ from: location }} replace />;
+  }
   return children;
 };

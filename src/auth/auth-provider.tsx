@@ -1,65 +1,40 @@
-// Auth provider that:
-//
-// • Lets users log in normally (token is kept in localStorage for API calls).
-// • Clears that token on every refresh / tab close (via beforeunload),
-//   so a browser refresh forces a fresh login and the app redirects to “/”.
-// • Still enforces inactivity and JWT‑expiry auto‑logout.
-
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from 'react';
-import { setAuthToken } from './api';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { logoutAction } from '../store/auth-slice';
 import { useDispatch } from 'react-redux';
+import { setAuthToken } from './api';
+import { logoutAction } from '../store/auth-slice';
+import { AuthContext } from './auth-context';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
 /* ------------------------------------------------------------------ */
 interface DecodedToken {
   user_id: number;
-  role: 'user' | 'admin';
-  exp?: number; // seconds since Unix epoch
+  role: string;        // normalize to 'user' | 'admin' below
+  exp?: number;        // seconds since Unix epoch
 }
-
-interface AuthContextType {
-  isAuthenticated: boolean;
-  userId: number | null;
-  role: 'user' | 'admin' | null;
-  loginUser: (token: string) => void;
-  logout: () => void;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Context                                                            */
-/* ------------------------------------------------------------------ */
-export const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
-  userId: null,
-  role: null,
-  loginUser: () => {},
-  logout: () => {},
-});
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
-const INACTIVITY_LIMIT = 2 * 60 * 60 * 1000; // 2 hours (ms)
+const INACTIVITY_LIMIT = 2 * 60 * 60 * 1000; // 2 hours (ms)
+
+const normalizeRole = (r: unknown): 'user' | 'admin' => {
+  const s = (r as string | undefined)?.toLowerCase();
+  return s === 'admin' ? 'admin' : 'user';
+};
 
 /** Read & validate token synchronously so the first render is correct */
 const getInitialAuth = () => {
   const token = localStorage.getItem('token');
-  if (!token) return { ok: false, id: null, role: null, exp: undefined };
+  if (!token) return { ok: false, id: null, role: null as 'user' | 'admin' | null, exp: undefined };
 
   try {
     const decoded = jwtDecode<DecodedToken>(token);
     const expired = decoded.exp && decoded.exp * 1000 <= Date.now();
     if (expired) {
       localStorage.removeItem('token');
+      setAuthToken(null);
       return { ok: false, id: null, role: null, exp: undefined };
     }
 
@@ -67,11 +42,12 @@ const getInitialAuth = () => {
     return {
       ok: true,
       id: decoded.user_id,
-      role: decoded.role,
+      role: normalizeRole(decoded.role),
       exp: decoded.exp,
     };
   } catch {
     localStorage.removeItem('token');
+    setAuthToken(null);
     return { ok: false, id: null, role: null, exp: undefined };
   }
 };
@@ -79,9 +55,7 @@ const getInitialAuth = () => {
 /* ------------------------------------------------------------------ */
 /*  Provider                                                           */
 /* ------------------------------------------------------------------ */
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const idleTimerId = useRef<number | null>(null);
   const reduxDispatch = useDispatch();
 
@@ -99,7 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (idleTimerId.current) clearTimeout(idleTimerId.current);
     clearToken();
     setAuth({ ok: false, id: null, role: null, exp: undefined });
-    reduxDispatch(logoutAction()); 
+    reduxDispatch(logoutAction());
   }, [reduxDispatch]);
 
   const resetInactivityTimer = useCallback(() => {
@@ -107,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     idleTimerId.current = window.setTimeout(logout, INACTIVITY_LIMIT);
   }, [logout]);
 
-  /* --------- schedule auto‑logout for expiry / inactivity --------- */
+  /* --------- schedule auto-logout for expiry / inactivity --------- */
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -127,16 +101,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    const events = [
-      'mousemove',
-      'mousedown',
-      'keydown',
-      'scroll',
-      'touchstart',
-    ] as const;
+    const events = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'] as const;
 
     events.forEach(e => window.addEventListener(e, resetInactivityTimer));
-    resetInactivityTimer(); // kick‑off timer immediately
+    resetInactivityTimer(); // kick-off timer immediately
 
     return () => {
       events.forEach(e => window.removeEventListener(e, resetInactivityTimer));
@@ -144,25 +112,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
   }, [isAuthenticated, resetInactivityTimer]);
 
-  /* ------------- clear token whenever the tab is refreshed -------- */
-  useEffect(() => {
-    const handleUnload = () => clearToken();
-    window.addEventListener('beforeunload', handleUnload);
-    return () => window.removeEventListener('beforeunload', handleUnload);
-  }, []);
+  /* ------------- IMPORTANT: no beforeunload cleanup --------------- */
+  // We no longer clear tokens on refresh / typing a URL, so deep-linking works.
 
   /* ----------------------------- login ---------------------------- */
   const loginUser = (token: string) => {
     try {
       const decoded = jwtDecode<DecodedToken>(token);
 
-      setAuthToken(token);            // sets default header for api client
+      setAuthToken(token);                 // sets default header for api client
       localStorage.setItem('token', token);
 
       setAuth({
         ok: true,
         id: decoded.user_id,
-        role: decoded.role,
+        role: normalizeRole(decoded.role),
         exp: decoded.exp,
       });
 
@@ -175,12 +139,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   /* ----------------------------- UI ------------------------------- */
   return (
-    <AuthContext.Provider
-      value={{ isAuthenticated, userId, role, loginUser, logout }}
-    >
+    <AuthContext.Provider value={{ isAuthenticated, userId, role, loginUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-

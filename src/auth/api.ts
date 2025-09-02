@@ -50,8 +50,8 @@ api.interceptors.request.use(config => {
   } else {
     // (This branch is unlikely now, but keeps the code future-proof.)
     const h = config.headers as RawAxiosRequestHeaders;
-    h['x-session-id']      = sessionId;
-    h['x-correlation-id']   = nextCorrelationId();
+    h['x-session-id']     = sessionId;
+    h['x-correlation-id'] = nextCorrelationId();
   }
 
   return config;
@@ -72,8 +72,13 @@ api.interceptors.response.use(
     if (error.response) {
       setLastCorrelation(error.response.headers['x-correlation-id'] as string);
       if (error.response.status === 401) {
-        alert('Please login again');
+        // Clear both header and storage to avoid stale Authorization on immediate retries
+        try {
+          delete api.defaults.headers.common['Authorization'];
+        } catch {}
         localStorage.removeItem('token');
+
+        alert('Please login again');
         window.location.href = '/';
       }
     }
@@ -82,12 +87,14 @@ api.interceptors.response.use(
 );
 
 /* ──────────────────────────────────────────────────────────────
-   6.  Auth helpers (unchanged except kept in this file)
+   6.  Auth helpers
    ────────────────────────────────────────────────────────────── */
 export const initializeAuthToken = () => {
   const token = localStorage.getItem('token');
   if (token) {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
   }
 };
 
