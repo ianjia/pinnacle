@@ -47,40 +47,38 @@ export const useMiddleShowcaseStyles = makeStyles({
     fontWeight: 600,
     overflow: 'hidden',
 
-    // Make sure text/icons sit above any internal overlays
+    // Ensure text/icons sit above any overlays
     '& .fui-Button__content, & .fui-Button__icon': {
       position: 'relative',
       zIndex: 1,
     },
 
-    ':hover': {
+    /* ✅ Hover effect only for NOT-selected pills */
+    '&:not([aria-selected="true"]):hover': {
       backgroundColor: tokens.colorNeutralBackground2Hover,
       transform: 'translateY(-1px)',
       boxShadow: '0 4px 10px rgba(0,0,0,.08)',
     },
+
     ':focus-visible': {
       outline: `3px solid ${tokens.colorBrandBackground}`,
       outlineOffset: '2px',
     },
 
-    /* Selected state — use aria-selected on the Button.
-       The leading `&&` bumps specificity so these rules
-       reliably defeat Fluent's own Button styles. */
+    /* ✅ Selected state */
     '&&[aria-selected="true"]': {
-      // Use the shorthand "background" so it overrides any Button `background`
-      background:
-        'linear-gradient(90deg, #3BA6FF 0%, #9680e0ff 100%)',
-      boxShadow:
-        '0 10px 24px rgba(109,66,255,.32), 0 2px 6px rgba(0,0,0,.08)',
+      // Absolutely keep the selected visuals
+      background: 'linear-gradient(90deg, #3BA6FF 0%, #9680e0ff 100%) !important',
+      boxShadow: '0 10px 24px rgba(109,66,255,.32), 0 2px 6px rgba(0,0,0,.08)',
       transform: 'translateY(-1px)',
+
+      // 🚫 Kill any pointer-driven hover/focus effects on the selected pill
+      // (keyboard focus still works because pointer-events does not affect it)
+      pointerEvents: 'none',
+      cursor: 'default',
     },
 
-    // White text when selected (target the Button slots)
-    '&&[aria-selected="true"] .fui-Button__content, &&[aria-selected="true"] .fui-Button__icon': {
-      color: tokens.colorNeutralForegroundInverted,
-    },
-
-    // Subtle glossy highlight on the selected capsule
+    // Keep the glossy highlight on the selected capsule
     '&&[aria-selected="true"]::after': {
       content: '""',
       position: 'absolute',
@@ -90,11 +88,24 @@ export const useMiddleShowcaseStyles = makeStyles({
       pointerEvents: 'none',
       zIndex: 0,
     },
+
+    /* ✅ Force *readable* text on selected — no matter what hovers where */
+    // target Button slots
+    '&&[aria-selected="true"] .fui-Button__content, &&[aria-selected="true"] .fui-Button__icon': {
+      color: `${tokens.colorNeutralForegroundInverted} !important`,
+    },
+    // also target hovered slot elements (some themes style the slot on :hover)
+    '&&[aria-selected="true"] .fui-Button__content:hover, &&[aria-selected="true"] .fui-Button__icon:hover': {
+      color: `${tokens.colorNeutralForegroundInverted} !important`,
+    },
+    // final safety net: enforce white on all descendants (covers nested spans/svg using currentColor)
+    '&&[aria-selected="true"] *': {
+      color: `${tokens.colorNeutralForegroundInverted} !important`,
+      WebkitTextFillColor: `${tokens.colorNeutralForegroundInverted} !important`,
+    },
   },
 
-  // Kept only for backward compatibility with your JSX.
-  // Not needed anymore because we style the selected state
-  // via [aria-selected="true"] above.
+  // Kept for compatibility with your JSX; not used for styling anymore.
   pillActive: {},
 
   /* Middle: HERO */
