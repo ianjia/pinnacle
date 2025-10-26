@@ -36,55 +36,28 @@ export const TermsScrollArea: React.FC = () => (
       2. Privacy &amp; Data
     </Text>
     <Text block>
-      • <span style={{fontWeight:600}}>Data We Collect.</span> Email, name, academic profile you enter, usage logs, and
-      payment details handled by Stripe.<br/>
+      • <span style={{fontWeight:600}}>Data We Collect.</span> Email, name, academic profile you enter, usage logs.<br/>
       • <span style={{fontWeight:600}}>How We Use It.</span> To deliver advice, improve the model, prevent fraud, and
       comply with law.<br/>
       • <span style={{fontWeight:600}}>Third-Party Processing.</span> We share data with OpenAI LLC to generate
       responses, and with Stripe Inc. to process payments. Both run in U.S.
       data centers.<br/>
-      • <span style={{fontWeight:600}}>Your Choices.</span> You may delete your account at any time; we will erase
-      personal data not required for legal or tax records within 30 days.
     </Text>
 
-    {/* 3  Payments & Refunds */}
+    {/* 3  Limitation of Liability */}
     <Text weight="semibold" block style={{ marginTop: 16 }}>
-      3. Payments&nbsp;&amp;&nbsp;Refunds
-    </Text>
-    <Text block>
-      • Charges cover API and operating costs; we do not collect sales tax unless
-      required in your state.<br/>
-      • All fees are non-refundable once API usage occurs, except where required
-      by consumer-protection law.<br/>
-      • You remain responsible for chargebacks caused by unauthorized use of your
-      payment method.
-    </Text>
-
-    {/* 4  Limitation of Liability */}
-    <Text weight="semibold" block style={{ marginTop: 16 }}>
-      4. Limitation of Liability
+      3. Limitation of Liability
     </Text>
     <Text block>
       To the fullest extent permitted by law, the service is provided “as is”
       without warranties of any kind. We (and our providers) are <u>not liable</u> for
       indirect, incidental, or consequential damages, or any loss of admissions
-      offers, scholarships, or data, even if advised of the possibility. Our
-      maximum aggregate liability will not exceed the fees you paid in the
-      preceding 12 months.
+      offers, scholarships, or data, even if advised of the possibility. 
     </Text>
 
-    {/* 5  Dispute Resolution */}
+    {/* 4  Changes */}
     <Text weight="semibold" block style={{ marginTop: 16 }}>
-      5. Dispute Resolution
-    </Text>
-    <Text block>
-      All disputes will be resolved by binding arbitration in King County,
-      Washington, under the AAA Consumer Rules. You waive class-action rights.
-    </Text>
-
-    {/* 6  Changes */}
-    <Text weight="semibold" block style={{ marginTop: 16 }}>
-      6. Changes to These Terms
+      4. Changes to These Terms
     </Text>
     <Text block>
       We may update terms with 15 days’ e-mail notice. Continued use after the
@@ -96,8 +69,7 @@ export const TermsScrollArea: React.FC = () => (
       7. Contact Us
     </Text>
     <Text block>
-      ScholarPath AI&nbsp;LLC · 123 Main St, Sammamish WA 98074 ·
-      support@scholarpath.ai
+      birdie.counselor@gmail.com
     </Text>
   </div>
 );

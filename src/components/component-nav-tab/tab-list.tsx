@@ -88,9 +88,9 @@ export const LeftPaneTabList: React.FC<IThemeToggleProps> = ({
         <Tab icon={<ClipboardCheckmarkRegular />} value={NavTabType.ComitteReview}>
           <>Holistic<br />Review</>
         </Tab>
-        <Tab icon={<ComposeRegular />} value={NavTabType.Essay}>
+        {/* <Tab icon={<ComposeRegular />} value={NavTabType.Essay}>
           <>Essay<br />Workshop</>
-        </Tab>
+        </Tab> */}
         <Tab icon={<QuestionCircleRegular />} value={NavTabType.TermHelpResource}>
           <>Help&nbsp;/<br />Resource</>
         </Tab>
