@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Input,
+  Dialog,
+  DialogSurface,
+  DialogBody,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@fluentui/react-components';
 
 import { api, AuthContext } from '../auth';
@@ -11,19 +17,24 @@ import { useLoadData } from '../init';
 import { navigationTabActions } from '../store';
 import { useLoginRegisterStyles } from './hooks/use-login-register-modal-styles';
 
-interface LoginModalContentProps { onSuccess?: () => void; }
+interface LoginModalContentProps {
+  onSuccess?: () => void;
+}
 
 export const LoginModalContent: React.FC<LoginModalContentProps> = ({ onSuccess }) => {
-  const styles   = useLoginRegisterStyles();
+  const styles = useLoginRegisterStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loginUser, userId } = useContext(AuthContext);
   const loadData = useLoadData();
 
-  const [email,    setEmail]    = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error,    setError]    = useState('');
+  const [error, setError] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
+
+  // NEW: maintenance dialog state
+  const [maintenanceOpen, setMaintenanceOpen] = useState(false);
 
   /* ─── load profile after login ─── */
   useEffect(() => {
@@ -37,18 +48,24 @@ export const LoginModalContent: React.FC<LoginModalContentProps> = ({ onSuccess 
   /* ─── submit ─── */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const { data: { token } } = await api.post('/login', { email, password });
-      loginUser(token);
 
-      const { data: profile } = await api.get('/api/v1/user/profile');
-      dispatch(navigationTabActions.setEmail(profile.email));
-      dispatch(navigationTabActions.setProfileImage(profile.profile_picture_url ?? 'default'));
+    // NEW: show maintenance dialog instead of logging in
+    setMaintenanceOpen(true);
+    return;
 
-      setLoggedIn(true);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
-    }
+    // Original login logic (kept for later re-enable)
+    // try {
+    //   const { data: { token } } = await api.post('/login', { email, password });
+    //   loginUser(token);
+    //
+    //   const { data: profile } = await api.get('/api/v1/user/profile');
+    //   dispatch(navigationTabActions.setEmail(profile.email));
+    //   dispatch(navigationTabActions.setProfileImage(profile.profile_picture_url ?? 'default'));
+    //
+    //   setLoggedIn(true);
+    // } catch (err: any) {
+    //   setError(err.response?.data?.message || 'Login failed');
+    // }
   };
 
   /* ─── UI ─── */
@@ -76,19 +93,36 @@ export const LoginModalContent: React.FC<LoginModalContentProps> = ({ onSuccess 
 
         {error && <p className={styles.error}>{error}</p>}
 
+        {/* Login triggers form submit -> handleSubmit -> opens dialog */}
         <Button appearance="primary" type="submit" className={styles.button}>
           Login
         </Button>
       </form>
 
       <div className={styles.forgotPasswordWrapper}>
-        <button
-          className={styles.linkButton}
-          onClick={() => navigate('/forgot-password')}
-        >
+        <button className={styles.linkButton} onClick={() => navigate('/forgot-password')}>
           Forgot password?
         </button>
       </div>
+
+      {/* NEW: Maintenance modal dialog */}
+      <Dialog
+        modalType="modal"
+        open={maintenanceOpen}
+        onOpenChange={(_, data) => setMaintenanceOpen(data.open)}
+      >
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>Notice</DialogTitle>
+            <DialogContent>System under maintenance, please try later.</DialogContent>
+            <DialogActions>
+              <Button appearance="primary" onClick={() => setMaintenanceOpen(false)}>
+                Close
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
     </div>
   );
 };
