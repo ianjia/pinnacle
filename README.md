@@ -19,7 +19,58 @@ This repository works together with:
 * Redux-based client state management
 * Fluent UI based components
 
-## Tech Stack
+## Overall Architecture
+
+Pinnacle is split into three separate repositories. The `pinnacle` repo contains the React/TypeScript frontend that users interact with in the browser. It sends requests to `pinnacle_server`, which works as the main API gateway. The API gateway handles user authentication, JWT protection, account-related flows, database access, and routes requests to the correct backend service. For AI-heavy features, `pinnacle_server` calls `pinnacle_ai_backend`, a FastAPI service that runs the college counseling workflows, essay support, student profile analysis, interview support, and other AI-powered features.
+
+```text
++---------------------------+
+|        pinnacle           |
+|  React + TypeScript UI    |
+|                           |
+|  - Student dashboard      |
+|  - Essay/profile UI       |
+|  - Login/reset pages      |
++-------------+-------------+
+              |
+              | HTTP API calls
+              v
++---------------------------+
+|     pinnacle_server       |
+|  Node.js + Express API    |
+|                           |
+|  - Authentication/JWT     |
+|  - User/account APIs      |
+|  - MySQL access           |
+|  - API gateway routing    |
+|  - Task progress updates  |
++-------------+-------------+
+              |
+              | Internal API calls
+              v
++---------------------------+
+|  pinnacle_ai_backend      |
+|  Python + FastAPI service |
+|                           |
+|  - AI counseling logic    |
+|  - Essay support          |
+|  - Interview workflows    |
+|  - Student data analysis  |
+|  - OpenAI integration     |
++-------------+-------------+
+              |
+              v
++---------------------------+
+| External services / data  |
+|                           |
+|  - OpenAI API             |
+|  - MySQL database         |
++---------------------------+
+```
+
+In short, `pinnacle` owns the user experience, `pinnacle_server` owns authentication and client-facing API coordination, and `pinnacle_ai_backend` owns the AI-powered counseling logic.
+
+## Tech Stack (for this client repo)
 
 * React
 * TypeScript
