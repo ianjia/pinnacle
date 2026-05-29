@@ -3,9 +3,8 @@
 Pinnacle is the frontend for an AI-powered college counseling application. It provides the user interface for students to manage their academic profile, college preferences, essays, activities, honors, test scores, and AI-assisted counseling workflows.
 
 This repository works together with:
-
-* `pinnacle_server`: Node.js/Express API gateway
-* `pinnacle_ai_backend`: FastAPI AI backend
+* [`pinnacle_server`](https://github.com/ianjia/pinnacle_server): Node.js/Express API gateway
+* [`pinnacle_ai_backend`](https://github.com/ianjia/pinnacle_ai_backend): FastAPI AI backend
 
 ## Features
 
