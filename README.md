@@ -160,3 +160,23 @@ Before using the full app locally, make sure both backend services are running:
 
 This repo contains only the client-side application. Authentication, database access, and AI logic are handled by the backend repositories.
 
+## App Screenshots
+
+<table>
+  <tr>
+    <td><img src="docs/images/collegenav.png" alt="College navigation" width="400" /></td>
+    <td><img src="docs/images/collegelist.png" alt="College list" width="400" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/collegecompare.png" alt="College compare" width="400" /></td>
+    <td><img src="docs/images/essay.png" alt="Essay support" width="400" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/holistic.png" alt="Holistic review" width="400" /></td>
+    <td><img src="docs/images/interview.png" alt="Interview practice" width="400" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/intervieweval.png" alt="Interview evaluation" width="400" /></td>
+    <td></td>
+  </tr>
+</table>
